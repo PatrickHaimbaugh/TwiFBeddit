@@ -1,0 +1,2 @@
+ATLAS_URI=mongodb+srv://twifbeddit_user:twifbeddit_user@twifbeddit-cluster.reygv.mongodb.net/test?retryWrites=true&w=majority
+PORT=5000
