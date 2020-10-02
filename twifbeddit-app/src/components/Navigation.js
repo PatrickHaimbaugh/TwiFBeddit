@@ -26,7 +26,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Navigation = (props) => {
 	const dispatch = useDispatch(),
-		loggedIn = useState(false);
+		[isLoggedIn, setIsLoggedIn] = useState(false);
 
 	const changeActiveScreen = (screen) => {
 		dispatch(navigationActions.changeCurrentPage(screen));
@@ -50,34 +50,31 @@ const Navigation = (props) => {
 						</MyInputGroup.Button>
 					</MyInputGroup>
 				</Col>
-				<Col col={1} offset={1}>
-					<NavTextContent>
-						<NavigationText onClick={() => changeActiveScreen("SignIn")}>
-							Sign In
-						</NavigationText>
-					</NavTextContent>
-				</Col>
-				<Col col={1}>
-					<NavTextContent>
-						<NavigationText onClick={() => changeActiveScreen("Register")}>
-							Register
-						</NavigationText>
-					</NavTextContent>
-				</Col>
-				{loggedIn ? null : (
+				{isLoggedIn ? (
 					<Col col={4}>
 						<IconContainer>
-							<NavTextContent>
+							<NavTextContent onClick={() => changeActiveScreen("Home")}>
 								<NavigationIcon icon={faHome} />
 							</NavTextContent>
-							<NavTextContent>
+							<NavTextContent onClick={() => changeActiveScreen("Post")}>
 								<NavigationIcon icon={faCommentAlt} />
 							</NavTextContent>
-							<NavTextContent>
+							<NavTextContent onClick={() => changeActiveScreen("Account")}>
 								<NavigationIcon icon={faUserCircle} />
 							</NavTextContent>
-							<NavTextContent>
+							<NavTextContent onClick={() => changeActiveScreen("EditAccount")}>
 								<NavigationIcon icon={faCog} />
+							</NavTextContent>
+						</IconContainer>
+					</Col>
+				) : (
+					<Col col={2} offset={1}>
+						<IconContainer>
+							<NavTextContent onClick={() => changeActiveScreen("SignIn")}>
+								<NavigationText>Sign In</NavigationText>
+							</NavTextContent>
+							<NavTextContent onClick={() => changeActiveScreen("Register")}>
+								<NavigationText>Register</NavigationText>
 							</NavTextContent>
 						</IconContainer>
 					</Col>

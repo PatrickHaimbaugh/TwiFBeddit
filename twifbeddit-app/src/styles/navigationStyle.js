@@ -41,6 +41,7 @@ export const Header = styled.div`
 `;
 
 export const HeaderText = styled.p`
+	font-family: "Montserrat", sans-serif;
 	font-size: 2rem;
 	font-weight: 600;
 	&::hover {
@@ -64,6 +65,8 @@ export const NavTextContent = styled.div`
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
+	width: 100%;
+
 	&:hover {
 		background-color: #14202b;
 	}
