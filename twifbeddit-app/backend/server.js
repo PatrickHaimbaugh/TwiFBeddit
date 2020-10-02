@@ -48,11 +48,13 @@ const connection = mongoose.connection;
 connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
 })
+mongoose.unverifiedUsers.createIndex( { "createdAt": 1 }, { expireAfterSeconds: 3600 } )
 if (!isProduction){
   mongoose.set('debug', true);
 }
 
 require('./models/User');
+require('./models/unverifiedUser')
 require('./config/passport');
 
 app.use(require('./routes'));
@@ -63,6 +65,10 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
+
+//jwt cookie
+//app.all() similar to answer here: https://stackoverflow.com/questions/12921658/use-specific-middleware-in-express-for-all-paths-except-a-specific-one
+//to apply to all paths except for
 
 /// error handlers
 
