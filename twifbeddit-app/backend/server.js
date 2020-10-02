@@ -48,7 +48,6 @@ const connection = mongoose.connection;
 connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
 })
-mongoose.unverifiedUsers.createIndex( { "createdAt": 1 }, { expireAfterSeconds: 3600 } )
 if (!isProduction){
   mongoose.set('debug', true);
 }
