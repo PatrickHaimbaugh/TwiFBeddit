@@ -45,7 +45,7 @@ export default class Verify extends Component {
     return (
         <div style={containerStyle}>
           <div style={contentStyle}>
-            <p>Verifying and redirecting to your EcoMint account.</p>
+            <p>Verifying and redirecting to your TwiFBeddit account.</p>
             <p>Links are valid for 24 hours since sign-up. <b>If verification link is no longer valid, please sign-up again</b></p>
             {this.verifyRedirect()}
           </div>
