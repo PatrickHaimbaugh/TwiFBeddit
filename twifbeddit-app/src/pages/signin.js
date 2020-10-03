@@ -70,7 +70,7 @@ export default function SignInSide() {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  const [rememberMe, setRememberMe] = useState(false);
+  //const [rememberMe, setRememberMe] = useState(false);
 
   const onChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.currentTarget.value);
@@ -82,7 +82,7 @@ export default function SignInSide() {
     validatePassword(e.currentTarget.value);
   }
 
-  const onChangeCheckbox = (e: ChangeEvent<HTMLInputElement>) => {
+  /*const onChangeCheckbox = (e: ChangeEvent<HTMLInputElement>) => {
     setRememberMe(e.currentTarget.value);
     if (e.currentTarget.checked === true){
       rememberUser();
@@ -121,7 +121,7 @@ export default function SignInSide() {
     } catch (error) {
       console.log("Error retrieving data");
     }
-  };
+  };*/
 
   const validateEmail = (value: string): string => {
     const error = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
@@ -176,7 +176,7 @@ export default function SignInSide() {
     }
   }
 
-  useEffect( () => {
+  /*useEffect( () => {
     const userDetails =  getRememberedUser();
 
     //if (userDetails){
@@ -194,7 +194,7 @@ export default function SignInSide() {
       setPassword(passwordRemembered);
       setRememberMe(checkboxStatus);
     }
-  })
+  })*/
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -244,8 +244,8 @@ export default function SignInSide() {
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
-                  control={<Checkbox value={rememberMe}
-                                    onChange={onChangeCheckbox}
+                  control={<Checkbox //value={rememberMe}
+                                    //onChange={onChangeCheckbox}
                                     color="primary" />}
                   label="Remember me"
                 />
