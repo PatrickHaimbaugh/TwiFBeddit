@@ -34,10 +34,21 @@ export default class Verify extends Component {
   }
 
   render(){
+    const containerStyle = {
+      width: "100%",
+      paddingTop: "20px"
+    }
+    const contentStyle = {
+      width: "80%",
+      margin: "auto"
+    }
     return (
-        <div>
-          <p>Verifying and redirecting to your EcoMint account.</p>
-          {this.verifyRedirect()}
+        <div style={containerStyle}>
+          <div style={contentStyle}>
+            <p>Verifying and redirecting to your EcoMint account.</p>
+            <p>Links are valid for 24 hours since sign-up. <b>If verification link is no longer valid, please sign-up again</b></p>
+            {this.verifyRedirect()}
+          </div>
         </div>
     );
   }

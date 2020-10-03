@@ -16,6 +16,8 @@ var transporter = nodemailer.createTransport({
   }
 });
 
+var urlCrypt = require('url-crypt')('~{ry*I)==yU/]9<7DPk!Hj"R#:-/Z7(hTBnlRS=4CXF');
+
 //get own user details (auth required)
 router.get('/user', auth.required, function(req,res,next){
     User.findById(req.payload.id).then(function(user){
@@ -26,28 +28,36 @@ router.get('/user', auth.required, function(req,res,next){
 
 //set details for new user (unverified)
 router.post('/unverified/new', function(req,res,next){
-    //TODO: check to see if email is in users db and let user know they already have an account
-    var unverifiedUser = new UnverifiedUser();
-    unverifiedUser.email = req.body.user.email;
-    unverifiedUser.password = req.body.user.password;
-    unverifiedUser.subscribed = req.body.user.subscribed;
-    unverifiedUser.save().then(function(){
-        console.log("sending email")
-        var mailOptions = {
-          from: process.env.NODEMAILER_USER,
-          to: unverifiedUser.email,
-          subject: 'TwiFBeddit account confirmation link',
-          text: 'Thank you for choosing to sign up with TwiFBeddit! You are on your way to making a global difference. <p> Your confirmation email is: http://localhost:3000/verify/' + unverifiedUser.id
-        };
-        transporter.sendMail(mailOptions, function(error, info){
-          if (error) {
-            console.log(error);
-          } else {
-            console.log('Email sent: ' + info.response);
-          }
-        });
+    //check to see if email is in users db and let user know they already have an account
+    User.findOne({email: req.body.user.email}).then(function(user){
+      if (!user){
+        var unverifiedUser = new UnverifiedUser();
+        unverifiedUser.email = req.body.user.email;
+        unverifiedUser.password = req.body.user.password;
+        unverifiedUser.subscribed = req.body.user.subscribed;
+        unverifiedUser.save().then(function(){
+            console.log("first: " + unverifiedUser.id);
+            var encryptedUserId = urlCrypt.cryptObj(unverifiedUser.id);
+            console.log("encrypted id")
+            var mailOptions = {
+              from: process.env.NODEMAILER_USER,
+              to: unverifiedUser.email,
+              subject: 'TwiFBeddit account confirmation link',
+              text: 'Thank you for choosing to sign up with TwiFBeddit! You are on your way to making a global difference. Your confirmation email is: http://localhost:3000/verify/' + encryptedUserId + ', and will expire within 24 hours.'
+            };
+            transporter.sendMail(mailOptions, function(error, info){
+              if (error) {
+                console.log(error);
+              } else {
+                console.log('Email sent: ' + info.response);
+              }
+            });
 
-        return res.json({user: unverifiedUser.toAuthJSON()});
+            return res.json({user: unverifiedUser.toAuthJSON()});
+        }).catch(next);
+      }else{
+        return res.json({errors:{email: "is already taken."}});
+      }
     }).catch(next);
 });
 
@@ -56,15 +66,16 @@ router.post('/unverified/new', function(req,res,next){
   //copy details of that into new User() object and save to users db
   //delete from unverifiedUsers db
 router.post('/new/:id', function(req,res,next){
-    UnverifiedUser.findById(req.params.id).then(function(unverifiedUser){
-        var userid = req.params.id;
+    var unencryptedUserId = urlCrypt.decryptObj(req.params.id);
+    console.log("return: " + unencryptedUserId);
+    UnverifiedUser.findById(unencryptedUserId).then(function(unverifiedUser){
         if(!unverifiedUser){return res.sendStatus(401);}
 
         var user = new User();
         user.email = unverifiedUser.email;
         user.password = unverifiedUser.password;
         user.subscribed = unverifiedUser.subscribed;
-        UnverifiedUser.remove( {"_id": userid}).then(
+        UnverifiedUser.remove( {"_id": unencryptedUserId}).then(
           user.save().then(function(){
               return res.json({user: user.toAuthJSON()});
           })

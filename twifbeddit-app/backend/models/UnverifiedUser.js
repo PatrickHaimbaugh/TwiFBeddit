@@ -9,6 +9,7 @@ const secret = process.env.SECRET_STRING;
 const saltRounds = 10;
 
 var UnverifiedUserSchema = new mongoose.Schema({
+    createdAt: {type: Date, exprires: 60, default: Date.now},
     email: {type: String, unique: true, required: [true, "cannot be empty."], index: true},
     password: {type: String, required: [true, "cannot be empty."]},
     subscribed: Boolean,
@@ -16,6 +17,7 @@ var UnverifiedUserSchema = new mongoose.Schema({
 }, {timestamps: true});
 
 UnverifiedUserSchema.plugin(uniqueValidator, {message: "is already taken."});
+UnverifiedUserSchema.index({createdAt: 1}, {expireAfterSeconds: 86400});
 
 UnverifiedUserSchema.pre('save', function(next) {
   // Check if document is new or a new password has been set
