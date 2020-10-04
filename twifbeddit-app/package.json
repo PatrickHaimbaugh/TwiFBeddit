@@ -32,7 +32,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy-backend": "cd backend && sam build && sam deploy && cd .."
+    "deploy-backend": "cd backend && sam build && sam deploy && cd ..",
+    "deploy-frontend": "react-scripts build && aws s3 sync build/ s3://twifbeddit-prod"
   },
   "eslintConfig": {
     "extends": "react-app"
