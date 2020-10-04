@@ -4,6 +4,7 @@ import "./App.css";
 import LandingPage from "./pages/LandingPage";
 import { useSelector } from "react-redux";
 import Navigation from "./components/Navigation";
+import EditAccountPage from "./pages/EditAccountPage";
 
 const App = (props) => {
 	const currentPage = useSelector((state) => state.navigation.currentPage);
@@ -12,6 +13,7 @@ const App = (props) => {
 		<div>
 			<Navigation />
 			{currentPage === "LandingPage" && <LandingPage />}
+			{currentPage === "EditAccountPage" && <EditAccountPage />}
 		</div>
 	);
 };
