@@ -7,20 +7,20 @@ exports.lambdaHandler = async (event, _) => {
             })
         }
 
-        path = event.path.split('/');
-        if (path.shift() != '')
-            return {'statusCode': 500};
-        try {
-            request = require("./" + path[0]);
-            path.shift()
-            requestMethod = request[event.httpMethod];
-        } catch (err) {
-            console.error(err);
-            return {
-                'statusCode': 404,
-                'body': JSON.stringify(err)
-            }
+    path = event.path.split('/');
+    if (path.shift() != '')
+        return {'statusCode': 500};
+    try {
+        request = require("./" + path[0]);
+        path.shift()
+        requestMethod = request[event.httpMethod];
+    } catch (err) {
+        console.error(err);
+        return {
+            'statusCode': 404,
+            'body': JSON.stringify(err)
         }
-        
-        return await requestMethod(path, event);
+    }
+    
+    return await requestMethod(path, event);
 };
