@@ -24,6 +24,6 @@ exports.POST = async (_, event) => {
     return {
         'statusCode': 200,
         'headers': await get_cookie_header(createdUser.username),
-        'body': JSON.stringify(create_external_user(createdUser))
+        'body': JSON.stringify(exports.create_external_user(createdUser))
     };
 };
