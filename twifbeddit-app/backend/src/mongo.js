@@ -27,18 +27,17 @@ var PostSchema = new mongoose.Schema({
         unique: true,
         required: [true, "cannot be empty."],
     },
+    isImagePost: { type: Boolean, required: [true, "cannot be empty."]},
+    isAnonymous: { type: Boolean, required: [true, "cannot be empty."]},
     text: { type: String, required: [true, "cannot be empty."] },
-    isImagePost: { type: Boolean, default: false},
-    isAnonymous: { type: Boolean, },
     image: {
         type: String,
         default:
         "https://twifbeddit-assests-prod.s3.us-east-2.amazonaws.com/default_profile.jpg",
-    },
+    }
 });
 
 exports.Post = mongoose.model("Post", PostSchema);
-
 
 mongoose.connect(
     "mongodb+srv://twifbeddit_user:twifbeddit_user@twifbeddit-cluster.reygv.mongodb.net/test?retryWrites=true&w=majority",
