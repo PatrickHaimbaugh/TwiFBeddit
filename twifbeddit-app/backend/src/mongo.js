@@ -31,6 +31,16 @@ UserSessionSchema.index({createdAt: 1}, {expireAfterSeconds: 604800});
 
 exports.UserSession = mongoose.model("UserSession", UserSessionSchema);
 
+var PostSchema = new mongoose.Schema({
+    author: {type: String},
+    anonymous: {type: Boolean, default: false},
+    topic: {type: String, default: null},
+    post_type: {type: String, default: "text"},
+    text: {type: String, required: [true, "cannot be empty."]}
+}, {timestamps: true});
+
+exports.Post = mongoose.model("Post", PostSchema);
+
 mongoose.connect(
     "mongodb+srv://twifbeddit_user:twifbeddit_user@twifbeddit-cluster.reygv.mongodb.net/test?retryWrites=true&w=majority",
     { useUnifiedTopology: true, useNewUrlParser: true}

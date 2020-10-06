@@ -1,3 +1,5 @@
+require("./mongo");
+
 exports.lambdaHandler = async (event, _) => {
     console.log(event);
 
