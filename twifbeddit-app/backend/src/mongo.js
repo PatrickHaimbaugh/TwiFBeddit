@@ -17,11 +17,21 @@ var UserSchema = new mongoose.Schema({
     following: { type: [String], default: [] },
     followers: { type: Number, default: 0 },
     savedPosts: { type: [String], default: [] },
-    });
+});
 
 exports.User = mongoose.model("User", UserSchema);
 
+var UserSessionSchema = new mongoose.Schema({
+    session_id: {type: String, index: true, required: [true, "cannot be empty."]},
+    username: {type: String, required: [true, "cannot be empty."]}
+}, {timestamps: true});
+
+// TTL of one week
+UserSessionSchema.index({createdAt: 1}, {expireAfterSeconds: 604800});
+
+exports.UserSession = mongoose.model("UserSession", UserSessionSchema);
+
 mongoose.connect(
     "mongodb+srv://twifbeddit_user:twifbeddit_user@twifbeddit-cluster.reygv.mongodb.net/test?retryWrites=true&w=majority",
-    { useUnifiedTopology: true }
+    { useUnifiedTopology: true, useNewUrlParser: true}
 );
