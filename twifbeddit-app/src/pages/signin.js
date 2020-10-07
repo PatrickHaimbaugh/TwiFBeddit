@@ -12,12 +12,14 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import makeNetworkCall from "../util/makeNetworkCall";
 
 import { useState, useEffect } from "react";
 import Copyright from "../components/copyright.component.js";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import * as navigationActions from "../containers/NavigationContainer/actions";
+import * as accountActions from "../containers/AccountContainer/actions";
 
 class UserDetails {
 	constructor(email, password) {
@@ -57,8 +59,10 @@ const useStyles = makeStyles((theme) => ({
 export default function SignInSide() {
 	const classes = useStyles();
 
-	const [email, setEmail] = useState("");
-	const [emailError, setEmailError] = useState("");
+	// const [email, setEmail] = useState("");
+	// const [emailError, setEmailError] = useState("");
+	const [username, setUsername] = useState("");
+	const [usernameError, setUsernameError] = useState("");
 	const [password, setPassword] = useState("");
 	const [passwordError, setPasswordError] = useState("");
 	const dispatch = useDispatch();
@@ -69,9 +73,14 @@ export default function SignInSide() {
 
 	//const [rememberMe, setRememberMe] = useState(false);
 
-	const onChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
-		setEmail(e.currentTarget.value);
-		validateEmail(e.currentTarget.value);
+	// const onChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
+	// 	setEmail(e.currentTarget.value);
+	// 	validateEmail(e.currentTarget.value);
+	// };
+
+	const onChangeUsername = (e: ChangeEvent<HTMLInputElement>) => {
+		setUsername(e.currentTarget.value);
+		validateUsername(e.currentTarget.value);
 	};
 
 	const onChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
@@ -120,14 +129,20 @@ export default function SignInSide() {
     }
   };*/
 
-	const validateEmail = (value: string): string => {
-		const error = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-			value
-		)
-			? ""
-			: "You must enter a valid email address";
+	// const validateEmail = (value: string): string => {
+	// 	const error = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+	// 		value
+	// 	)
+	// 		? ""
+	// 		: "You must enter a valid email address";
 
-		setEmailError(error);
+	// 	setEmailError(error);
+	// 	return error;
+	// };
+
+	const validateUsername = (value: string): string => {
+		const error = value ? "" : "You must enter a valid Username";
+		setUsernameError(error);
 		return error;
 	};
 
@@ -137,42 +152,54 @@ export default function SignInSide() {
 		return error;
 	};
 
-	const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+	const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		const emailValidationError = validateEmail(email);
+		// const emailValidationError = validateEmail(email);
+		const usernameValidationError = validateUsername(username);
 		const passwordValidationError = validatePassword(password);
-		if (emailValidationError === "" && passwordValidationError === "") {
+		if (usernameValidationError === "" && passwordValidationError === "") {
 			const userDetails = {
 				user: {
-					email: email,
+					// email: email,
 					password: password,
 					subscribed: false,
 				},
 			};
-			console.log(userDetails);
+			// console.log(userDetails);
 			//setSubmitResult(result);
 			//setSubmitted(true);
-
-			axios
-				.post("http://localhost:5000/api/users/login", userDetails)
-				.then((res) => {
-					if (res.status === 200) {
-						//this.props.history.push('/');
-						window.location = "/dashboard"; //TODO: navigate to dashboard
-					} else {
-						const error = new Error(res.error);
-						throw error;
-					}
-				})
-				.catch((err) => {
-					console.error(err);
-					alert(
-						"Sign-in not successful. Please enter valid email and password."
-					);
-				});
+			const resp = await makeNetworkCall({
+				HTTPmethod: "get",
+				path: "login",
+				params: {
+					username,
+					password,
+				},
+			});
+			dispatch(accountActions.signInOrSignUp(resp));
+			changeActiveScreen("LandingPage");
+			// axios
+			// 	.post("http://localhost:5000/api/users/login", userDetails)
+			// 	.then((res) => {
+			// 		if (res.status === 200) {
+			// 			//this.props.history.push('/');
+			// 			window.location = "/dashboard"; //TODO: navigate to dashboard
+			// 		} else {
+			// 			const error = new Error(res.error);
+			// 			throw error;
+			// 		}
+			// 	})
+			// 	.catch((err) => {
+			// 		console.error(err);
+			// 		alert(
+			// 			"Sign-in not successful. Please enter valid email and password."
+			// 		);
+			// 	});
 		} else {
-			alert("Sign-in not successful. Please enter valid email and password.");
+			alert(
+				"Sign-in not successful. Please enter valid username and password."
+			);
 		}
 	};
 
@@ -211,14 +238,14 @@ export default function SignInSide() {
 								variant="outlined"
 								required
 								fullWidth
-								id="email"
-								label="Email Address"
-								name="email"
-								autoComplete="email"
-								value={email}
-								onChange={onChangeEmail}
+								id="username"
+								label="Username"
+								autoComplete="off"
+								name="username"
+								value={username}
+								onChange={onChangeUsername}
 							/>
-							<span className="error">{emailError}</span>
+							<span className="error">{usernameError}</span>
 						</Grid>
 						<Grid item xs={12}>
 							<TextField

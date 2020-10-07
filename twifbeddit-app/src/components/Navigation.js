@@ -26,6 +26,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Navigation = (props) => {
 	const dispatch = useDispatch(),
+		username = useSelector((state) => state.account.username),
 		[isLoggedIn, setIsLoggedIn] = useState(false);
 
 	const changeActiveScreen = (screen) => {
@@ -50,7 +51,7 @@ const Navigation = (props) => {
 						</MyInputGroup.Button>
 					</MyInputGroup>
 				</Col>
-				{isLoggedIn ? (
+				{username != "" ? (
 					<Col col={4}>
 						<IconContainer>
 							<NavTextContent onClick={() => changeActiveScreen("Home")}>

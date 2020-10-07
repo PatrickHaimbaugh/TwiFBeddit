@@ -18,6 +18,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import * as navigationActions from "../containers/NavigationContainer/actions";
 import makeNetworkCall from "../util/makeNetworkCall.js";
+import * as accountActions from "../containers/AccountContainer/actions";
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -56,11 +57,11 @@ interface IProps {
 export default function IndividualSignUp() {
 	const classes = useStyles();
 
-	const [email, setEmail] = useState("patTest1@test.com");
+	const [email, setEmail] = useState("patTest2@test.com");
 	const [emailError, setEmailError] = useState("");
-	const [username, setUsername] = useState("patTest1");
+	const [username, setUsername] = useState("patTest2");
 	const [usernameError, setUsernameError] = useState("");
-	const [password, setPassword] = useState("patTest1");
+	const [password, setPassword] = useState("patTest2");
 	const [passwordError, setPasswordError] = useState("");
 
 	const [subscribe, setSubscribe] = useState(false);
@@ -106,32 +107,33 @@ export default function IndividualSignUp() {
 		return error;
 	};
 
-	const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+	const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		console.log("submit");
 
 		const emailValidationError = validateEmail(email);
 		const passwordValidationError = validatePassword(password);
 		if (emailValidationError === "" && passwordValidationError === "") {
 			const newUserDetails = {
 				user: {
-					email: email,
 					password: password,
 					subscribed: subscribe,
 				},
 			};
-			console.log(newUserDetails);
 			//setSubmitResult(result);
 			//setSubmitted(true);
-
-			makeNetworkCall({
+			const resp = await makeNetworkCall({
 				HTTPmethod: "post",
 				path: "users",
-				params: {
-					username,
+				data: {
 					email,
+					username,
 					password,
 				},
 			});
+			dispatch(accountActions.signInOrSignUp(resp));
+			changeActiveScreen("LandingPage");
+
 			// axios
 			// 	.post("http://localhost:5000/api/unverified/new", newUserDetails)
 			// 	.then((res) => {
