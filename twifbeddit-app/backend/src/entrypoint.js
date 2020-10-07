@@ -1,4 +1,8 @@
+require("./mongo");
+
 exports.lambdaHandler = async (event, _) => {
+    console.log(event);
+
     if (event.path == "/randnum" && event.httpMethod == "GET")
         return {
             'statusCode': 200,
@@ -22,5 +26,7 @@ exports.lambdaHandler = async (event, _) => {
         }
     }
     
-    return await requestMethod(path, event);
+    const res = await requestMethod(path, event);
+    console.log(res);
+    return res;
 };

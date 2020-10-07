@@ -69,7 +69,7 @@ const Navigation = (props) => {
 						</IconContainer>
 					</Col>
 				) : (
-					<Col col={2} offset={1}>
+					<Col col={4}>
 						<IconContainer>
 							<NavTextContent onClick={() => changeActiveScreen("SignIn")}>
 								<NavigationText>Sign In</NavigationText>

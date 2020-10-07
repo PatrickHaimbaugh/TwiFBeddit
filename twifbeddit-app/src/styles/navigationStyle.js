@@ -75,7 +75,7 @@ export const NavTextContent = styled.div`
 export const IconContainer = styled.div`
 	display: flex;
 	align-items: center;
-	justify-content: space-evenly;
+	justify-content: space-around;
 `;
 
 export const NavigationIcon = styled(FontAwesomeIcon)`
