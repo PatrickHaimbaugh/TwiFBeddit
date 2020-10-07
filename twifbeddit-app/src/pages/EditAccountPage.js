@@ -7,13 +7,16 @@ import {
 	Title,
 } from "../styles/editAccountPageStyle";
 import { Form, FormGroup, FormControl, ButtonToolbar, Button } from "rsuite";
+import { useSelector } from "react-redux";
 
 const EditAccountPage = () => {
-	const [email, setEmail] = useState("ExampleEmail@gmail.com"),
+	const [email, setEmail] = useState(""),
 		[oldPassword, setOldPassword] = useState(""),
 		[newPassword, setNewPassword] = useState(""),
 		[confirmNewPassword, setConfirmNewPassword] = useState(""),
-		[bio, setBio] = useState("Example Bio here");
+		[bio, setBio] = useState(""),
+		username = useSelector((state) => state.account.username),
+		storeEmail = useSelector((state) => state.account.email);
 
 	return (
 		<Col col={12}>
@@ -27,11 +30,7 @@ const EditAccountPage = () => {
 					<Form fluid>
 						<FormGroup>
 							<MyControlLabel>Username</MyControlLabel>
-							<FormControl
-								name="username"
-								value="Username From Store"
-								disabled={true}
-							/>
+							<FormControl name="username" value={username} disabled={true} />
 						</FormGroup>
 						<FormGroup>
 							<MyControlLabel>Email</MyControlLabel>
@@ -40,6 +39,7 @@ const EditAccountPage = () => {
 								value={email}
 								onChange={(e) => setEmail(e.value)}
 								type="email"
+								placeholder={storeEmail}
 							/>
 						</FormGroup>
 						<FormGroup>
@@ -77,6 +77,7 @@ const EditAccountPage = () => {
 								value={bio}
 								onChange={(e) => setBio(e.value)}
 								componentClass="textarea"
+								placeholder="Type Bio Here"
 							/>
 						</FormGroup>
 						<FormGroup>
