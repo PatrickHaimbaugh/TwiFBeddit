@@ -20,6 +20,7 @@ export const UpperHeaderRow = styled(Row)``;
 export const ProfilePictureCol = styled(Col)``;
 
 export const ProfilePicture = styled.img`
+	border: 2px solid black;
 	border-radius: 50%;
 	width: 100%;
 `;
