@@ -4,10 +4,9 @@ import LandingPage from "./pages/LandingPage";
 import { useSelector } from "react-redux";
 import Navigation from "./components/Navigation";
 
-
-import { BrowserRouter as Router, Route} from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import SignIn from "./pages/signin.js";
-import VerificationInstructions from "./components/verificationInstructions.component"
+import VerificationInstructions from "./components/verificationInstructions.component";
 import Verify from "./components/verify.component";
 
 import SignUp from "./pages/signup.js";
@@ -16,20 +15,21 @@ const App = (props) => {
 	const currentPage = useSelector((state) => state.navigation.currentPage);
 
 	return (
-    <Router>
-    <div className="container">
+		<Router>
+			<div className="container">
+				<Navigation />
+				{currentPage === "LandingPage" && <LandingPage />}
 
-      <Route path="/signin" component = {SignIn}/>
-      <Route path="/verification" component = {VerificationInstructions} />
-      <Route path="/verify/:id" component = {Verify}/>
+				{currentPage === "SignIn" && <SignIn />}
 
-      <Route path="/signup" component =  {SignUp}/>
+				{currentPage === "SignUp" && <SignUp />}
+				{/* <Route path="/signin" component={SignIn} /> */}
+				<Route path="/verification" component={VerificationInstructions} />
+				<Route path="/verify/:id" component={Verify} />
 
-      <Navigation />
-			{currentPage === "LandingPage" && <LandingPage />}
-      {currentPage === ""}
-    </div>
-    </Router>
+				{/* <Route path="/signup" component={SignUp} /> */}
+			</div>
+		</Router>
 	);
 };
 export default App;

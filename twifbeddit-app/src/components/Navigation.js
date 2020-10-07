@@ -73,8 +73,8 @@ const Navigation = (props) => {
 							<NavTextContent onClick={() => changeActiveScreen("SignIn")}>
 								<NavigationText>Sign In</NavigationText>
 							</NavTextContent>
-							<NavTextContent onClick={() => changeActiveScreen("Register")}>
-								<NavigationText>Register</NavigationText>
+							<NavTextContent onClick={() => changeActiveScreen("SignUp")}>
+								<NavigationText>Sign Up</NavigationText>
 							</NavTextContent>
 						</IconContainer>
 					</Col>
