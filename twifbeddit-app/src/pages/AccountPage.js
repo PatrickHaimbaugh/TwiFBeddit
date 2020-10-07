@@ -14,35 +14,37 @@ import {
 	BioText,
 } from "../styles/accountPageStyle";
 import Post from "../components/Post";
+import { useSelector } from "react-redux";
 
 const AccountPage = () => {
+	const { username, profile_pictrue, bio, following, followers } = useSelector(
+		(state) => state.account
+	);
+
 	return (
 		<Page col={12}>
 			<Content>
 				<UpperHeaderRow>
 					<ProfilePictureCol col={3}>
-						<ProfilePicture
-							alt="profilePicture"
-							src="https://icanmakeshoes.com/wp-content/uploads/2010/09/blank-profile-picture.png"
-						/>
+						<ProfilePicture alt="profilePicture" src={profile_pictrue} />
 					</ProfilePictureCol>
 					<FollowCol col={4} offset={1}>
 						<FollowText>Followers</FollowText>
-						<FollowNum>354</FollowNum>
+						<FollowNum> {followers} </FollowNum>
 					</FollowCol>
 					<FollowCol col={4}>
 						<FollowText>Following</FollowText>
-						<FollowNum>247</FollowNum>
+						<FollowNum> {following.length} </FollowNum>
 					</FollowCol>
 				</UpperHeaderRow>
 				<UsernameRow>
-					<UsernameText>Patrick</UsernameText>
+					<UsernameText>{username}</UsernameText>
 				</UsernameRow>
 				<BioRow>
-					<BioText>Bio here</BioText>
+					<BioText>Purdue CS student</BioText>
 				</BioRow>
 				<Post
-					Username="Perry"
+					Username={username}
 					Title="Mac is Great"
 					Topic="Music"
 					Body="Faces is a great project!!!!!!"

@@ -24,6 +24,8 @@ const App = (props) => {
 				{currentPage === "SignIn" && <SignIn />}
 
 				{currentPage === "SignUp" && <SignUp />}
+
+				{currentPage === "Account" && <AccountPage />}
 				{/* <Route path="/signin" component={SignIn} /> */}
 				<Route path="/verification" component={VerificationInstructions} />
 				<Route path="/verify/:id" component={Verify} />
