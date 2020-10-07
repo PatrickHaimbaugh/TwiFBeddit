@@ -25,6 +25,7 @@ import {
 
 const Navigation = (props) => {
 	const dispatch = useDispatch(),
+		username = useSelector((state) => state.account.username),
 		[isLoggedIn, setIsLoggedIn] = useState(false);
 
 	const changeActiveScreen = (screen) => {
@@ -49,7 +50,7 @@ const Navigation = (props) => {
 						</MyInputGroup.Button>
 					</MyInputGroup>
 				</Col>
-				{isLoggedIn ? (
+				{username != "" ? (
 					<Col col={4}>
 						<IconContainer>
 							<NavTextContent onClick={() => changeActiveScreen("Home")}>
@@ -69,13 +70,13 @@ const Navigation = (props) => {
 						</IconContainer>
 					</Col>
 				) : (
-					<Col col={2} offset={1}>
+					<Col col={4}>
 						<IconContainer>
 							<NavTextContent onClick={() => changeActiveScreen("SignIn")}>
 								<NavigationText>Sign In</NavigationText>
 							</NavTextContent>
-							<NavTextContent onClick={() => changeActiveScreen("Register")}>
-								<NavigationText>Register</NavigationText>
+							<NavTextContent onClick={() => changeActiveScreen("SignUp")}>
+								<NavigationText>Sign Up</NavigationText>
 							</NavTextContent>
 						</IconContainer>
 					</Col>
