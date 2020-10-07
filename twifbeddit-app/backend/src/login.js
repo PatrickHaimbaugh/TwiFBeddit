@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
-const User = require("./mongo").User;
+const mongoose = require("mongoose");
+const User = mongoose.model("User");
 const { create_external_user } = require("./users");
 const { get_cookie_header } = require("./auth");
 
