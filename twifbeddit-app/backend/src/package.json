@@ -1,0 +1,10 @@
+{
+    "name": "twifbeddit-backend",
+    "version": "1.0.0",
+    "main": "entrypoint.js",
+    "dependencies": {
+        "mongoose": "^5.10.6",
+        "uuid": "8.3.0",
+        "bcryptjs": "^2.4.3"
+    }
+}
