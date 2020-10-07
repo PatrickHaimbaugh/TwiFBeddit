@@ -22,7 +22,6 @@ import {
 	faUserCircle,
 	faCog,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Navigation = (props) => {
 	const dispatch = useDispatch(),
@@ -63,7 +62,9 @@ const Navigation = (props) => {
 							<NavTextContent onClick={() => changeActiveScreen("Account")}>
 								<NavigationIcon icon={faUserCircle} />
 							</NavTextContent>
-							<NavTextContent onClick={() => changeActiveScreen("EditAccount")}>
+							<NavTextContent
+								onClick={() => changeActiveScreen("EditAccountPage")}
+							>
 								<NavigationIcon icon={faCog} />
 							</NavTextContent>
 						</IconContainer>
