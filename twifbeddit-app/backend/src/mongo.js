@@ -8,7 +8,7 @@ var UserSchema = new mongoose.Schema({
     },
     email: { type: String, unique: true, required: [true, "cannot be empty."] },
     password: { type: String, required: [true, "cannot be empty."] },
-    profile_pictrue: {
+    profile_picture: {
         type: String,
         default:
         "https://twifbeddit-assests-prod.s3.us-east-2.amazonaws.com/default_profile.jpg",

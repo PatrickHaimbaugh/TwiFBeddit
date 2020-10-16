@@ -6,7 +6,7 @@ const initalState = {
 	email: "",
 	followers: 0,
 	following: [],
-	profile_pictrue: "",
+	profile_picture: "",
 	savedPosts: [],
 	bio: "",
 };
@@ -20,7 +20,7 @@ export default function startReducer(state = initalState, action) {
 				email: action.object.email,
 				followers: action.object.followers,
 				following: action.object.following,
-				profile_pictrue: action.object.profile_pictrue,
+				profile_picture: action.object.profile_picture,
 				savedPosts: action.object.savedPosts,
 				bio: action.object.bio,
 			};
