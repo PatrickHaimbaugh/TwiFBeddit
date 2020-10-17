@@ -17,7 +17,7 @@ import Post from "../components/Post";
 import { useSelector } from "react-redux";
 
 const AccountPage = () => {
-	const { username, profile_pictrue, bio, following, followers } = useSelector(
+	const { username, profile_picture, bio, following, followers } = useSelector(
 		(state) => state.account
 	);
 
@@ -26,7 +26,7 @@ const AccountPage = () => {
 			<Content>
 				<UpperHeaderRow>
 					<ProfilePictureCol col={3}>
-						<ProfilePicture alt="profilePicture" src={profile_pictrue} />
+						<ProfilePicture alt="profilePicture" src={profile_picture} />
 					</ProfilePictureCol>
 					<FollowCol col={4} offset={1}>
 						<FollowText>Followers</FollowText>

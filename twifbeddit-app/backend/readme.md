@@ -14,7 +14,7 @@
 ### Response
 ```json
 {
-    "profile_pictrue": "String (url)",
+    "profile_picture": "String (url)",
     "bio": "String",
     "following": "[String (usernames)]",
     "followers": "Int",
