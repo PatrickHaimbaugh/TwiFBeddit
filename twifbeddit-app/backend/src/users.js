@@ -29,3 +29,17 @@ exports.POST = async (_, event) => {
 
     };
 };
+
+// TODO: Test this. Gets the topics that the user is following.
+exports.get_topics_that_the_user_is_following = async (_, event) => {
+    if (event.queryStringParameters != null)
+        console.error("Parameters currently ignored");
+    const username = await get_user_from_header(event.headers);
+    const topics = await User.findOne({username: username}, 'followed_topics');
+    return {
+        'statusCode': 200,
+        'body': JSON.stringify({
+            topics: topics
+        })
+    }
+};

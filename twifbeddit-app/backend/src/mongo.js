@@ -14,6 +14,7 @@ var UserSchema = new mongoose.Schema({
         "https://twifbeddit-assests-prod.s3.us-east-2.amazonaws.com/default_profile.jpg",
     },
     bio: { type: String, default: "" },
+    followed_topics: { type: [String], default: [] },
     following: { type: [String], default: [] },
     followers: { type: Number, default: 0 },
     savedPosts: { type: [String], default: [] },

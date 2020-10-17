@@ -24,13 +24,34 @@ exports.POST = async (_, event) => {
     }
 };
 
-// TODO: pagination
+// TODO: Test this. Get posts that a specific user is following, sorts by most recent posts.
 exports.GET = async (_, event) => {
     if (event.queryStringParameters != null)
         console.error("Parameters currently ignored");
     const username = await get_user_from_header(event.headers);
     const user = await User.findOne({username: username});
-    var posts = await Post.find().where('topic').in(user.following).exec();
+    var posts = await Post.find().where('topic').in(user.followed_topics).limit(8).sort({ createdAt: -1}).exec();
+    posts.forEach((post, index, arr) => {
+        if (post.anonymous) post.author = null;
+        post.anonymous = undefined;
+        post.__v = undefined;
+        arr[index] = post;
+    });
+
+    return {
+        'statusCode': 200,
+        'body': JSON.stringify({
+            posts: posts
+        })
+    }
+};
+
+// TODO: Test this. Returns post under a specific topic, sorts by most recent posts.
+exports.get_posts_under_a_specific_topic = async (_, event) => {
+    if (event.queryStringParameters != null)
+        console.error("Parameters currently ignored");
+    const topic = event.queryStringParameters.topic; // is this legal
+    var posts = await Post.find().where('topic').in(topic).limit(8).sort({ createdAt: -1}).exec();
     posts.forEach((post, index, arr) => {
         if (post.anonymous) post.author = null;
         post.anonymous = undefined;
