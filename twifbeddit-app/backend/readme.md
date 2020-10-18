@@ -53,10 +53,17 @@ Set-Cookie Header, and user object like above
 
 ## GET
 ### Parameters
-Currently none, all that is important is the cookie obtained from login/sign up
+'topic=string'
+### Accepts
+```json
+{
+    "topic": "String (valid topic)"
+}
+```
 ### Response
 ```json
 {
-    "posts": "[Post (defined above)]"
+    "posts": "[Post (posts under the topic]"
 }
 ```
+
