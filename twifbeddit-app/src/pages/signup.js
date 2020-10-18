@@ -131,8 +131,12 @@ export default function IndividualSignUp() {
 					password,
 				},
 			});
-			dispatch(accountActions.signInOrSignUp(resp));
-			changeActiveScreen("LandingPage");
+			if (resp.error) {
+				console.log("Error Signing Up");
+			} else {
+				dispatch(accountActions.signInOrSignUp(resp));
+				changeActiveScreen("LandingPage");
+			}
 
 			// axios
 			// 	.post("http://localhost:5000/api/unverified/new", newUserDetails)

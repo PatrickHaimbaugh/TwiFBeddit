@@ -177,8 +177,12 @@ export default function SignInSide() {
 					password,
 				},
 			});
-			dispatch(accountActions.signInOrSignUp(resp));
-			changeActiveScreen("LandingPage");
+			if (resp.error) {
+				console.log("Error Signing In");
+			} else {
+				dispatch(accountActions.signInOrSignUp(resp));
+				changeActiveScreen("LandingPage");
+			}
 			// axios
 			// 	.post("http://localhost:5000/api/users/login", userDetails)
 			// 	.then((res) => {
