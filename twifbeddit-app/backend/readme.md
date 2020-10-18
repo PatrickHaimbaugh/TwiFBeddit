@@ -2,6 +2,22 @@
 
 # /user
 
+## GET
+This will return information on a user. Currently this will succeed for all users, however in the future a user will need to be authenticated to see if they are blocked from getting a users info.
+### Parameters
+`username=username`
+### Response
+```json
+{
+    "profile_picture": "String (url)",
+    "bio": "String",
+    "following": "[String (topics)]",
+    "followers": "Int",
+    "profile_pictrue": "String",
+    "username": "String"
+}
+```
+
 ## POST
 ### Accepts
 ```json
@@ -19,7 +35,6 @@
     "following": "[String (usernames)]",
     "followers": "Int",
     "savedPosts": "[String (id)]",
-    "_id":"5f7ce5a4e353ea00088cc337",
     "username": "String",
     "email": "String"
 }
