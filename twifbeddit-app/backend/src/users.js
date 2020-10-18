@@ -31,58 +31,56 @@ exports.POST = async (_, event) => {
 };
 
 // TODO: Test this. Gets the topics that the user is following.
-exports.get_topics_that_the_user_is_following = async (_, event) => {
-    if (event.queryStringParameters != null)
-        console.error("Parameters currently ignored");
-    const username = await get_user_from_header(event.headers);
-    const topics = await User.findOne({username: username}, 'followed_topics');
-    return {
-        'statusCode': 200,
-        'body': JSON.stringify({
-            topics: topics
-        })
+exports.GET = async (_, event) => {
+    if (event.queryStringParameters.topicsFollowed != null) {
+        // if no params passed in, get the topics that the user is following
+        const username = await get_user_from_header(event.headers);
+        const topics = await User.findOne({username: username}, 'followed_topics');
+        return {
+            'statusCode': 200,
+            'body': JSON.stringify({
+                topics: topics
+            })
+        }
+    } else if (event.queryStringParameters.usernameToFollow != null) {
+         // get current user
+        const username = await get_user_from_header(event.headers);
+        var user = await User.findOne({username: username});
+
+        // get query params for the username of the user to follow
+        const usernameToFollow = event.queryStringParameters.usernameToFollow;
+        user.following.push(usernameToFollow);
+        user.save();
+
+        return {
+            'statusCode': 200,
+            'body': JSON.stringify({
+                following: following
+            })
+        }
+
+    } else if (event.queryStringParameters.usernameToUnfollow) {
+
+            // get current user
+        const username = await get_user_from_header(event.headers);
+        var user = await User.findOne({username: username});
+
+        // get query params for the username of the user to unfollow
+        const usernameToUnfollow = event.queryStringParameters.usernameToUnfollow;
+        user.following.pull(usernameToUnfollow);
+        user.save();
+        return {
+            'statusCode': 200,
+            'body': JSON.stringify({
+                following: following
+            })
     }
-};
 
-// TODO: Test this. Updates followed user.
-exports.follow_user = async (_, event) => {
-    if (event.queryStringParameters != null)
-        console.error("Parameters currently ignored");
-
-    // get current user
-    const username = await get_user_from_header(event.headers);
-    var user = await User.findOne({username: username});
-
-    // get query params for the username of the user to follow
-    const usernameToFollow = event.queryStringParameters.usernameToFollow;
-    user.following.push(usernameToFollow);
-    user.save();
-
-    return {
-        'statusCode': 200,
-        'body': JSON.stringify({
-            following: following
-        })
+    } else {
+        return {
+            'statusCode': 404
+        }
     }
-};
+    
 
-// TODO: Unfollow users.
-exports.unfollow_user = async (_, event) => {
-    if (event.queryStringParameters != null)
-        console.error("Parameters currently ignored");
-
-    // get current user
-    const username = await get_user_from_header(event.headers);
-    var user = await User.findOne({username: username});
-
-    // get query params for the username of the user to unfollow
-    const usernameToUnfollow = event.queryStringParameters.usernameToUnfollow;
-    user.following.pull(usernameToUnfollow);
-    user.save();
-    return {
-        'statusCode': 200,
-        'body': JSON.stringify({
-            following: following
-        })
-    }
 };
