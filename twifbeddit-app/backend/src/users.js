@@ -50,14 +50,14 @@ exports.GET = async (_, event) => {
 
         //
         const usernameToFollow = event.queryStringParameters.usernameToFollow;  
-        User.findOneAndUpdate({username: username}, {$push: {following: usernameToFollow}});
+        const user = await User.findOneAndUpdate({username: username}, {$addToSet: {following: usernameToFollow}}, {new: true});
 
         // get query params for the username of the user to follow
     
         return {
             'statusCode': 200,
             'body': JSON.stringify({
-                following: following
+                "following": user.following
             })
         }
 
@@ -67,13 +67,12 @@ exports.GET = async (_, event) => {
         const username = await get_user_from_header(event.headers);
         // get query param of the username to unfollow
         const usernameToUnfollow = event.queryStringParameters.usernameToUnfollow;
-        User.findOneAndUpdate({username: username}, {$pull: {following: usernameToUnfollow}});
+        const user = await User.findOneAndUpdate({username: username}, {$pull: {following: usernameToUnfollow}}, {new: true});
 
-   
         return {
             'statusCode': 200,
             'body': JSON.stringify({
-                following: following
+                "following": user.following
             })
         }
 
