@@ -38,7 +38,7 @@ var PostSchema = new mongoose.Schema({
     topic: {type: String, default: null},
     post_type: {type: String, default: "text"},
     text: {type: String, required: [true, "cannot be empty."]},
-    image_url: {type: String, default: null}
+    image_url: {type: String, default: null},
 }, {timestamps: true});
 
 exports.Post = mongoose.model("Post", PostSchema);

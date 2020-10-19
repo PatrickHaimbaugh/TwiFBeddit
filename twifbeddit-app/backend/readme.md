@@ -1,6 +1,6 @@
 # Backend API
 
-# /user
+# /users
 
 ## POST
 ### Accepts
@@ -22,6 +22,15 @@
     "_id":"5f7ce5a4e353ea00088cc337",
     "username": "String",
     "email": "String"
+}
+```
+## GET
+### Parameters
+'followedTopics=true'
+### Response
+```json
+{
+    "followedTopics": "[String] (topics the user is following)"
 }
 ```
 
@@ -63,7 +72,7 @@ Set-Cookie Header, and user object like above
 ### Response
 ```json
 {
-    "posts": "[Post (posts under the topic]"
+    "followedTopics": "[String] (posts under the topic)"
 }
 ```
 

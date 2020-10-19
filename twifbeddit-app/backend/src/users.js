@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const User = mongoose.model("User");
 const bcrypt = require("bcryptjs");
-const { get_cookie_header } = require("./auth");
+const { get_cookie_header, get_user_from_header } = require("./auth");
+
 
 exports.create_external_user = (mongo_user) => {
     var user = mongo_user;
@@ -32,8 +33,9 @@ exports.POST = async (_, event) => {
 
 // TODO: Test this. Gets the topics that the user is following.
 exports.GET = async (_, event) => {
+    
     if (event.queryStringParameters.topicsFollowed != null) {
-        // if no params passed in, get the topics that the user is following
+        // Functions correctly, just input topicsFollowed=true
         const username = await get_user_from_header(event.headers);
         const topics = await User.findOne({username: username}, 'followed_topics');
         return {
@@ -45,13 +47,13 @@ exports.GET = async (_, event) => {
     } else if (event.queryStringParameters.usernameToFollow != null) {
          // get current user
         const username = await get_user_from_header(event.headers);
-        var user = await User.findOne({username: username});
+
+        //
+        const usernameToFollow = event.queryStringParameters.usernameToFollow;  
+        User.findOneAndUpdate({username: username}, {$push: {following: usernameToFollow}});
 
         // get query params for the username of the user to follow
-        const usernameToFollow = event.queryStringParameters.usernameToFollow;
-        user.following.push(usernameToFollow);
-        user.save();
-
+    
         return {
             'statusCode': 200,
             'body': JSON.stringify({
@@ -61,26 +63,24 @@ exports.GET = async (_, event) => {
 
     } else if (event.queryStringParameters.usernameToUnfollow) {
 
-            // get current user
+        // get current user
         const username = await get_user_from_header(event.headers);
-        var user = await User.findOne({username: username});
-
-        // get query params for the username of the user to unfollow
+        // get query param of the username to unfollow
         const usernameToUnfollow = event.queryStringParameters.usernameToUnfollow;
-        user.following.pull(usernameToUnfollow);
-        user.save();
+        User.findOneAndUpdate({username: username}, {$pull: {following: usernameToUnfollow}});
+
+   
         return {
             'statusCode': 200,
             'body': JSON.stringify({
                 following: following
             })
-    }
+        }
 
     } else {
         return {
             'statusCode': 404
         }
-    }
-    
+    }    
 
 };
