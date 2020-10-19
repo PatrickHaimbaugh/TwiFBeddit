@@ -31,6 +31,22 @@ exports.POST = async (_, event) => {
     };
 };
 
+exports.GET = async(_, event) => {
+    const {username} = event.queryStringParameters;
+    if (username == undefined) {
+        console.error("No username specifed for GET /users");
+        return {'statusCode': 400};
+    }
+    var foundUser = await User.findOne({username: username});
+    foundUser = this.create_external_user(foundUser);
+    delete foundUser.email;
+    delete foundUser.savedPosts;
+    return {
+        'statusCode': 200,
+        'body': JSON.stringify(foundUser)
+    };
+};
+
 // TODO: Test this. Unfollow/follow user.
 exports.PATCH = async (_, event) => {
     
@@ -59,7 +75,7 @@ exports.PATCH = async (_, event) => {
     }
 
     return {
-        'statuscode': 404
+        'statuscode': 404;
     }
 
 };
