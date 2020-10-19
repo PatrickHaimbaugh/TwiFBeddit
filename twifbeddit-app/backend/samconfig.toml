@@ -4,7 +4,7 @@ version = 0.1
 [default.deploy.parameters]
 stack_name = "twifbeddit-backend"
 s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-ugk1371dw2aa"
-s3_prefix = "twifbeddit-prod"
+s3_prefix = "twifbeddit-backend"
 region = "us-east-2"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"

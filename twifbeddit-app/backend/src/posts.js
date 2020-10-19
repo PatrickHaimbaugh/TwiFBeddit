@@ -24,11 +24,10 @@ exports.POST = async (_, event) => {
     }
 };
 
-// TODO: Test this. 
+// Returns different posts depending on whether there are query parameters passed in.
 exports.GET = async (_, event) => {
-    if (event.queryStringParameters == null) {
-        // get posts from the specific user
 
+    if (event.queryStringParameters == null) {
         const username = await get_user_from_header(event.headers);
         const user = await User.findOne({username: username});
         var posts = await Post.find().where('topic').in(user.followed_topics).limit(8).sort({ createdAt: -1}).exec();
@@ -45,10 +44,9 @@ exports.GET = async (_, event) => {
                 posts: posts
             })
         }
-    } else if (event.queryStringParameters.topic != null) {
-
-        // Functions correctly
-        const topic = event.queryStringParameters.topic; // is this legal
+    } 
+    if (event.queryStringParameters.topic != undefined) {
+        const topic = event.queryStringParameters.topic;
         var posts = await Post.find().where('topic').in(topic).limit(8).sort({ createdAt: -1}).exec();
         posts.forEach((post, index, arr) => {
             if (post.anonymous) post.author = null;
@@ -64,10 +62,8 @@ exports.GET = async (_, event) => {
             })
         }
 
-    } else {
-        return {
+    } 
+    return {
             'statusCode': 404
         }
-    }
-
 };

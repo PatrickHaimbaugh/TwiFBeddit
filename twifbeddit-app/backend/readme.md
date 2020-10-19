@@ -24,13 +24,29 @@
     "email": "String"
 }
 ```
-## GET
-### Parameters
-'followedTopics=true'
+
+## PATCH
+### Accepts
+```json
+{
+    "usernameToFollow": "String (username)"
+}
+```
 ### Response
 ```json
 {
-    "followedTopics": "[String] (topics the user is following)"
+    "following": "[String (usernames)]",
+}
+```
+```json
+{
+    "usernameToUnfollow": "String (username)"
+}
+```
+### Response
+```json
+{
+    "following": "[String (usernames)]",
 }
 ```
 
@@ -61,6 +77,14 @@ Set-Cookie Header, and user object like above
 ```
 
 ## GET
+### Response
+```json
+{
+    "posts": "[Post] (posts sorted by most recent, under topics followed by the user)" 
+}
+```
+
+## GET
 ### Parameters
 'topic=string'
 ### Accepts
@@ -72,7 +96,7 @@ Set-Cookie Header, and user object like above
 ### Response
 ```json
 {
-    "followedTopics": "[String] (posts under the topic)"
+    "posts": "[Post] (posts under the topic)"
 }
 ```
 

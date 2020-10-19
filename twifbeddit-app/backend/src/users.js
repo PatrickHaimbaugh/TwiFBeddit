@@ -31,55 +31,35 @@ exports.POST = async (_, event) => {
     };
 };
 
-// TODO: Test this. Gets the topics that the user is following.
-exports.GET = async (_, event) => {
+// TODO: Test this. Unfollow/follow user.
+exports.PATCH = async (_, event) => {
     
-    if (event.queryStringParameters.topicsFollowed != null) {
-        // Functions correctly, just input topicsFollowed=true
+    if (event.queryStringParameters.usernameToFollow != undefined) {
         const username = await get_user_from_header(event.headers);
-        const topics = await User.findOne({username: username}, 'followed_topics');
-        return {
-            'statusCode': 200,
-            'body': JSON.stringify({
-                topics: topics
-            })
-        }
-    } else if (event.queryStringParameters.usernameToFollow != null) {
-         // get current user
-        const username = await get_user_from_header(event.headers);
-
-        //
         const usernameToFollow = event.queryStringParameters.usernameToFollow;  
         const user = await User.findOneAndUpdate({username: username}, {$addToSet: {following: usernameToFollow}}, {new: true});
-
-        // get query params for the username of the user to follow
-    
         return {
             'statusCode': 200,
             'body': JSON.stringify({
                 "following": user.following
             })
         }
+    }
 
-    } else if (event.queryStringParameters.usernameToUnfollow) {
-
-        // get current user
+    if (event.queryStringParameters.usernameToUnfollow != undefined) {
         const username = await get_user_from_header(event.headers);
-        // get query param of the username to unfollow
         const usernameToUnfollow = event.queryStringParameters.usernameToUnfollow;
         const user = await User.findOneAndUpdate({username: username}, {$pull: {following: usernameToUnfollow}}, {new: true});
-
         return {
             'statusCode': 200,
             'body': JSON.stringify({
                 "following": user.following
             })
         }
+    }
 
-    } else {
-        return {
-            'statusCode': 404
-        }
-    }    
+    return {
+        'statuscode': 404
+    }
 
 };
