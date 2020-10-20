@@ -31,6 +31,7 @@ exports.POST = async (_, event) => {
     };
 };
 
+
 exports.GET = async(_, event) => {
     const {username} = event.queryStringParameters;
     if (username == undefined) {
@@ -47,17 +48,19 @@ exports.GET = async(_, event) => {
     };
 };
 
-// TODO: Test this. Unfollow/follow user.
+// 
 exports.PATCH = async (_, event) => {
     
     if (event.queryStringParameters.usernameToFollow != undefined) {
         const username = await get_user_from_header(event.headers);
         const usernameToFollow = event.queryStringParameters.usernameToFollow;  
         const user = await User.findOneAndUpdate({username: username}, {$addToSet: {following: usernameToFollow}}, {new: true});
+        await User.findOneAndUpdate({username: usernameToFollow}, {$inc : {followers: 1}});
+
         return {
             'statusCode': 200,
             'body': JSON.stringify({
-                "following": user.following
+                "following": user.following,
             })
         }
     }
@@ -66,16 +69,42 @@ exports.PATCH = async (_, event) => {
         const username = await get_user_from_header(event.headers);
         const usernameToUnfollow = event.queryStringParameters.usernameToUnfollow;
         const user = await User.findOneAndUpdate({username: username}, {$pull: {following: usernameToUnfollow}}, {new: true});
+        await User.findOneAndUpdate({username: usernameToUnfollow}, {$inc : {followers: -1}});
+
         return {
             'statusCode': 200,
             'body': JSON.stringify({
-                "following": user.following
+                "following": user.following,
             })
         }
     }
 
+    if (event.queryStringParameters.email != undefined && event.queryStringParameters.password != undefined 
+        && event.queryStringParameters.profile_picture != undefined && event.queryStringParameters.bio != undefined) {
+
+            const username = await get_user_from_header(event.headers);
+            const email = event.queryStringParameters.email;
+            const hash = bcrypt.hashSync(event.queryStringParameters.password, 10);
+            const url = event.queryStringParameters.profile_picture;
+            const bio = event.queryStringParameters.bio;
+            
+            const updatedUser = await User.findOneAndUpdate({username: username}, {$set: {
+                email: email,
+                password: hash, 
+                profile_picture: url,
+                bio: bio }}, {new: true});
+            
+            return {
+                'statusCode': 200,
+                'headers': await get_cookie_header(updatedUser.username),
+                'body': JSON.stringify(exports.create_external_user(updatedUser))
+        
+            };
+
+        }
+
     return {
-        'statuscode': 404;
+        'statuscode': 404
     }
 
 };

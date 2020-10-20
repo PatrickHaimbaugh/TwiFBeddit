@@ -27,22 +27,31 @@
 
 ## PATCH
 ### Accepts
+### Parameters
+'email=string&password=string&profile_picture=string&bio=string'
+### Response
 ```json
 {
-    "usernameToFollow": "String (username)"
+    "profile_picture": "String (url)",
+    "bio": "String",
+    "following": "[String (usernames)]",
+    "followers": "Int",
+    "savedPosts": "[String (id)]",
+    "_id":"5f7ce5a4e353ea00088cc337",
+    "username": "String",
+    "email": "String"
 }
 ```
+### Parameters
+'usernameToFollow=string'
 ### Response
 ```json
 {
     "following": "[String (usernames)]",
 }
 ```
-```json
-{
-    "usernameToUnfollow": "String (username)"
-}
-```
+### Parameters
+'usernameToUnfollow=string'
 ### Response
 ```json
 {
