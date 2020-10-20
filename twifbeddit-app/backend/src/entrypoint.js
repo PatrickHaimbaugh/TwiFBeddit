@@ -27,6 +27,11 @@ exports.lambdaHandler = async (event, _) => {
     }
     
     const res = await requestMethod(path, event);
+    if (res.headers == undefined)
+        res.headers = {};
+    res.headers["Access-Control-Allow-Origin"] = "*";
+    res.headers["Access-Control-Allow-Methods"] = "*";
+    res.headers["Access-Control-Allow-Headers"] = "*";
     console.log(res);
     return res;
 };
