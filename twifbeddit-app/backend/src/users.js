@@ -48,7 +48,7 @@ exports.GET = async(_, event) => {
     };
 };
 
-// 
+
 exports.PATCH = async (_, event) => {
     
     if (event.queryStringParameters.usernameToFollow != undefined) {
