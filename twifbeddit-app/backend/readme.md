@@ -78,7 +78,7 @@ This will return information on a user. Currently this will succeed for all user
 
 ## GET
 ### Parameters
-`username=string&password=string`
+`[username|email]=string&password=string`
 ### Response
 Set-Cookie Header, and user object like above
 
