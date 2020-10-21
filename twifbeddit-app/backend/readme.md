@@ -110,7 +110,7 @@ Set-Cookie Header, and user object like above
 
 ## GET
 ### Parameters
-'topic=string'
+`topic=string`
 ### Accepts
 ```json
 {

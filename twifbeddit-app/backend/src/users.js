@@ -9,6 +9,7 @@ exports.create_external_user = (mongo_user) => {
     delete user.password;
     delete user._id;
     delete user.__v;
+    delete user.postVotes;
     return user;
 }
 

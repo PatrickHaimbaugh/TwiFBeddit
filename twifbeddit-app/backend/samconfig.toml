@@ -6,5 +6,5 @@ stack_name = "twifbeddit-backend"
 s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-ugk1371dw2aa"
 s3_prefix = "twifbeddit-backend"
 region = "us-east-2"
-confirm_changeset = true
+confirm_changeset = false
 capabilities = "CAPABILITY_IAM"

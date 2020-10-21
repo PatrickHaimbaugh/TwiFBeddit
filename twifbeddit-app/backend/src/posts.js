@@ -1,5 +1,3 @@
-//const User = require("./mongo").User;
-//const Post = require("./mongo").Post;
 const mongoose = require('mongoose');
 const User = mongoose.model("User");
 const Post = mongoose.model("Post");
