@@ -66,9 +66,10 @@ export const NavTextContent = styled.div`
 	justify-content: center;
 	cursor: pointer;
 	width: 100%;
+	background-color: ${(props) => (props.currentPage ? "#14202b" : "inherit")};
 
 	&:hover {
-		background-color: #14202b;
+		background-color: #86c8f0;
 	}
 `;
 

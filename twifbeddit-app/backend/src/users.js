@@ -5,7 +5,7 @@ const { get_cookie_header, get_user_from_header } = require("./auth");
 
 
 exports.create_external_user = (mongo_user) => {
-    var user = mongo_user;
+    var user = JSON.parse(JSON.stringify(mongo_user));
     delete user.password;
     delete user._id;
     delete user.__v;
@@ -30,7 +30,6 @@ exports.POST = async (_, event) => {
 
     };
 };
-
 
 exports.GET = async(_, event) => {
     const {username} = event.queryStringParameters;
