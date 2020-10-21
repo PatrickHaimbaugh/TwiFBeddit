@@ -124,3 +124,18 @@ Set-Cookie Header, and user object like above
 }
 ```
 
+# /votes
+## POST
+### Parameters
+`postId=string&action=[up|down|unup|undown]`
+### Response
+```json
+{
+    "userUpVoted": "boolean",
+    "userDownVoted": "boolean",
+    "numUp": "int",
+    "numDown": "int"
+}
+```
+### Errors
+A common response is 409 Conflict, when for example, upvoting a post that was already upvoted. Regardless, the same json object will be returned, just without an update.

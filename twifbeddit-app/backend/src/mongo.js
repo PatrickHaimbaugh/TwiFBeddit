@@ -18,6 +18,8 @@ var UserSchema = new mongoose.Schema({
     following: { type: [String], default: [] },
     followers: { type: Number, default: 0 },
     savedPosts: { type: [String], default: [] },
+    // Post _id to [up|down]
+    postVotes: { type: Map, of: String, default: {}},
 });
 
 exports.User = mongoose.model("User", UserSchema);
@@ -35,6 +37,8 @@ exports.UserSession = mongoose.model("UserSession", UserSessionSchema);
 var PostSchema = new mongoose.Schema({
     author: {type: String},
     anonymous: {type: Boolean, default: false},
+    upvotes: {type: Number, default: 0},
+    downvotes: {type: Number, default: 0},
     topic: {type: String, default: null},
     post_type: {type: String, default: "text"},
     text: {type: String, required: [true, "cannot be empty."]},
@@ -42,6 +46,8 @@ var PostSchema = new mongoose.Schema({
 }, {timestamps: true});
 
 exports.Post = mongoose.model("Post", PostSchema);
+
+mongoose.set('useFindAndModify', false);
 
 mongoose.connect(
     "mongodb+srv://twifbeddit_user:twifbeddit_user@twifbeddit-cluster.reygv.mongodb.net/test?retryWrites=true&w=majority",
