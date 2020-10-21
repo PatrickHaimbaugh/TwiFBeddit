@@ -1,6 +1,6 @@
 # Backend API
 
-# /user
+# /users
 
 ## GET
 This will return information on a user. Currently this will succeed for all users, however in the future a user will need to be authenticated to see if they are blocked from getting a users info.
@@ -40,6 +40,40 @@ This will return information on a user. Currently this will succeed for all user
 }
 ```
 
+## PATCH
+### Accepts
+### Parameters
+'email=string&password=string&profile_picture=string&bio=string'
+### Response
+```json
+{
+    "profile_picture": "String (url)",
+    "bio": "String",
+    "following": "[String (usernames)]",
+    "followers": "Int",
+    "savedPosts": "[String (id)]",
+    "_id":"5f7ce5a4e353ea00088cc337",
+    "username": "String",
+    "email": "String"
+}
+```
+### Parameters
+'usernameToFollow=string'
+### Response
+```json
+{
+    "following": "[String (usernames)]",
+}
+```
+### Parameters
+'usernameToUnfollow=string'
+### Response
+```json
+{
+    "following": "[String (usernames)]",
+}
+```
+
 # /login
 
 ## GET
@@ -67,11 +101,26 @@ Set-Cookie Header, and user object like above
 ```
 
 ## GET
-### Parameters
-Currently none, all that is important is the cookie obtained from login/sign up
 ### Response
 ```json
 {
-    "posts": "[Post (defined above)]"
+    "posts": "[Post] (posts sorted by most recent, under topics followed by the user)" 
 }
 ```
+
+## GET
+### Parameters
+'topic=string'
+### Accepts
+```json
+{
+    "topic": "String (valid topic)"
+}
+```
+### Response
+```json
+{
+    "posts": "[Post] (posts under the topic)"
+}
+```
+

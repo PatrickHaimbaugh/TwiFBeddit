@@ -24,24 +24,46 @@ exports.POST = async (_, event) => {
     }
 };
 
-// TODO: pagination
+// Returns different posts depending on whether there are query parameters passed in.
 exports.GET = async (_, event) => {
-    if (event.queryStringParameters != null)
-        console.error("Parameters currently ignored");
-    const username = await get_user_from_header(event.headers);
-    const user = await User.findOne({username: username});
-    var posts = await Post.find().where('topic').in(user.following).exec();
-    posts.forEach((post, index, arr) => {
-        if (post.anonymous) post.author = null;
-        post.anonymous = undefined;
-        post.__v = undefined;
-        arr[index] = post;
-    });
 
+    if (event.queryStringParameters == null) {
+        const username = await get_user_from_header(event.headers);
+        const user = await User.findOne({username: username});
+        var posts = await Post.find().where('topic').in(user.followed_topics).limit(8).sort({ createdAt: -1}).exec();
+        posts.forEach((post, index, arr) => {
+            if (post.anonymous) post.author = null;
+            post.anonymous = undefined;
+            post.__v = undefined;
+            arr[index] = post;
+        });
+    
+        return {
+            'statusCode': 200,
+            'body': JSON.stringify({
+                posts: posts
+            })
+        }
+    } 
+    if (event.queryStringParameters.topic != undefined) {
+        const topic = event.queryStringParameters.topic;
+        var posts = await Post.find().where('topic').in(topic).limit(8).sort({ createdAt: -1}).exec();
+        posts.forEach((post, index, arr) => {
+            if (post.anonymous) post.author = null;
+            post.anonymous = undefined;
+            post.__v = undefined;
+            arr[index] = post;
+        });
+    
+        return {
+            'statusCode': 200,
+            'body': JSON.stringify({
+                posts: posts
+            })
+        }
+
+    } 
     return {
-        'statusCode': 200,
-        'body': JSON.stringify({
-            posts: posts
-        })
-    }
+            'statusCode': 404
+        }
 };
