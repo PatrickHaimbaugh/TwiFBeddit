@@ -50,14 +50,7 @@ exports.POST = async (_, event) => {
     }
 
     user.save();
-    console.log(update);
     const newPost = await Post.findOneAndUpdate({_id: postId}, update, {returnOriginal: false});
-    const response = {
-        userUpVoted: user.postVotes.get(postId) == "up",
-        userDownVoted: user.postVotes.get(postId) == "down",
-        numUp: newPost.upvotes,
-        numDown: newPost.downvotes,
-    };
     return {
         'statusCode': 200,
         'body': await get_body(newPost)
