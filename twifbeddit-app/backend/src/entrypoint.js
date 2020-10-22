@@ -25,8 +25,21 @@ exports.lambdaHandler = async (event, _) => {
             'body': JSON.stringify(err)
         }
     }
-    
-    const res = await requestMethod(path, event);
+
+    const try_or_error = (func) => {
+        try {
+            return func();
+        } catch (err) {
+            return {
+                'statusCode': 500,
+                'body': JSON.stringify({'exception': err})
+            };
+        }
+    }
+
+    const res = try_or_error(async () => {
+        return await requestMethod(path, event);
+    });
     if (res.headers == undefined)
         res.headers = {};
     res.headers["Access-Control-Allow-Origin"] = "*";

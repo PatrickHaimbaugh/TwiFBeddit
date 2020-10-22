@@ -8,6 +8,11 @@ exports.GET = async (_, event) => {
     const {username, email, password} = event.queryStringParameters;
     var find = username == undefined ? {email: email} : {username: username};
     const user = await User.findOne(find);
+    if (user == null)
+        return {
+            'statusCode': 404,
+            'body': JSON.stringify({"error": "user not found"})
+        };
     if (!bcrypt.compareSync(password, user.password))
         return {'statusCode': 401};
 
