@@ -18,12 +18,7 @@ exports.POST = async (_, event) => {
     var hash = bcrypt.hashSync(data.password, 10);
     data.password = hash;
     const newUser = new User(data);
-    try {
-        var createdUser = await newUser.save();
-    } catch (err) {
-        console.error(err);
-        return {'statusCode': 400};
-    }
+    var createdUser = await newUser.save();
     return {
         'statusCode': 200,
         'headers': await get_cookie_header(createdUser.username),

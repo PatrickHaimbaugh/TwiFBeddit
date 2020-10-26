@@ -26,9 +26,9 @@ exports.lambdaHandler = async (event, _) => {
         }
     }
 
-    const try_or_error = (func) => {
+    const try_or_error = async (func) => {
         try {
-            return func();
+            return await func();
         } catch (err) {
             return {
                 'statusCode': 500,
@@ -37,7 +37,7 @@ exports.lambdaHandler = async (event, _) => {
         }
     }
 
-    const res = try_or_error(async () => {
+    const res = await try_or_error(async () => {
         return await requestMethod(path, event);
     });
     if (res.headers == undefined)
