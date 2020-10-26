@@ -139,3 +139,21 @@ Set-Cookie Header, and user object like above
 ```
 ### Errors
 A common response is 409 Conflict, when for example, upvoting a post that was already upvoted. Regardless, the same json object will be returned, just without an update.
+
+# /save
+## POST
+### Parameters
+`postId=string[&unsave=true]`
+
+If unsave is set to true, then a post then a previously saved post will be removed from the users saved posts set.
+No error checking is done on postId to see if it is valid. This will only ever fail if the Cookie is invalid.
+### Response
+None
+
+## GET
+### Response
+```json
+{
+    "posts": "[String (post ID)]"
+}
+```
