@@ -35,6 +35,7 @@ UserSessionSchema.index({createdAt: 1}, {expireAfterSeconds: 604800});
 exports.UserSession = mongoose.model("UserSession", UserSessionSchema);
 
 var PostSchema = new mongoose.Schema({
+    title: {type: String, required: [true, "cannot be empty."]},
     author: {type: String},
     anonymous: {type: Boolean, default: false},
     upvotes: {type: Number, default: 0},

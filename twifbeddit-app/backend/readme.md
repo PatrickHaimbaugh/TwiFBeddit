@@ -43,7 +43,7 @@ This will return information on a user. Currently this will succeed for all user
 ## PATCH
 ### Accepts
 ### Parameters
-'email=string&password=string&profile_picture=string&bio=string'
+`email=string&password=string&profile_picture=string&bio=string`
 ### Response
 ```json
 {
@@ -58,7 +58,7 @@ This will return information on a user. Currently this will succeed for all user
 }
 ```
 ### Parameters
-'usernameToFollow=string'
+`usernameToFollow=string`
 ### Response
 ```json
 {
@@ -66,7 +66,7 @@ This will return information on a user. Currently this will succeed for all user
 }
 ```
 ### Parameters
-'usernameToUnfollow=string'
+`usernameToUnfollow=string`
 ### Response
 ```json
 {
@@ -86,7 +86,8 @@ Set-Cookie Header, and user object like above
 ## POST
 ### Accepts
 ```json
-{
+{   
+    "title": "String",
     "anonymous": "Bool (optional, defaults false)",
     "topic": "String (optional, defaults to null, meaning 'all')",
     "post_type": "String (optional, one of ['text'], only type supported, defaults to text)",
@@ -121,6 +122,20 @@ Set-Cookie Header, and user object like above
 ```json
 {
     "posts": "[Post] (posts under the topic)"
+}
+```
+### Parameters
+`author=string`
+### Accepts
+```json
+{
+    "author": "String (valid user/author)"
+}
+```
+### Response
+```json
+{
+    "posts": "[Post] (posts under the specified user that aren't anonymous)"
 }
 ```
 

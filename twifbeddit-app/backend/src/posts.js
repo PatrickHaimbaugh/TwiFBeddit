@@ -61,6 +61,26 @@ exports.GET = async (_, event) => {
         }
 
     } 
+
+    if (event.queryStringParameters.author != undefined) {
+        const author = event.queryStringParameters.author;
+        // find where author and not anonymous
+        var posts = await Post.find().where('author').equals(author).where('anonymous').equals(false).sort({ createdAt: -1}).exec();
+        posts.forEach((post, index, arr) => {
+            post.anonymous = undefined;
+            post.__v = undefined;
+            arr[index] = post;
+        });
+    
+        return {
+            'statusCode': 200,
+            'body': JSON.stringify({
+                posts: posts
+            })
+        }
+
+    }
+
     return {
             'statusCode': 404
         }
