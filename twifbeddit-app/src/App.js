@@ -13,6 +13,8 @@ import Verify from "./components/verify.component";
 
 import SignUp from "./pages/signup.js";
 
+import TopicResults from "./pages/topicResults.js";
+
 const App = (props) => {
 	const currentPage = useSelector((state) => state.navigation.currentPage);
 
@@ -27,14 +29,17 @@ const App = (props) => {
 				{currentPage === "SignUp" && <SignUp />}
 
 				{currentPage === "EditAccountPage" && <EditAccountPage />}
-    
+
 				{currentPage === "Account" && <AccountPage />}
-    
+
 				{/* <Route path="/signin" component={SignIn} /> */}
 				<Route path="/verification" component={VerificationInstructions} />
 				<Route path="/verify/:id" component={Verify} />
 
 				{/* <Route path="/signup" component={SignUp} /> */}
+
+				<Route path="/topic/:topic" component={TopicResults} />
+
 			</div>
 		</Router>
 	);
