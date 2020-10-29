@@ -40,7 +40,6 @@ This will return information on a user. Currently this will succeed for all user
 }
 ```
 
-## PATCH
 ### Accepts
 ### Parameters
 `email=string&password=string&profile_picture=string&bio=string`

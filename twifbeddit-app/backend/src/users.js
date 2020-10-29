@@ -14,38 +14,23 @@ exports.create_external_user = (mongo_user) => {
 }
 
 exports.POST = async (_, event) => {
-    var data = JSON.parse(event.body);
-    var hash = bcrypt.hashSync(data.password, 10);
-    data.password = hash;
-    const newUser = new User(data);
-    var createdUser = await newUser.save();
-    return {
-        'statusCode': 200,
-        'headers': await get_cookie_header(createdUser.username),
-        'body': JSON.stringify(exports.create_external_user(createdUser))
 
-    };
-};
+    if (event.queryStringParameters == undefined) {
 
-exports.GET = async(_, event) => {
-    const {username} = event.queryStringParameters;
-    if (username == undefined) {
-        console.error("No username specifed for GET /users");
-        return {'statusCode': 400};
-    }
-    var foundUser = await User.findOne({username: username});
-    foundUser = this.create_external_user(foundUser);
-    delete foundUser.email;
-    delete foundUser.savedPosts;
-    return {
-        'statusCode': 200,
-        'body': JSON.stringify(foundUser)
-    };
-};
-
-
-exports.PATCH = async (_, event) => {
+        var data = JSON.parse(event.body);
+        var hash = bcrypt.hashSync(data.password, 10);
+        data.password = hash;
+        const newUser = new User(data);
+        var createdUser = await newUser.save();
+        return {
+            'statusCode': 200,
+            'headers': await get_cookie_header(createdUser.username),
+            'body': JSON.stringify(exports.create_external_user(createdUser))
     
+        };
+
+    }
+
     if (event.queryStringParameters.usernameToFollow != undefined) {
         const username = await get_user_from_header(event.headers);
         const usernameToFollow = event.queryStringParameters.usernameToFollow;  
@@ -91,9 +76,7 @@ exports.PATCH = async (_, event) => {
             
             return {
                 'statusCode': 200,
-                'headers': await get_cookie_header(updatedUser.username),
-                'body': JSON.stringify(exports.create_external_user(updatedUser))
-        
+                'body': JSON.stringify(updatedUser)
             };
 
         }
@@ -102,4 +85,20 @@ exports.PATCH = async (_, event) => {
         'statuscode': 404
     }
 
+};
+
+exports.GET = async(_, event) => {
+    const {username} = event.queryStringParameters;
+    if (username == undefined) {
+        console.error("No username specifed for GET /users");
+        return {'statusCode': 400};
+    }
+    var foundUser = await User.findOne({username: username});
+    foundUser = this.create_external_user(foundUser);
+    delete foundUser.email;
+    delete foundUser.savedPosts;
+    return {
+        'statusCode': 200,
+        'body': JSON.stringify(foundUser)
+    };
 };

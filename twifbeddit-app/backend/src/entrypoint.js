@@ -45,6 +45,9 @@ exports.lambdaHandler = async (event, _) => {
     res.headers["Access-Control-Allow-Origin"] = "*";
     res.headers["Access-Control-Allow-Methods"] = "*";
     res.headers["Access-Control-Allow-Headers"] = "*";
+    res.headers["Access-Control-Allow-Credentials"] = true;
+    res.headers["Access-Control-Expose-Headers"] = "*";
+ 
     console.log(res);
     return res;
 };
