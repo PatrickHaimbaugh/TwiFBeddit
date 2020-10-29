@@ -14,22 +14,22 @@ exports.create_external_user = (mongo_user) => {
 }
 
 exports.POST = async (_, event) => {
+    var data = JSON.parse(event.body);
+    var hash = bcrypt.hashSync(data.password, 10);
+    data.password = hash;
+    const newUser = new User(data);
+    var createdUser = await newUser.save();
+    var externalUser = create_external_user(createdUser);
+    const cookieHeader = await get_cookie_header(user.username);
+    externalUser.cookie = cookieHeader["Set-Cookie"];
+    return {
+        'statusCode': 200,
+        'headers': cookieHeader,
+        'body': JSON.stringify(externalUser)
+    };
+};
 
-    if (event.queryStringParameters == undefined) {
-
-        var data = JSON.parse(event.body);
-        var hash = bcrypt.hashSync(data.password, 10);
-        data.password = hash;
-        const newUser = new User(data);
-        var createdUser = await newUser.save();
-        return {
-            'statusCode': 200,
-            'headers': await get_cookie_header(createdUser.username),
-            'body': JSON.stringify(exports.create_external_user(createdUser))
-    
-        };
-
-    }
+exports.PATCH = async (_, event) => {
 
     if (event.queryStringParameters.usernameToFollow != undefined) {
         const username = await get_user_from_header(event.headers);

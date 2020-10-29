@@ -3,6 +3,13 @@ require("./mongo");
 exports.lambdaHandler = async (event, _) => {
     console.log(event);
 
+    if (event.httpMethod == "OPTIONS") {
+        return {
+            'statusCode': 204,
+            'headers': {'Allow': "GET, POST, PATCH, DELETE, OPTIONS"}
+        };
+    }
+
     if (event.path == "/randnum" && event.httpMethod == "GET")
         return {
             'statusCode': 200,
@@ -30,9 +37,10 @@ exports.lambdaHandler = async (event, _) => {
         try {
             return await func();
         } catch (err) {
+            console.error(err)
             return {
                 'statusCode': 500,
-                'body': JSON.stringify({'exception': err})
+                'body': JSON.stringify({'exception': err.message})
             };
         }
     }
@@ -45,7 +53,7 @@ exports.lambdaHandler = async (event, _) => {
     res.headers["Access-Control-Allow-Origin"] = "*";
     res.headers["Access-Control-Allow-Methods"] = "*";
     res.headers["Access-Control-Allow-Headers"] = "*";
-    res.headers["Access-Control-Allow-Credentials"] = true;
+    res.headers["Access-Control-Allow-Credentials"] = "true";
     res.headers["Access-Control-Expose-Headers"] = "*";
  
     console.log(res);
