@@ -82,6 +82,21 @@ This will return information on a user. Currently this will succeed for all user
 Set-Cookie Header, and user object like above
 
 # /posts
+# Extern Post Type
+```json
+{
+    "title": "String, only present on posts not comments",
+    "author": "String, may be null if the post is anonymous",
+    "upvotes": "Int",
+    "downvotes": "Int",
+    "topic": "String, only present on posts not comments",
+    "post_type": "One of comment, text or image",
+    "text": "String",
+    "image_url": "String, only on image posts",
+    "comments": "[Post] array of Posts with post_types: comment"
+}
+```
+
 ## POST
 ### Accepts
 ```json
@@ -90,7 +105,7 @@ Set-Cookie Header, and user object like above
     "anonymous": "Bool (optional, defaults false)",
     "topic": "String (optional, defaults to null, meaning 'all')",
     "post_type": "String (optional, one of ['text'], only type supported, defaults to text)",
-    "text": "String"
+    "text": "String",
 }
 ```
 ### Response
@@ -169,5 +184,18 @@ None
 ```json
 {
     "posts": "[String (post ID)]"
+}
+```
+
+# /comment
+Comments are the same internally as posts, comment ids can be used in many of the same places that postId's can be used. For example save and vote will work with both ids.
+## POST
+### Parameters
+`id=string`
+### Accepts
+```json
+{
+    "text": "String",
+    "anonymous": "Boolean (optional, defaults false)",
 }
 ```

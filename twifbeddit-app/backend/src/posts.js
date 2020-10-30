@@ -12,6 +12,8 @@ exports.POST = async (_, event) => {
         console.error("Couldn't get user from cookie");
         return {'statusCode': 403}
     }
+    if (data.title == undefined)
+        return {'statusCode': 400};
     const post = new Post(data);
     const newPost = await post.save();
     return {
@@ -22,6 +24,26 @@ exports.POST = async (_, event) => {
     }
 };
 
+function createExternalPost(post) {
+    post = JSON.parse(JSON.stringify(post));
+    if (post.anonymous)
+        post.author = null;
+    post.anonymous = undefined;
+    post.__v = undefined;
+}
+
+async function addComments(post) {
+    const comments = post.comments;
+    post.comments = [];
+    for (const commentId of comments) {
+        var foundPost = await Post.findById(commentId);
+        foundPost = JSON.parse(JSON.stringify(foundPost));
+        createExternalPost(foundPost);
+        await addComments(foundPost);
+        post.comments.push(foundPost);
+    }
+}
+
 // Returns different posts depending on whether there are query parameters passed in.
 exports.GET = async (_, event) => {
 
@@ -29,13 +51,12 @@ exports.GET = async (_, event) => {
         const username = await get_user_from_header(event.headers);
         const user = await User.findOne({username: username});
         var posts = await Post.find().where('topic').in(user.followed_topics).limit(8).sort({ createdAt: -1}).exec();
-        posts.forEach((post, index, arr) => {
-            if (post.anonymous) post.author = null;
-            post.anonymous = undefined;
-            post.__v = undefined;
-            arr[index] = post;
-        });
-    
+        posts = JSON.parse(JSON.stringify(posts));
+        for (var post of posts) {
+            createExternalPost(post);
+            await addComments(post);
+        }
+
         return {
             'statusCode': 200,
             'body': JSON.stringify({
@@ -46,12 +67,11 @@ exports.GET = async (_, event) => {
     if (event.queryStringParameters.topic != undefined) {
         const topic = event.queryStringParameters.topic;
         var posts = await Post.find().where('topic').in(topic).limit(8).sort({ createdAt: -1}).exec();
-        posts.forEach((post, index, arr) => {
-            if (post.anonymous) post.author = null;
-            post.anonymous = undefined;
-            post.__v = undefined;
-            arr[index] = post;
-        });
+        posts = JSON.parse(JSON.stringify(posts));
+        for (var post of posts) {
+            createExternalPost(post);
+            await addComments(post);
+        }
     
         return {
             'statusCode': 200,
@@ -66,11 +86,11 @@ exports.GET = async (_, event) => {
         const author = event.queryStringParameters.author;
         // find where author and not anonymous
         var posts = await Post.find().where('author').equals(author).where('anonymous').equals(false).sort({ createdAt: -1}).exec();
-        posts.forEach((post, index, arr) => {
-            post.anonymous = undefined;
-            post.__v = undefined;
-            arr[index] = post;
-        });
+        posts = JSON.parse(JSON.stringify(posts));
+        for (var post of posts) {
+            createExternalPost(post);
+            await addComments(post);
+        }
     
         return {
             'statusCode': 200,
