@@ -35,7 +35,7 @@ UserSessionSchema.index({createdAt: 1}, {expireAfterSeconds: 604800});
 exports.UserSession = mongoose.model("UserSession", UserSessionSchema);
 
 var PostSchema = new mongoose.Schema({
-    title: {type: String, required: [true, "cannot be empty."]},
+    title: {type: String},
     author: {type: String},
     anonymous: {type: Boolean, default: false},
     upvotes: {type: Number, default: 0},
@@ -44,6 +44,7 @@ var PostSchema = new mongoose.Schema({
     post_type: {type: String, default: "text"},
     text: {type: String, required: [true, "cannot be empty."]},
     image_url: {type: String, default: null},
+    comments: {type: [mongoose.ObjectId], default: []},
 }, {timestamps: true});
 
 exports.Post = mongoose.model("Post", PostSchema);
