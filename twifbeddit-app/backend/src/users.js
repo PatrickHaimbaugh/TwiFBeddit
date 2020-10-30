@@ -19,8 +19,8 @@ exports.POST = async (_, event) => {
     data.password = hash;
     const newUser = new User(data);
     var createdUser = await newUser.save();
-    var externalUser = create_external_user(createdUser);
-    const cookieHeader = await get_cookie_header(user.username);
+    var externalUser = exports.create_external_user(createdUser);
+    const cookieHeader = await get_cookie_header(newUser.username);
     externalUser.cookie = cookieHeader["Set-Cookie"];
     return {
         'statusCode': 200,
