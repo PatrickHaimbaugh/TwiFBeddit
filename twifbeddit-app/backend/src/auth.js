@@ -12,7 +12,7 @@ exports.get_cookie_header = async (username) => {
 };
 
 exports.get_user_from_header = async (headers) => {
-    const cookienames = ["cookie", "x-twifbeddit-cookie"]
+    const cookienames = ["Cookie", "cookie", "x-twifbeddit-cookie"]
     var cookies = undefined;
     for (var i = 0; i < cookienames.length; i++) {
         cookies = headers[cookienames[i]];
