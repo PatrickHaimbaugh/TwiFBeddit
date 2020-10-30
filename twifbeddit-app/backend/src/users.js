@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const User = mongoose.model("User");
+const Post = mongoose.model("Post");
+const UserSession = mongoose.model("UserSession");
 const bcrypt = require("bcryptjs");
 const { get_cookie_header, get_user_from_header } = require("./auth");
 
@@ -101,4 +103,14 @@ exports.GET = async(_, event) => {
         'statusCode': 200,
         'body': JSON.stringify(foundUser)
     };
+};
+
+exports.DELETE = async (_, event) => {
+    const username = await get_user_from_header(event.headers);
+    await Post.deleteMany({username: username});
+    await UserSession.deleteMany({username: username});
+    const user = await User.findOne({username: username});
+    await User.updateMany({username: {$in: user.following}}, {$inc : {followers: -1}});
+    await user.remove();
+    return {'statusCode': 200};
 };
