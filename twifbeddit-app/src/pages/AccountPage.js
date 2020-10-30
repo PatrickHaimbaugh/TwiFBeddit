@@ -41,7 +41,7 @@ const AccountPage = () => {
 					<UsernameText>{username}</UsernameText>
 				</UsernameRow>
 				<BioRow>
-					<BioText>Purdue CS student</BioText>
+					<BioText>{bio}</BioText>
 				</BioRow>
 				<Post
 					Username={username}

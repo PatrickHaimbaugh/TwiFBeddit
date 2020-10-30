@@ -14,7 +14,6 @@ import Container from "@material-ui/core/Container";
 
 import { useState } from "react";
 import Copyright from "../components/copyright.component.js";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import * as navigationActions from "../containers/NavigationContainer/actions";
 import makeNetworkCall from "../util/makeNetworkCall.js";
@@ -36,8 +35,8 @@ const useStyles = makeStyles((theme) => ({
 		marginTop: theme.spacing(3),
 	},
 	error: {
-    color: 'red',
-  },
+		color: "red",
+	},
 	submit: {
 		margin: theme.spacing(3, 0, 2),
 	},
@@ -96,8 +95,8 @@ export default function IndividualSignUp() {
 	};
 
 	const onChangeConditionsCheckbox = (e: ChangeEvent<HTMLInputElement>) => {
-    setAccept(e.currentTarget.checked);
-  }
+		setAccept(e.currentTarget.checked);
+	};
 
 	const validateEmail = (value: string): string => {
 		const error = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
@@ -116,23 +115,27 @@ export default function IndividualSignUp() {
 	};
 
 	const validatePassword = (value: string): string => {
-    const error = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z$&+,:;=?@#|'<>.^*()%!-]{8,}$/.test(
-      value
-    )
-      ? "" : "Must be 8 characters, 1 uppercase, 1 lowercase, 1 number";
-    setPasswordError(error);
-    return error;
-  };
+		const error = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z$&+,:;=?@#|'<>.^*()%!-]{8,}$/.test(
+			value
+		)
+			? ""
+			: "Must be 8 characters, 1 uppercase, 1 lowercase, 1 number";
+		setPasswordError(error);
+		return error;
+	};
 
 	const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		console.log("submit");
 
 		const emailValidationError = validateEmail(email);
 		const usernameValidationError = validateUsername(username);
 		const passwordValidationError = validatePassword(password);
-		if (accept){
-			if (emailValidationError === "" && usernameValidationError === "" && passwordValidationError === "") {
+		if (accept) {
+			if (
+				emailValidationError === "" &&
+				usernameValidationError === "" &&
+				passwordValidationError === ""
+			) {
 				const newUserDetails = {
 					user: {
 						password: password,
@@ -153,7 +156,7 @@ export default function IndividualSignUp() {
 				if (resp.error) {
 					console.log("Error Signing Up");
 				} else {
-					dispatch(accountActions.signInOrSignUp(resp));
+					dispatch(accountActions.setUser(resp));
 					changeActiveScreen("LandingPage");
 				}
 
@@ -172,7 +175,9 @@ export default function IndividualSignUp() {
 				// 	})
 				// 	.catch((err) => console.log("axios error: ", err));
 			} else {
-				alert("Sign-in not successful. Please enter valid email, username, and password.");
+				alert(
+					"Sign-in not successful. Please enter valid email, username, and password."
+				);
 			}
 		} else {
 			alert("You must accept terms and conditions to sign-up.");
@@ -234,7 +239,13 @@ export default function IndividualSignUp() {
 						</Grid>
 						<Grid item xs={12}>
 							<FormControlLabel
-								control={<Checkbox onChange={onChangeConditionsCheckbox} value="allowExtraEmails" color="primary" />}
+								control={
+									<Checkbox
+										onChange={onChangeConditionsCheckbox}
+										value="allowExtraEmails"
+										color="primary"
+									/>
+								}
 								label="I have read and agreed to the terms and conditions."
 							/>
 						</Grid>
