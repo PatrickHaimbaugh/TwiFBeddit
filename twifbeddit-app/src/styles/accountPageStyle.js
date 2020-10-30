@@ -48,6 +48,8 @@ export const UsernameText = styled.p`
 
 export const BioRow = styled(Row)``;
 
-export const BioText = styled.p``;
+export const BioText = styled.pre`
+	font-family: "Montserrat", sans-serif;
+`;
 
 export const Posts = styled(Row)``;
