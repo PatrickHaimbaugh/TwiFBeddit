@@ -6,7 +6,14 @@ exports.lambdaHandler = async (event, _) => {
     if (event.httpMethod == "OPTIONS") {
         return {
             'statusCode': 204,
-            'headers': {'Allow': "GET, POST, PATCH, DELETE, OPTIONS"}
+            'headers': {'Allow': "GET, POST, PATCH, DELETE, OPTIONS", 
+                        "Access-Control-Allow-Origin": "*",
+                        "Access-Control-Allow-Methods": "*",
+                        "Access-Control-Allow-Headers": "*",
+                        "Access-Control-Allow-Credentials": "true",
+                        "Access-Control-Expose-Headers": "*",
+                        "Access-Control-Request-Headers": "x-twifbeddit-cookie"
+                    }
         };
     }
 
