@@ -40,6 +40,7 @@ This will return information on a user. Currently this will succeed for all user
 }
 ```
 
+## PATCH
 ### Accepts
 ### Parameters
 `email=string&password=string&profile_picture=string&bio=string`
@@ -72,6 +73,12 @@ This will return information on a user. Currently this will succeed for all user
     "following": "[String (usernames)]",
 }
 ```
+
+## DELETE
+Delete deletes ther user associated with the current user session cookie, all their comments and decreases the following count for all of their followers.
+
+### Response
+This should always succeed with statusCode 200.
 
 # /login
 
