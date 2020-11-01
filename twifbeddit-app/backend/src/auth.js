@@ -3,22 +3,27 @@ const UserSession = mongoose.model("UserSession");
 const { v4: uuidv4 } = require('uuid');
 
 exports.get_cookie_header = async (username) => {
+    await UserSession.deleteMany({username: username});
     const session = new UserSession({
         session_id: uuidv4(),
         username: username
     });
-    session.save();
+    await session.save();
     return {"Set-Cookie": "session-id=" + session.session_id};
 };
 
 exports.get_user_from_header = async (headers) => {
-    var cookies = headers.cookie;
+    const cookienames = ["Cookie", "cookie", "x-twifbeddit-cookie"]
+    var cookies = undefined;
+    for (var i = 0; i < cookienames.length; i++) {
+        cookies = headers[cookienames[i]];
+        if (cookies != undefined)
+            break;
+    }
     if (cookies == undefined) {
-        cookies = headers.Cookie;
-        if (cookies == undefined) {
-            console.log("No cookies in header");
-            return null;
-        }
+        console.error("No cookies in header");
+        console.log(headers);
+        return null;
     }
     cookies = cookies.split(';')
     if (cookies.length != 1) {

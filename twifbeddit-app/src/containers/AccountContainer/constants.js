@@ -1,2 +1,2 @@
-export const SIGN_IN_OR_SIGN_UP = "AccountContainer/SIGN_IN_OR_SIGN_UP";
+export const SET_USER = "AccountContainer/SET_USER";
 export const SIGN_OUT = "AccountContainer/SIGN_OUT";

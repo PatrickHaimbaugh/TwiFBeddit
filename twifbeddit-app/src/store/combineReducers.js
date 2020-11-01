@@ -5,6 +5,7 @@ import storage from "redux-persist/lib/storage";
 // Import our reducers here.
 import navigation from "../containers/NavigationContainer/reducer";
 import account from "../containers/AccountContainer/reducer";
+import global from "../containers/GlobalContainer/reducer";
 
 const navigationPersistConfig = {
 	key: "navigation",
@@ -18,9 +19,16 @@ const accountPersistConfig = {
 	blacklist: [],
 };
 
+const globalPersistConfig = {
+	key: "global",
+	storage,
+	blacklist: ["posts"],
+};
+
 const rootReducer = combineReducers({
 	navigation: persistReducer(navigationPersistConfig, navigation),
 	account: persistReducer(accountPersistConfig, account),
+	global: persistReducer(globalPersistConfig, global),
 });
 
 export default rootReducer;

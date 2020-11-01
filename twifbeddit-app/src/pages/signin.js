@@ -147,13 +147,14 @@ export default function SignInSide() {
 	};
 
 	const validatePassword = (value: string): string => {
-    const error = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z$&+,:;=?@#|'<>.^*()%!-]{8,}$/.test(
-      value
-    )
-      ? "" : "Must be 8 characters, 1 uppercase, 1 lowercase, 1 number";
-    setPasswordError(error);
-    return error;
-  };
+		const error = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z$&+,:;=?@#|'<>.^*()%!-]{8,}$/.test(
+			value
+		)
+			? ""
+			: "Must be 8 characters, 1 uppercase, 1 lowercase, 1 number";
+		setPasswordError(error);
+		return error;
+	};
 
 	const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -183,7 +184,7 @@ export default function SignInSide() {
 			if (resp.error) {
 				console.log("Error Signing In");
 			} else {
-				dispatch(accountActions.signInOrSignUp(resp));
+				dispatch(accountActions.setUser(resp));
 				changeActiveScreen("LandingPage");
 			}
 			// axios

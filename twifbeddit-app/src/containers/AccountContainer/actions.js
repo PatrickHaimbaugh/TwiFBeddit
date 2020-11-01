@@ -1,8 +1,8 @@
 import * as Constants from "./constants";
 
-export function signInOrSignUp(object) {
+export function setUser(object) {
 	return {
-		type: Constants.SIGN_IN_OR_SIGN_UP,
+		type: Constants.SET_USER,
 		object,
 	};
 }

@@ -43,7 +43,7 @@ This will return information on a user. Currently this will succeed for all user
 ## PATCH
 ### Accepts
 ### Parameters
-'email=string&password=string&profile_picture=string&bio=string'
+`email=string&password=string&profile_picture=string&bio=string`
 ### Response
 ```json
 {
@@ -58,7 +58,7 @@ This will return information on a user. Currently this will succeed for all user
 }
 ```
 ### Parameters
-'usernameToFollow=string'
+`usernameToFollow=string`
 ### Response
 ```json
 {
@@ -66,13 +66,19 @@ This will return information on a user. Currently this will succeed for all user
 }
 ```
 ### Parameters
-'usernameToUnfollow=string'
+`usernameToUnfollow=string`
 ### Response
 ```json
 {
     "following": "[String (usernames)]",
 }
 ```
+
+## DELETE
+Delete deletes ther user associated with the current user session cookie, all their comments and decreases the following count for all of their followers.
+
+### Response
+This should always succeed with statusCode 200.
 
 # /login
 
@@ -83,14 +89,30 @@ This will return information on a user. Currently this will succeed for all user
 Set-Cookie Header, and user object like above
 
 # /posts
+# Extern Post Type
+```json
+{
+    "title": "String, only present on posts not comments",
+    "author": "String, may be null if the post is anonymous",
+    "upvotes": "Int",
+    "downvotes": "Int",
+    "topic": "String, only present on posts not comments",
+    "post_type": "One of comment, text or image",
+    "text": "String",
+    "image_url": "String, only on image posts",
+    "comments": "[Post] array of Posts with post_types: comment"
+}
+```
+
 ## POST
 ### Accepts
 ```json
-{
+{   
+    "title": "String",
     "anonymous": "Bool (optional, defaults false)",
     "topic": "String (optional, defaults to null, meaning 'all')",
     "post_type": "String (optional, one of ['text'], only type supported, defaults to text)",
-    "text": "String"
+    "text": "String",
 }
 ```
 ### Response
@@ -123,6 +145,20 @@ Set-Cookie Header, and user object like above
     "posts": "[Post] (posts under the topic)"
 }
 ```
+### Parameters
+`author=string`
+### Accepts
+```json
+{
+    "author": "String (valid user/author)"
+}
+```
+### Response
+```json
+{
+    "posts": "[Post] (posts under the specified user that aren't anonymous)"
+}
+```
 
 # /votes
 ## POST
@@ -139,3 +175,34 @@ Set-Cookie Header, and user object like above
 ```
 ### Errors
 A common response is 409 Conflict, when for example, upvoting a post that was already upvoted. Regardless, the same json object will be returned, just without an update.
+
+# /save
+## POST
+### Parameters
+`postId=string[&unsave=true]`
+
+If unsave is set to true, then a post then a previously saved post will be removed from the users saved posts set.
+No error checking is done on postId to see if it is valid. This will only ever fail if the Cookie is invalid.
+### Response
+None
+
+## GET
+### Response
+```json
+{
+    "posts": "[String (post ID)]"
+}
+```
+
+# /comment
+Comments are the same internally as posts, comment ids can be used in many of the same places that postId's can be used. For example save and vote will work with both ids.
+## POST
+### Parameters
+`id=string`
+### Accepts
+```json
+{
+    "text": "String",
+    "anonymous": "Boolean (optional, defaults false)",
+}
+```

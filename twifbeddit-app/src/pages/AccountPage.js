@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import {
 	Page,
 	Content,
@@ -15,11 +16,32 @@ import {
 } from "../styles/accountPageStyle";
 import Post from "../components/Post";
 import { useSelector } from "react-redux";
+import makeNetworkCall from "../util/makeNetworkCall";
+import * as GlobalActions from "../containers/GlobalContainer/actions";
+import _ from "lodash";
 
 const AccountPage = () => {
 	const { username, profile_picture, bio, following, followers } = useSelector(
-		(state) => state.account
-	);
+			(state) => state.account
+		),
+		dispatch = useDispatch(),
+		posts = useSelector((state) => state.global.posts);
+
+	useEffect(() => {
+		const getPosts = async () => {
+			if (username) {
+				const resp = await makeNetworkCall({
+					HTTPmethod: "get",
+					path: "posts",
+					params: {
+						author: username,
+					},
+				});
+				dispatch(GlobalActions.setPosts(resp.posts));
+			}
+		};
+		getPosts();
+	}, [username]);
 
 	return (
 		<Page col={12}>
@@ -41,18 +63,21 @@ const AccountPage = () => {
 					<UsernameText>{username}</UsernameText>
 				</UsernameRow>
 				<BioRow>
-					<BioText>Purdue CS student</BioText>
+					<BioText>{bio}</BioText>
 				</BioRow>
-				<Post
-					Username={username}
-					Title="Mac is Great"
-					Topic="Music"
-					Body="Faces is a great project!!!!!!"
-					Upvotes="69"
-					Downvotes="69"
-					userVote="upvote"
-					Image="https://www.rollingstone.com/wp-content/uploads/2018/11/mac-miller-left-behind.jpg?resize=1800,1200&w=450"
-				></Post>
+				{_.map(posts, (post) => {
+					return (
+						<Post
+							Username={post.author}
+							Title={post.title}
+							Topic={post.topic}
+							Body={post.text}
+							Upvotes={post.upvotes}
+							Downvotes={post.downvotes}
+							Image={post.image_url}
+						></Post>
+					);
+				})}
 			</Content>
 		</Page>
 	);

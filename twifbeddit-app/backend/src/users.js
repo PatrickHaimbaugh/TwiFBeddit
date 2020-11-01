@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const User = mongoose.model("User");
+const Post = mongoose.model("Post");
+const UserSession = mongoose.model("UserSession");
 const bcrypt = require("bcryptjs");
 const { get_cookie_header, get_user_from_header } = require("./auth");
 
@@ -18,39 +20,19 @@ exports.POST = async (_, event) => {
     var hash = bcrypt.hashSync(data.password, 10);
     data.password = hash;
     const newUser = new User(data);
-    try {
-        var createdUser = await newUser.save();
-    } catch (err) {
-        console.error(err);
-        return {'statusCode': 400};
-    }
+    var createdUser = await newUser.save();
+    var externalUser = exports.create_external_user(createdUser);
+    const cookieHeader = await get_cookie_header(newUser.username);
+    externalUser.cookie = cookieHeader["Set-Cookie"];
     return {
         'statusCode': 200,
-        'headers': await get_cookie_header(createdUser.username),
-        'body': JSON.stringify(exports.create_external_user(createdUser))
-
+        'headers': cookieHeader,
+        'body': JSON.stringify(externalUser)
     };
 };
-
-exports.GET = async(_, event) => {
-    const {username} = event.queryStringParameters;
-    if (username == undefined) {
-        console.error("No username specifed for GET /users");
-        return {'statusCode': 400};
-    }
-    var foundUser = await User.findOne({username: username});
-    foundUser = this.create_external_user(foundUser);
-    delete foundUser.email;
-    delete foundUser.savedPosts;
-    return {
-        'statusCode': 200,
-        'body': JSON.stringify(foundUser)
-    };
-};
-
 
 exports.PATCH = async (_, event) => {
-    
+
     if (event.queryStringParameters.usernameToFollow != undefined) {
         const username = await get_user_from_header(event.headers);
         const usernameToFollow = event.queryStringParameters.usernameToFollow;  
@@ -96,9 +78,7 @@ exports.PATCH = async (_, event) => {
             
             return {
                 'statusCode': 200,
-                'headers': await get_cookie_header(updatedUser.username),
-                'body': JSON.stringify(exports.create_external_user(updatedUser))
-        
+                'body': JSON.stringify(updatedUser)
             };
 
         }
@@ -107,4 +87,30 @@ exports.PATCH = async (_, event) => {
         'statuscode': 404
     }
 
+};
+
+exports.GET = async(_, event) => {
+    const {username} = event.queryStringParameters;
+    if (username == undefined) {
+        console.error("No username specifed for GET /users");
+        return {'statusCode': 400};
+    }
+    var foundUser = await User.findOne({username: username});
+    foundUser = this.create_external_user(foundUser);
+    delete foundUser.email;
+    delete foundUser.savedPosts;
+    return {
+        'statusCode': 200,
+        'body': JSON.stringify(foundUser)
+    };
+};
+
+exports.DELETE = async (_, event) => {
+    const username = await get_user_from_header(event.headers);
+    await Post.deleteMany({username: username});
+    await UserSession.deleteMany({username: username});
+    const user = await User.findOne({username: username});
+    await User.updateMany({username: {$in: user.following}}, {$inc : {followers: -1}});
+    await user.remove();
+    return {'statusCode': 200};
 };
