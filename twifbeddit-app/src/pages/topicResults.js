@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
 	Page,
@@ -6,8 +6,11 @@ import {
 } from "../styles/accountPageStyle";
 import Post from '../components/Post.js';
 import makeNetworkCall from "../util/makeNetworkCall";
+import { useSelector } from "react-redux";
 
-export default class home extends Component {
+/*export default class home extends Component {
+
+
 
   constructor(props){
     super(props);
@@ -20,7 +23,8 @@ export default class home extends Component {
   }
 
   async getPosts(){
-    const topic = this.props.match.params.topic;
+    const topic = searchRequest
+		console.log(this.props);
     const resp = await makeNetworkCall({
       HTTPmethod: "get",
       path: "posts",
@@ -44,12 +48,8 @@ export default class home extends Component {
     }
   }
 
-  /*parseJsonObjects(postsList) {
-  }*/
 
   componentDidMount() {
-    //const postsAsJson = this.getPosts();
-    //this.parseJsonObjects(postsAsJson);
     this.getPosts();
   }
 
@@ -62,7 +62,7 @@ export default class home extends Component {
               this.state.posts.map(function(post) {
                 return <Post
                   Username={post.author}
-                  Title="test"
+                  Title={post.title}
                   Topic={post.topic}
                   Body={post.text}
                   Upvotes={post.upvotes}
@@ -76,4 +76,66 @@ export default class home extends Component {
       </Page>
     );
   }
+}*/
+
+
+export default function SearchResults() {
+	const searchRequest = useSelector((state) => state.navigation.searchRequest);
+
+	const [posts, setPosts] = useState([]);
+
+	const getPosts = async() => {
+    const topic = searchRequest
+    const resp = await makeNetworkCall({
+      HTTPmethod: "get",
+      path: "posts",
+      params: {
+        topic: topic
+      },
+    });
+    if (resp.error) {
+      console.log("Error receving posts");
+    } else {
+      //Convert list of JSON post objects into array
+      var postsArray = [];
+      for (var i = 0; i < resp.posts.length; i++) {
+        var obj = resp.posts[i];
+        console.log(obj);
+        postsArray.push(obj);
+      }
+      /*this.setState({
+        posts: postsArray,
+      })*/
+			console.log(postsArray);
+			setPosts(postsArray);
+    }
+  }
+	//getPosts()
+	useEffect(() => {
+		async function syncGetPosts() {
+			await getPosts();
+		}
+		syncGetPosts();
+	}, [])
+
+	return (
+		<Page col={12}>
+			<Content>
+				{
+					posts.map(function(post) {
+						return <Post
+							Username={post.author}
+							Title={post.title}
+							Topic={post.topic}
+							Body={post.text}
+							Upvotes={post.upvotes}
+							Downvotes={post.downvotes}
+							userVote="upvote"
+							Image={post.image_url}
+						></Post>
+					})
+				}
+			</Content>
+		</Page>
+	);
 }

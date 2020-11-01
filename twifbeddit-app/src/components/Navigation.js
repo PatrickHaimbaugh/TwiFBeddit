@@ -23,15 +23,29 @@ import {
 	faCog,
 } from "@fortawesome/free-solid-svg-icons";
 
+import '../pages/createPostDisplayStyle.css';
+
 const Navigation = (props) => {
 	const dispatch = useDispatch(),
 		username = useSelector((state) => state.account.username),
 		activeScreen = useSelector((state) => state.navigation.currentPage),
-		[isLoggedIn, setIsLoggedIn] = useState(false);
+		[isLoggedIn, setIsLoggedIn] = useState(false),
+		[searchText, setSearchText] = useState("");
 
 	const changeActiveScreen = (screen) => {
 		dispatch(navigationActions.changeCurrentPage(screen));
 	};
+
+	const handleSearchChange = (event) => {
+    var input = event.target.value;
+    setSearchText(input);
+  }
+
+	const handleSearchButtonClick = () => {
+		changeActiveScreen("SearchResults");
+		//store searchText in navbar store
+		dispatch(navigationActions.storeSearchRequest(searchText));
+	}
 
 	return (
 		<Content col={12}>
@@ -44,12 +58,24 @@ const Navigation = (props) => {
 					</Header>
 				</Col>
 				<Col col={4} offset={2}>
-					<MyInputGroup>
-						<MyInput />
-						<MyInputGroup.Button>
-							<Icon icon="search" />
-						</MyInputGroup.Button>
-					</MyInputGroup>
+					{username != "" ? (
+						<MyInputGroup>
+							<input className="form-control" id="title" onChange={handleSearchChange}/>
+							<MyInputGroup.Button
+								onClick={handleSearchButtonClick}
+								currentPage={activeScreen == "SearchResults"}
+							>
+								<Icon icon="search" />
+							</MyInputGroup.Button>
+						</MyInputGroup>
+					) : (
+						<MyInputGroup>
+							<MyInput />
+							<MyInputGroup.Button>
+								<Icon icon="search" />
+							</MyInputGroup.Button>
+						</MyInputGroup>
+					)}
 				</Col>
 				{username != "" ? (
 					<Col col={4}>

@@ -6,3 +6,10 @@ export function changeCurrentPage(payload) {
 		payload,
 	};
 }
+
+export function storeSearchRequest(searchRequest) {
+	return {
+		type: Constants.SEARCH_REQUEST,
+		searchRequest,
+	};
+}

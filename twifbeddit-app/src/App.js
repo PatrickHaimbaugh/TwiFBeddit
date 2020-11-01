@@ -38,7 +38,10 @@ const App = (props) => {
 
 				{/* <Route path="/signup" component={SignUp} /> */}
 
-				<Route path="/topic/:topic" component={TopicResults} />
+				{/*<Route path="/topic/:topic" component={TopicResults} />*/}
+
+				{/*currentPage === "SearchResults" && <TopicResults />*/}
+				{currentPage === "SearchResults" && <TopicResults />}
 
 			</div>
 		</Router>
