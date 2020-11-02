@@ -13,7 +13,6 @@ import {
 	BodyRow,
 	BodyText,
 	VotesRow,
-	VotesCol,
 	UpvoteButton,
 	DownvoteButton,
 	SaveButton,
@@ -112,21 +111,15 @@ const Post = (props) => {
 					<BodyText>{Body}</BodyText>
 				</BodyRow>
 				<VotesRow>
-					<VotesCol col={4}>
-						<UpvoteButton disabled={loading} onClick={() => vote("up")}>
-							{curVote === "up" ? "undo UpVote" : "Upvote"}
-						</UpvoteButton>
-					</VotesCol>
-					<VotesCol col={4}>
-						<DownvoteButton disabled={loading} onClick={() => vote("down")}>
-							{curVote === "down" ? "undo Downvote" : "Downvote"}
-						</DownvoteButton>
-					</VotesCol>
-					<VotesCol col={4}>
-						<SaveButton disabled={loading} onClick={() => savePost()}>
-							{savedPostIds.includes(PostId) ? "Unsave Post" : "Save Post"}
-						</SaveButton>
-					</VotesCol>
+					<UpvoteButton disabled={loading} onClick={() => vote("up")}>
+						{curVote === "up" ? "undo UpVote" : "Upvote"}
+					</UpvoteButton>
+					<DownvoteButton disabled={loading} onClick={() => vote("down")}>
+						{curVote === "down" ? "undo Downvote" : "Downvote"}
+					</DownvoteButton>
+					<SaveButton disabled={loading} onClick={() => savePost()}>
+						{savedPostIds.includes(PostId) ? "Unsave Post" : "Save Post"}
+					</SaveButton>
 				</VotesRow>
 			</ContentCol>
 		</Content>
