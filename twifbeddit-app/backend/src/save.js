@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const User = mongoose.model("User");
+const Post = mongoose.model("Post");
 const { get_user_from_header } = require("./auth");
 
 exports.POST = async (_, event) => {
