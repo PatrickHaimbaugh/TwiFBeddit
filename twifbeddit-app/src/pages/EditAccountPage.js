@@ -5,13 +5,23 @@ import {
 	MyInput,
 	MyControlLabel,
 	Title,
+	MyButtonToolbar,
 } from "../styles/editAccountPageStyle";
-import { Form, FormGroup, FormControl, ButtonToolbar, Button } from "rsuite";
+import {
+	Form,
+	FormGroup,
+	FormControl,
+	ButtonToolbar,
+	Button,
+	Modal,
+	Icon,
+} from "rsuite";
 import { useDispatch, useSelector } from "react-redux";
 import uploadPicture from "../util/uploadPicture";
 import makeNetworkCall from "../util/makeNetworkCall";
 import * as navigationActions from "../containers/NavigationContainer/actions";
 import * as accountActions from "../containers/AccountContainer/actions";
+import * as globalActions from "../containers/GlobalContainer/actions";
 
 const EditAccountPage = () => {
 	const [email, setEmail] = useState(""),
@@ -22,6 +32,7 @@ const EditAccountPage = () => {
 		storeEmail = useSelector((state) => state.account.email),
 		cookie = useSelector((state) => state.global.cookie),
 		dispatch = useDispatch(),
+		[showModal, setShowModal] = useState(false),
 		[profilePic, setProfilePic] = useState("");
 
 	const validateEmail = (value) => {
@@ -101,8 +112,62 @@ const EditAccountPage = () => {
 			}
 		}
 	};
+
+	const logout = () => {
+		// reset account info
+		dispatch(accountActions.logout());
+		// delete cookie and reset posts to empty
+		dispatch(globalActions.logout());
+		// set page to landing page
+		dispatch(navigationActions.logout());
+	};
+
+	const deleteAccount = async () => {
+		await makeNetworkCall({
+			HTTPmethod: "delete",
+			path: "users",
+			cookie,
+		});
+		logout();
+		changeActiveScreen("LandingPage");
+	};
+
 	return (
 		<Col col={12}>
+			{/* Delete Account Modal */}
+			<Modal
+				backdrop="static"
+				show={showModal}
+				onHide={() => setShowModal(!showModal)}
+				size="xs"
+			>
+				<Modal.Body>
+					<Icon
+						icon="remind"
+						style={{
+							color: "#ffb300",
+							fontSize: 24,
+						}}
+					/>
+					{"  "}
+					Once your account has been deleted there is no getting it back. This
+					is permanent. Are you sure you want to Delete Your Account?
+				</Modal.Body>
+				<Modal.Footer>
+					<MyButtonToolbar>
+						<Button
+							onClick={() => setShowModal(!showModal)}
+							appearance="primary"
+						>
+							Cancel
+						</Button>
+						<Button onClick={() => deleteAccount()} color="red">
+							Delete My Account
+						</Button>
+					</MyButtonToolbar>
+				</Modal.Footer>
+			</Modal>
+
 			<Row>
 				<Col col={12}>
 					<Title>Edit Profile</Title>
@@ -163,11 +228,14 @@ const EditAccountPage = () => {
 							/>
 						</FormGroup>
 						<FormGroup>
-							<ButtonToolbar>
+							<MyButtonToolbar>
 								<Button appearance="primary" onClick={(e) => Submit(e)}>
 									Save
 								</Button>
-							</ButtonToolbar>
+								<Button color="red" onClick={() => setShowModal(true)}>
+									Delete Account
+								</Button>
+							</MyButtonToolbar>
 						</FormGroup>
 					</Form>
 				</Content>
