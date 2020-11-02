@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import Navigation from "./components/Navigation";
 import EditAccountPage from "./pages/EditAccountPage";
 import AccountPage from "./pages/AccountPage";
+import PostPage from "./pages/PostPage";
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import SignIn from "./pages/signin.js";
@@ -31,6 +32,8 @@ const App = (props) => {
 				{currentPage === "EditAccountPage" && <EditAccountPage />}
 
 				{currentPage === "Account" && <AccountPage />}
+
+				{currentPage === "Post" && <PostPage />}
 
 				{/* <Route path="/signin" component={SignIn} /> */}
 				<Route path="/verification" component={VerificationInstructions} />

@@ -1,13 +1,26 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, useState } from 'react';
 import Select from 'react-select';
+import { useDispatch, useSelector } from "react-redux";
+import uploadPicture from "../../util/uploadPicture";
+import makeNetworkCall from "../../util/makeNetworkCall";
+import {setPosts} from "../../containers/GlobalContainer/actions.js";
+import * as navigationActions from "../../containers/NavigationContainer/actions";
 
-export const Form = ({ onSubmit }) => {
+export const Form = () => {
 
-  const [charsLeft, setCharsLeft] = React.useState(500);
-  const [isTopicChosen, setIsTopicChosen] = React.useState(false);
-  const [dropdownTopic, setDropdownTopic] = React.useState();
-  const [inputTopic, setInputTopic] = React.useState();
-  const [isAnonymous, setIsAnonymous] = React.useState(false);
+  const dispatch = useDispatch();
+
+  const [charsLeft, setCharsLeft] = useState(500);
+  const [isTopicChosen, setIsTopicChosen] = useState(false);
+
+  //form variables
+  const cookie = useSelector((state) => state.account.cookie)
+  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [postTitle, setPostTitle] = useState();
+  const [dropdownTopic, setDropdownTopic] = useState();
+  const [inputTopic, setInputTopic] = useState();
+  const [postText, setPostText] = useState("");
+  const [postImage, setPostImage] = useState();
 
   //hard coded topic values
   const options = [
@@ -15,11 +28,6 @@ export const Form = ({ onSubmit }) => {
     { value: 'strawberry', label: 'Strawberry' },
     { value: 'vanilla', label: 'Vanilla' },
   ];
-
-  const handleTextboxChange = (event) => {
-    var input = event.target.value;
-    setCharsLeft(500 - input.length);
-  }
 
   const uploadedImage = React.useRef(null);
   const handleImageUpload = e => {
@@ -32,12 +40,17 @@ export const Form = ({ onSubmit }) => {
           current.src = e.target.result;
       }
       reader.readAsDataURL(file);
+      setPostImage(file);
     }
   };
 
   const handleAnonymous = (event) => {
     const value = event.target.checked;
     setIsAnonymous(value);
+  }
+
+  const handleTitleChange = e => {
+    setPostTitle(e.target.value);
   }
 
   const handleTopicSelect = selected => {
@@ -54,6 +67,62 @@ export const Form = ({ onSubmit }) => {
     setInputTopic(e.target.value);
   }
 
+  const handlePostTextChange = (event) => {
+    var input = event.target.value;
+    setCharsLeft(500 - input.length);
+    setPostText(input);
+  }
+
+  const changeActiveScreen = (screen) => {
+		dispatch(navigationActions.changeCurrentPage(screen));
+	};
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+    var uploadRsp = null;
+    var uploadRspUrl = null;
+    if (postImage && postImage != ""){
+      uploadRsp = await uploadPicture(postImage, "postimg");
+      uploadRspUrl = uploadRsp.imageUrlForMongoDB
+      console.log(postImage);
+      console.log(uploadRspUrl);
+    }
+
+    //derive topic
+    var topic = null;
+    if (dropdownTopic === null || dropdownTopic === undefined){
+      topic = inputTopic;
+    }else if (inputTopic === ""){
+      topic = dropdownTopic.value;
+    }
+
+    if (topic != null){
+      const params = {
+        anonymous: isAnonymous,
+        title: postTitle,
+        topic: topic,
+        post_type: "post",
+        text: postText,
+        image_url: uploadRspUrl,
+      }
+
+      const resp = await makeNetworkCall({
+				HTTPmethod: "post",
+				path: "posts",
+				data: params,
+				cookie: cookie,
+			});
+			if (resp.error) {
+				console.log("Error creating post");
+			} else {
+				console.log("sucess creating info", resp);
+				dispatch(setPosts(resp));
+				changeActiveScreen("LandingPage");
+			}
+    }
+  }
+
   return (
     <form onSubmit={onSubmit}>
 
@@ -68,11 +137,17 @@ export const Form = ({ onSubmit }) => {
 
       <div className="form-group">
         <label htmlFor="title">Title of Post: </label>
-        <input className="form-control" id="title" />
+        <input
+          className="form-control"
+          id="title"
+          onChange={handleTitleChange}
+          value={postTitle}
+        />
       </div>
       <div className="form-group">
-        <label htmlFor="topics">Choose topic(s): </label>
+        <label htmlFor="topicsDropdown">Choose topic(s): </label>
         <Select
+          id="topicsDropdown"
           className="basic-single"
           classNamePrefix="select"
           isClearable={true}
@@ -98,8 +173,10 @@ export const Form = ({ onSubmit }) => {
         <textarea
           className="form-control"
           id="postText"
-          maxlength="500"
-          onChange={handleTextboxChange}>
+          maxLength="500"
+          onChange={handlePostTextChange}
+          value={postText}
+        >
         </textarea>
         <p>Characters Left: {charsLeft}</p>
       </div>

@@ -46,6 +46,7 @@ const uploadPicture = async (file, type) => {
 			return { data, imageUrlForMongoDB };
 		}
 	});
+	return { imageUrlForMongoDB };
 };
 
 export default uploadPicture;
