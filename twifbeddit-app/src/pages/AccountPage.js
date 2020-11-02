@@ -31,6 +31,7 @@ const AccountPage = () => {
 		{ usernameForAccountPage, userForAccountPage } = useSelector(
 			(state) => state.navigation
 		),
+		cookie = useSelector((state) => state.global.cookie),
 		dispatch = useDispatch(),
 		posts = useSelector((state) => state.global.posts),
 		[isCurUser, setIsCurUser] = useState(true),
@@ -97,7 +98,7 @@ const AccountPage = () => {
 			HTTPmethod: "patch",
 			path: "users",
 			params,
-			cookie: currentAccount.cookie,
+			cookie,
 		});
 	};
 
