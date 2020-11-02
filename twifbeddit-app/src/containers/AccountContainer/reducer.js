@@ -9,7 +9,6 @@ const initalState = {
 	profile_picture: "",
 	savedPosts: [],
 	bio: "",
-	cookie: "",
 };
 
 export default function startReducer(state = initalState, action) {
@@ -24,7 +23,6 @@ export default function startReducer(state = initalState, action) {
 				profile_picture: action.object.profile_picture,
 				savedPosts: action.object.savedPosts,
 				bio: action.object.bio,
-				cookie: action.object.cookie,
 			};
 		}
 

@@ -6,3 +6,10 @@ export function setPosts(object) {
 		object,
 	};
 }
+
+export function setCookie(payload) {
+	return {
+		type: Constants.SET_COOKIE,
+		payload,
+	};
+}

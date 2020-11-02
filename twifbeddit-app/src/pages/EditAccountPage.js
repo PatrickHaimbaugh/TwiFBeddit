@@ -20,7 +20,7 @@ const EditAccountPage = () => {
 		[bio, setBio] = useState(""),
 		username = useSelector((state) => state.account.username),
 		storeEmail = useSelector((state) => state.account.email),
-		cookie = useSelector((state) => state.account.cookie),
+		cookie = useSelector((state) => state.global.cookie),
 		dispatch = useDispatch(),
 		[profilePic, setProfilePic] = useState("");
 

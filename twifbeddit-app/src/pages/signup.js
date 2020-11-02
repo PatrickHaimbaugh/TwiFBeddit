@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 import * as navigationActions from "../containers/NavigationContainer/actions";
 import makeNetworkCall from "../util/makeNetworkCall.js";
 import * as accountActions from "../containers/AccountContainer/actions";
+import * as globalActions from "../containers/GlobalContainer/actions";
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -156,6 +157,7 @@ export default function IndividualSignUp() {
 				if (resp.error) {
 					console.log("Error Signing Up");
 				} else {
+					dispatch(globalActions.setCookie(resp.cookie));
 					dispatch(accountActions.setUser(resp));
 					changeActiveScreen("LandingPage");
 				}

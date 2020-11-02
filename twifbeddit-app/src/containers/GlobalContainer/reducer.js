@@ -2,6 +2,7 @@ import * as Constants from "./constants";
 
 const initalState = {
 	posts: [],
+	cookie: "",
 };
 
 export default function startReducer(state = initalState, action) {
@@ -10,6 +11,12 @@ export default function startReducer(state = initalState, action) {
 			return {
 				...state,
 				posts: action.object,
+			};
+		}
+		case Constants.SET_COOKIE: {
+			return {
+				...state,
+				cookie: action.payload,
 			};
 		}
 

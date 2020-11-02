@@ -20,7 +20,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import * as navigationActions from "../containers/NavigationContainer/actions";
 import * as accountActions from "../containers/AccountContainer/actions";
-
+import * as globalActions from "../containers/GlobalContainer/actions";
 class UserDetails {
 	constructor(email, password) {
 		this.email = email;
@@ -184,6 +184,7 @@ export default function SignInSide() {
 			if (resp.error) {
 				console.log("Error Signing In");
 			} else {
+				dispatch(globalActions.setCookie(resp.cookie));
 				dispatch(accountActions.setUser(resp));
 				changeActiveScreen("LandingPage");
 			}
