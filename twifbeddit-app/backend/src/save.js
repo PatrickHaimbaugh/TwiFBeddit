@@ -25,7 +25,7 @@ exports.GET = async (_, event) => {
     return {
         'statusCode': 200,
         'body': JSON.stringify({
-            posts: user.savedPosts
+            posts: await Post.find({_id: {$in: user.savedPosts}})
         })
     };
 };

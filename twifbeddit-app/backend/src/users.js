@@ -107,7 +107,7 @@ exports.GET = async(_, event) => {
 
 exports.DELETE = async (_, event) => {
     const username = await get_user_from_header(event.headers);
-    await Post.deleteMany({username: username});
+    await Post.deleteMany({author: username});
     await UserSession.deleteMany({username: username});
     const user = await User.findOne({username: username});
     await User.updateMany({username: {$in: user.following}}, {$inc : {followers: -1}});
