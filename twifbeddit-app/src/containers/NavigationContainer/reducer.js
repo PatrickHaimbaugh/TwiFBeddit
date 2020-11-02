@@ -65,6 +65,10 @@ export default function startReducer(state = initalState, action) {
 			};
 		}
 
+		case Constants.LOGOUT: {
+			return initalState;
+		}
+
 		default:
 			return state;
 	}

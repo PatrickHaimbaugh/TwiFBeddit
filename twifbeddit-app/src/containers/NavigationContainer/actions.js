@@ -39,3 +39,9 @@ export function storeSearchRequest(searchRequest) {
 		searchRequest,
 	};
 }
+
+export function logout() {
+	return {
+		type: Constants.LOGOUT,
+	};
+}

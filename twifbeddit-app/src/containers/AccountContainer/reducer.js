@@ -1,6 +1,6 @@
 import { AccordionActions } from "@material-ui/core";
 import * as Constants from "./constants";
-import _ from "lodash"
+import _ from "lodash";
 
 const initalState = {
 	username: "",
@@ -43,8 +43,14 @@ export default function startReducer(state = initalState, action) {
 		case Constants.UNFOLLOW_USER: {
 			return {
 				...state,
-				following: _.filter(state.following, (username) => { return username != action.payload }),
+				following: _.filter(state.following, (username) => {
+					return username != action.payload;
+				}),
 			};
+		}
+
+		case Constants.LOGOUT: {
+			return initalState;
 		}
 
 		default:

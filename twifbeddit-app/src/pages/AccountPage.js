@@ -22,7 +22,7 @@ import Post from "../components/Post";
 import { useDispatch, useSelector } from "react-redux";
 import * as accountActions from "../containers/AccountContainer/actions";
 import makeNetworkCall from "../util/makeNetworkCall";
-import * as GlobalActions from "../containers/GlobalContainer/actions";
+import * as globalActions from "../containers/GlobalContainer/actions";
 import * as navigationActions from "../containers/NavigationContainer/actions";
 import _ from "lodash";
 
@@ -63,7 +63,7 @@ const AccountPage = () => {
 						author: usernameForAccountPage,
 					},
 				});
-				dispatch(GlobalActions.setPosts(resp.posts));
+				dispatch(globalActions.setPosts(resp.posts));
 			}
 		};
 		getPosts();
@@ -100,6 +100,15 @@ const AccountPage = () => {
 			params,
 			cookie,
 		});
+	};
+
+	const logout = () => {
+		// reset account info
+		dispatch(accountActions.logout());
+		// delete cookie and reset posts to empty
+		dispatch(globalActions.logout());
+		// set page to landing page
+		dispatch(navigationActions.logout());
 	};
 
 	return (
@@ -144,6 +153,9 @@ const AccountPage = () => {
 				<BioRow>
 					<BioText>{userForAccountPage.bio}</BioText>
 				</BioRow>
+				<LogoutRow>
+					<LogoutButton onClick={() => logout()}>Logout</LogoutButton>
+				</LogoutRow>
 				<TabsRow>
 					<Tab>Posts</Tab>
 					<Tab>Comments and Interactions</Tab>

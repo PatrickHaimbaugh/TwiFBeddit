@@ -13,3 +13,9 @@ export function setCookie(payload) {
 		payload,
 	};
 }
+
+export function logout() {
+	return {
+		type: Constants.LOGOUT,
+	};
+}

@@ -20,3 +20,9 @@ export function unfollowUser(payload) {
 		payload,
 	};
 }
+
+export function logout() {
+	return {
+		type: Constants.LOGOUT,
+	};
+}
