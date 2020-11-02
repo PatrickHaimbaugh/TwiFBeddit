@@ -23,7 +23,7 @@ import {
 	faCog,
 } from "@fortawesome/free-solid-svg-icons";
 
-import '../pages/createPostDisplayStyle.css';
+import "../pages/createPostDisplayStyle.css";
 
 const Navigation = (props) => {
 	const dispatch = useDispatch(),
@@ -36,16 +36,20 @@ const Navigation = (props) => {
 		dispatch(navigationActions.changeCurrentPage(screen));
 	};
 
+	const updateUsernameForAccount = (username) => {
+		dispatch(navigationActions.setUsernameForAccountPage(username));
+	};
+
 	const handleSearchChange = (event) => {
-    var input = event.target.value;
-    setSearchText(input);
-  }
+		var input = event.target.value;
+		setSearchText(input);
+	};
 
 	const handleSearchButtonClick = () => {
 		changeActiveScreen("SearchResults");
 		//store searchText in navbar store
 		dispatch(navigationActions.storeSearchRequest(searchText));
-	}
+	};
 
 	return (
 		<Content col={12}>
@@ -60,7 +64,11 @@ const Navigation = (props) => {
 				<Col col={4} offset={2}>
 					{username != "" ? (
 						<MyInputGroup>
-							<input className="form-control" id="title" onChange={handleSearchChange}/>
+							<input
+								className="form-control"
+								id="title"
+								onChange={handleSearchChange}
+							/>
 							<MyInputGroup.Button
 								onClick={handleSearchButtonClick}
 								currentPage={activeScreen == "SearchResults"}
@@ -93,7 +101,10 @@ const Navigation = (props) => {
 								<NavigationIcon icon={faCommentAlt} />
 							</NavTextContent>
 							<NavTextContent
-								onClick={() => changeActiveScreen("Account")}
+								onClick={() => {
+									changeActiveScreen("Account");
+									updateUsernameForAccount(username);
+								}}
 								currentPage={activeScreen == "Account"}
 							>
 								<NavigationIcon icon={faUserCircle} />

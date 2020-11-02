@@ -6,3 +6,17 @@ export function setUser(object) {
 		object,
 	};
 }
+
+export function followUser(payload) {
+	return {
+		type: Constants.FOLLOW_USER,
+		payload,
+	};
+}
+
+export function unfollowUser(payload) {
+	return {
+		type: Constants.UNFOLLOW_USER,
+		payload,
+	};
+}

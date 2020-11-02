@@ -45,7 +45,6 @@ const App = (props) => {
 
 				{/*currentPage === "SearchResults" && <TopicResults />*/}
 				{currentPage === "SearchResults" && <TopicResults />}
-
 			</div>
 		</Router>
 	);
