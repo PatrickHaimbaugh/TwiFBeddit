@@ -23,7 +23,7 @@ exports.get_user_from_header = async (headers) => {
     if (cookies == undefined) {
         console.error("No cookies in header");
         console.log(headers);
-        return null;
+        throw "No cookies in header";
     }
     cookies = cookies.split(';')
     if (cookies.length != 1) {
