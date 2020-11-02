@@ -8,8 +8,9 @@ const initalState = {
 	followers: 0,
 	following: [],
 	profile_picture: "",
-	savedPosts: [],
+	savedPostIds: [],
 	bio: "",
+	savedPosts: [],
 };
 
 export default function startReducer(state = initalState, action) {
@@ -22,7 +23,7 @@ export default function startReducer(state = initalState, action) {
 				followers: action.object.followers,
 				following: action.object.following,
 				profile_picture: action.object.profile_picture,
-				savedPosts: action.object.savedPosts,
+				savedPostIds: action.object.savedPosts,
 				bio: action.object.bio,
 			};
 		}
@@ -51,6 +52,33 @@ export default function startReducer(state = initalState, action) {
 
 		case Constants.LOGOUT: {
 			return initalState;
+		}
+
+		case Constants.SET_SAVED_POSTS: {
+			return {
+				...state,
+				savedPosts: action.object,
+			};
+		}
+
+		case Constants.ADD_SAVE_POST: {
+			return {
+				...state,
+				savedPostIds: [...state.savedPostIds, action.object._id],
+				savedPosts: [...state.savedPosts, action.object],
+			};
+		}
+
+		case Constants.REMOVE_SAVE_POST: {
+			return {
+				...state,
+				savedPosts: _.filter(state.savedPosts, (post) => {
+					return post._id !== action.payload;
+				}),
+				savedPostIds: _.filter(state.savedPostIds, (id) => {
+					return id !== action.payload;
+				}),
+			};
 		}
 
 		default:

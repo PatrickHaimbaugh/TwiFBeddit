@@ -31,6 +31,7 @@ const AccountPage = () => {
 		{ usernameForAccountPage, userForAccountPage } = useSelector(
 			(state) => state.navigation
 		),
+		[showPosts, setShowPosts] = useState("posts"),
 		cookie = useSelector((state) => state.global.cookie),
 		dispatch = useDispatch(),
 		posts = useSelector((state) => state.global.posts),
@@ -42,28 +43,38 @@ const AccountPage = () => {
 			if (currentAccount.username) {
 				if (currentAccount.username === usernameForAccountPage) {
 					dispatch(navigationActions.setUserForAccountPage(currentAccount));
+
+					makeNetworkCall({
+						HTTPmethod: "get",
+						path: "save",
+						cookie,
+					}).then((resp) => {
+						dispatch(accountActions.setSavedPosts(resp.posts));
+					});
 				} else {
-					const userDataResp = await makeNetworkCall({
+					makeNetworkCall({
 						HTTPmethod: "get",
 						path: "users",
 						params: {
 							username: usernameForAccountPage,
 						},
+					}).then((resp) => {
+						dispatch(navigationActions.setUserForAccountPage(resp));
+						setIsCurUser(false);
+						setIsFollowing(
+							currentAccount.following.includes(usernameForAccountPage)
+						);
 					});
-					dispatch(navigationActions.setUserForAccountPage(userDataResp));
-					setIsCurUser(false);
-					setIsFollowing(
-						currentAccount.following.includes(usernameForAccountPage)
-					);
 				}
-				const resp = await makeNetworkCall({
+				makeNetworkCall({
 					HTTPmethod: "get",
 					path: "posts",
 					params: {
 						author: usernameForAccountPage,
 					},
+				}).then((resp) => {
+					dispatch(globalActions.setPosts(resp.posts));
 				});
-				dispatch(globalActions.setPosts(resp.posts));
 			}
 		};
 		getPosts();
@@ -153,29 +164,55 @@ const AccountPage = () => {
 				<BioRow>
 					<BioText>{userForAccountPage.bio}</BioText>
 				</BioRow>
-				<LogoutRow>
-					<LogoutButton onClick={() => logout()}>Logout</LogoutButton>
-				</LogoutRow>
+				{isCurUser ? (
+					<LogoutRow>
+						<LogoutButton onClick={() => logout()}>Logout</LogoutButton>
+					</LogoutRow>
+				) : null}
 				<TabsRow>
-					<Tab>Posts</Tab>
-					<Tab>Comments and Interactions</Tab>
-					<Tab>Saved Posts</Tab>
+					<Tab onClick={() => setShowPosts("posts")}>Posts</Tab>
+					<Tab onClick={() => setShowPosts("comments")}>
+						Comments and Interactions
+					</Tab>
+					{isCurUser ? (
+						<Tab onClick={() => setShowPosts("saved")}>Saved Posts</Tab>
+					) : null}
 				</TabsRow>
-				{_.map(posts, (post) => {
-					return (
-						<Post
-							key={post._id}
-							Username={post.author}
-							Title={post.title}
-							Topic={post.topic}
-							Body={post.text}
-							Upvotes={post.upvotes}
-							Downvotes={post.downvotes}
-							Image={post.image_url}
-							PostId={post._id}
-						></Post>
-					);
-				})}
+				{showPosts === "posts"
+					? _.map(posts, (post) => {
+							return (
+								<Post
+									key={post._id}
+									Username={post.author}
+									Title={post.title}
+									Topic={post.topic}
+									Body={post.text}
+									Upvotes={post.upvotes}
+									Downvotes={post.downvotes}
+									Image={post.image_url}
+									PostId={post._id}
+									Post={post}
+								></Post>
+							);
+					  })
+					: showPosts === "comments"
+					? null //show all posts where they interacted
+					: _.map(currentAccount.savedPosts, (post) => {
+							return (
+								<Post
+									key={post._id}
+									Username={post.author}
+									Title={post.title}
+									Topic={post.topic}
+									Body={post.text}
+									Upvotes={post.upvotes}
+									Downvotes={post.downvotes}
+									Image={post.image_url}
+									PostId={post._id}
+								></Post>
+							);
+					  })}
+				{}
 			</Content>
 		</Page>
 	);

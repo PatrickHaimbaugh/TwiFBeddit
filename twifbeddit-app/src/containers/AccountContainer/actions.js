@@ -26,3 +26,24 @@ export function logout() {
 		type: Constants.LOGOUT,
 	};
 }
+
+export function setSavedPosts(object) {
+	return {
+		type: Constants.SET_SAVED_POSTS,
+		object,
+	};
+}
+
+export function addSavePost(object) {
+	return {
+		type: Constants.ADD_SAVE_POST,
+		object,
+	};
+}
+
+export function removeSavePost(payload) {
+	return {
+		type: Constants.REMOVE_SAVE_POST,
+		payload,
+	};
+}

@@ -20,6 +20,7 @@ import {
 } from "../styles/postStyle";
 import { useSelector, useDispatch } from "react-redux";
 import * as navigationActions from "../containers/NavigationContainer/actions";
+import * as accountActions from "../containers/AccountContainer/actions";
 
 const Post = (props) => {
 	const {
@@ -32,12 +33,14 @@ const Post = (props) => {
 		Downvotes,
 		userVote,
 		PostId,
+		Post,
 	} = props;
 
 	const [curVote, setCurVote] = useState(""),
-		cookie = useSelector((state) => state.account.cookie),
+		cookie = useSelector((state) => state.global.cookie),
 		[loading, setLoading] = useState(false),
-		dispatch = useDispatch();
+		dispatch = useDispatch(),
+		savedPostIds = useSelector((state) => state.account.savedPostIds);
 
 	const vote = async (command) => {
 		const voteType = curVote === command ? "un" + command : command;
@@ -62,6 +65,32 @@ const Post = (props) => {
 	const switchToAuthorAccount = () => {
 		dispatch(navigationActions.setUsernameForAccountPage(Username));
 		dispatch(navigationActions.changeCurrentPage("Account"));
+	};
+
+	const savePost = async () => {
+		setLoading(true);
+		let params;
+		let saved = savedPostIds.includes(PostId);
+		if (saved) {
+			params = {
+				postId: PostId,
+				unsave: true,
+			};
+			dispatch(accountActions.removeSavePost(PostId));
+		} else {
+			params = {
+				postId: PostId,
+			};
+			dispatch(accountActions.addSavePost(Post));
+		}
+		const resp = await makeNetworkCall({
+			HTTPmethod: "post",
+			path: "save",
+			cookie,
+			params,
+		});
+
+		setLoading(false);
 	};
 
 	return (
@@ -94,7 +123,9 @@ const Post = (props) => {
 						</DownvoteButton>
 					</VotesCol>
 					<VotesCol col={4}>
-						<SaveButton>Save Post</SaveButton>
+						<SaveButton disabled={loading} onClick={() => savePost()}>
+							{savedPostIds.includes(PostId) ? "Unsave Post" : "Save Post"}
+						</SaveButton>
 					</VotesCol>
 				</VotesRow>
 			</ContentCol>
