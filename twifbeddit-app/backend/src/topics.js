@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const User = mongoose.model("User");
 const Topic = mongoose.model("Topic");
 
 const { get_user_from_header } = require("./auth");
