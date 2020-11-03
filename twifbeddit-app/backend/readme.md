@@ -74,23 +74,6 @@ This will return information on a user. Currently this will succeed for all user
 }
 ```
 
-### Parameters
-`topicToFollow=string`
-### Response
-```json
-{
-    "followed_topics": "[String (any topic can be followed, it does not necessarily have to exist in a post)]",
-}
-```
-### Parameters
-`topicToUnfollow=string`
-### Response
-```json
-{
-    "followed_topics": "[String (any topic can be unfollowed)]",
-}
-```
-
 ## DELETE
 Delete deletes ther user associated with the current user session cookie, all their comments and decreases the following count for all of their followers.
 
@@ -174,6 +157,33 @@ Set-Cookie Header, and user object like above
 ```json
 {
     "posts": "[Post] (posts under the specified user that aren't anonymous)"
+}
+```
+
+# /topics
+## POST
+### Parameters
+`topicToFollow=string`
+### Response
+```json
+{
+    "followed_topics": "[String (any topic can be followed, it does not necessarily have to exist in a post)]",
+}
+```
+### Parameters
+`topicToUnfollow=string`
+### Response
+```json
+{
+    "followed_topics": "[String (any topic can be unfollowed)]",
+}
+```
+
+## GET
+### Response
+```json
+{
+    "topics": "[Topic (topic_name)]"
 }
 ```
 

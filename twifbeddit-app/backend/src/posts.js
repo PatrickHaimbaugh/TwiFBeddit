@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const User = mongoose.model("User");
 const Post = mongoose.model("Post");
+const Topic = mongoose.model("Topic");
 const { get_user_from_header } = require("./auth");
 
 exports.POST = async (_, event) => {
@@ -16,6 +17,14 @@ exports.POST = async (_, event) => {
         return {'statusCode': 400};
     const post = new Post(data);
     const newPost = await post.save();
+
+    const topic = data.topic;
+    var foundTopic = await Topic.findOne({topic_name: topic});
+    if (foundTopic == null) {
+        const newTopic = new Topic({topic_name: topic});
+        await newTopic.save();
+    }
+
     return {
         'statusCode': 200,
         'body': JSON.stringify({
