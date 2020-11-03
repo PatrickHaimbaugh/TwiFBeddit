@@ -47,3 +47,17 @@ export function removeSavePost(payload) {
 		payload,
 	};
 }
+
+export function followTopic(topic) {
+	return {
+		type: Constants.FOLLOW_TOPIC,
+		topic,
+	};
+}
+
+export function unfollowTopic(topic) {
+	return {
+		type: Constants.UNFOLLOW_TOPIC,
+		topic,
+	};
+}
