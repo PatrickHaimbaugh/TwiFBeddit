@@ -50,7 +50,7 @@ exports.GET = async (_, event) => {
     if (event.queryStringParameters == null) {
         const username = await get_user_from_header(event.headers);
         const user = await User.findOne({username: username});
-        var posts = await Post.find().where('author').in(user.following).where('topic').in(user.followed_topics).sort({ createdAt: -1}).exec();
+        var posts = await Post.find().where('topic').in(user.followed_topics).sort({ createdAt: -1}).exec();
         posts = JSON.parse(JSON.stringify(posts));
         for (var post of posts) {
             createExternalPost(post);

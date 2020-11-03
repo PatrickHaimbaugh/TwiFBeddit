@@ -61,6 +61,32 @@ exports.PATCH = async (_, event) => {
         }
     }
 
+    if (event.queryStringParameters.topicToFollow != undefined) {
+        const username = await get_user_from_header(event.headers);
+        const topicToFollow = event.queryStringParameters.topicToFollow;  
+        const user = await User.findOneAndUpdate({username: username}, {$addToSet: {followed_topics: topicToFollow}}, {new: true});
+    
+        return {
+            'statusCode': 200,
+            'body': JSON.stringify({
+                "followed_topics": user.followed_topics,
+            })
+        }
+    }
+
+    if (event.queryStringParameters.topicToUnfollow != undefined) {
+        const username = await get_user_from_header(event.headers);
+        const topicToUnfollow = event.queryStringParameters.topicToUnfollow;
+        const user = await User.findOneAndUpdate({username: username}, {$pull: {followed_topics: topicToUnfollow}}, {new: true});
+  
+        return {
+            'statusCode': 200,
+            'body': JSON.stringify({
+                "followed_topics": user.followed_topics,
+            })
+        }
+    }
+
     if (event.queryStringParameters.email != undefined && event.queryStringParameters.password != undefined 
         && event.queryStringParameters.profile_picture != undefined && event.queryStringParameters.bio != undefined) {
 
