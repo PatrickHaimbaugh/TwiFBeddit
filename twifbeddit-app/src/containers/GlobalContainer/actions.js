@@ -19,3 +19,10 @@ export function logout() {
 		type: Constants.LOGOUT,
 	};
 }
+
+export function updatePost(object) {
+	return {
+		type: Constants.UPDATE_POST,
+		object,
+	};
+}

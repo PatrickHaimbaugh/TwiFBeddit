@@ -9,3 +9,4 @@ export const UNFOLLOW_USER_ON_ACCOUNT_PAGE =
 	"NavigationContainer/UNFOLLOW_USER_ON_ACCOUNT_PAGE";
 export const SEARCH_REQUEST = "NavigationContainer/SEARCH_REQUEST";
 export const LOGOUT = "NavigationContainer/LOGOUT";
+export const CHANGE_CURRENT_POST = "NavigationContainer/CHANGE_CURRENT_POST";

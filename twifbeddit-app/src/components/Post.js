@@ -33,6 +33,7 @@ const Post = (props) => {
 		userVote,
 		PostId,
 		Post,
+		currentPost,
 	} = props;
 
 	const [curVote, setCurVote] = useState(""),
@@ -61,7 +62,8 @@ const Post = (props) => {
 		setLoading(false);
 	};
 
-	const switchToAuthorAccount = () => {
+	const switchToAuthorAccount = (e) => {
+		e.stopPropagation();
 		dispatch(navigationActions.setUsernameForAccountPage(Username));
 		dispatch(navigationActions.changeCurrentPage("Account"));
 	};
@@ -92,11 +94,19 @@ const Post = (props) => {
 		setLoading(false);
 	};
 
+	const viewPost = () => {
+		if (currentPost) {
+			return;
+		}
+		dispatch(navigationActions.changeCurrentPost(Post));
+		dispatch(navigationActions.changeCurrentPage("ViewPost"));
+	};
+
 	return (
-		<Content>
-			<ContentCol col={12}>
+		<Content currentPost={currentPost}>
+			<ContentCol col={12} onClick={() => viewPost()}>
 				<UserTopicRow>
-					<UserTopicText onClick={() => switchToAuthorAccount()}>
+					<UserTopicText onClick={(e) => switchToAuthorAccount(e)}>
 						u/{Username}
 					</UserTopicText>
 					<UserTopicText>r/{Topic}</UserTopicText>

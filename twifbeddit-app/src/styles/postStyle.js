@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import { Col, Row } from "styled-bootstrap-grid";
 
-export const Content = styled(Row)``;
+export const Content = styled(Row)`
+	cursor: ${(props) => (props.currentPost ? "initial" : "pointer")};
+`;
 
 export const ContentCol = styled(Col)`
 	background-color: white;
@@ -15,6 +17,7 @@ export const UserTopicRow = styled(Row)`
 `;
 
 export const UserTopicText = styled.p`
+	cursor: pointer;
 	font-family: "Montserrat", sans-serif;
 	font-size: 0.75rem;
 	font-weight: 600;
