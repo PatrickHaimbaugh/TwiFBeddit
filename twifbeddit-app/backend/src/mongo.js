@@ -49,6 +49,12 @@ var PostSchema = new mongoose.Schema({
 
 exports.Post = mongoose.model("Post", PostSchema);
 
+var TopicSchema = new mongoose.Schema({
+    topic_name: {type: String}
+});
+
+exports.Topic = mongoose.model("Topic", TopicSchema);
+
 mongoose.set('useFindAndModify', false);
 
 mongoose.connect(

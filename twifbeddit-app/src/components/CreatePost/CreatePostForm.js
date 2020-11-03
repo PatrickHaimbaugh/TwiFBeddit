@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useState } from "react";
+import React, { Component, Fragment, useState, useEffect } from "react";
 import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
 import uploadPicture from "../../util/uploadPicture";
@@ -20,13 +20,27 @@ export const Form = () => {
 	const [inputTopic, setInputTopic] = useState();
 	const [postText, setPostText] = useState("");
 	const [postImage, setPostImage] = useState();
+	const [topicOptions, setTopicOptions] = useState([]);
 
-	//hard coded topic values
-	const options = [
-		{ value: "chocolate", label: "Chocolate" },
-		{ value: "strawberry", label: "Strawberry" },
-		{ value: "vanilla", label: "Vanilla" },
-	];
+	const populateDropdownTopics = async() => {
+		const resp = await makeNetworkCall({
+			HTTPmethod: "get",
+			path: "topics",
+		});
+		if (resp.error) {
+			console.log("Error receving posts");
+		} else {
+			//Convert list of JSON post objects into array
+			var topicsArray = [];
+			for (var i = 0; i < resp.topics.length; i++) {
+				var obj = resp.topics[i];
+				const topicOption = { value: obj.topic_name, label: obj.topic_name};
+				topicsArray.push(topicOption);
+			}
+			console.log(topicsArray);
+			setTopicOptions(topicsArray);
+		}
+	}
 
 	const uploadedImage = React.useRef(null);
 	const handleImageUpload = (e) => {
@@ -122,6 +136,13 @@ export const Form = () => {
 		}
 	};
 
+	useEffect(() => {
+		async function syncPopulateDropdownTopics() {
+			await populateDropdownTopics();
+		}
+		syncPopulateDropdownTopics();
+	}, []);
+
 	return (
 		<form onSubmit={onSubmit}>
 			<div className="form-group">
@@ -151,7 +172,7 @@ export const Form = () => {
 					classNamePrefix="select"
 					isClearable={true}
 					name="color"
-					options={options}
+					options={topicOptions}
 					value={dropdownTopic}
 					onChange={handleTopicSelect}
 				/>

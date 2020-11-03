@@ -160,6 +160,33 @@ Set-Cookie Header, and user object like above
 }
 ```
 
+# /topics
+## POST
+### Parameters
+`topicToFollow=string`
+### Response
+```json
+{
+    "followed_topics": "[String (any topic can be followed, it does not necessarily have to exist in a post)]",
+}
+```
+### Parameters
+`topicToUnfollow=string`
+### Response
+```json
+{
+    "followed_topics": "[String (any topic can be unfollowed)]",
+}
+```
+
+## GET
+### Response
+```json
+{
+    "topics": "[Topic (topic_name)]"
+}
+```
+
 # /votes
 ## POST
 ### Parameters

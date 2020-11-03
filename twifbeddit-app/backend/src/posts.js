@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const User = mongoose.model("User");
 const Post = mongoose.model("Post");
+const Topic = mongoose.model("Topic");
 const { get_user_from_header } = require("./auth");
 
 exports.POST = async (_, event) => {
@@ -16,6 +17,14 @@ exports.POST = async (_, event) => {
         return {'statusCode': 400};
     const post = new Post(data);
     const newPost = await post.save();
+
+    const topic = data.topic;
+    var foundTopic = await Topic.findOne({topic_name: topic});
+    if (foundTopic == null) {
+        const newTopic = new Topic({topic_name: topic});
+        await newTopic.save();
+    }
+
     return {
         'statusCode': 200,
         'body': JSON.stringify({
@@ -50,7 +59,7 @@ exports.GET = async (_, event) => {
     if (event.queryStringParameters == null) {
         const username = await get_user_from_header(event.headers);
         const user = await User.findOne({username: username});
-        var posts = await Post.find().where('topic').in(user.followed_topics).limit(8).sort({ createdAt: -1}).exec();
+        var posts = await Post.find().where('topic').in(user.followed_topics).sort({ createdAt: -1}).exec();
         posts = JSON.parse(JSON.stringify(posts));
         for (var post of posts) {
             createExternalPost(post);
@@ -66,7 +75,7 @@ exports.GET = async (_, event) => {
     } 
     if (event.queryStringParameters.topic != undefined) {
         const topic = event.queryStringParameters.topic;
-        var posts = await Post.find().where('topic').in(topic).limit(8).sort({ createdAt: -1}).exec();
+        var posts = await Post.find().where('topic').in(topic).sort({ createdAt: -1}).exec();
         posts = JSON.parse(JSON.stringify(posts));
         for (var post of posts) {
             createExternalPost(post);
