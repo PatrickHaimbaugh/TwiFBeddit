@@ -28,6 +28,7 @@ export default function SearchResults() {
 
 	const followOrUnfollowTopic = (type) => {
 		const topic = searchRequest;
+		console.log(topic);
 		if (currentAccount.username === "") {
 			dispatch(navigationActions.changeCurrentPage("SignUp"));
 			return;

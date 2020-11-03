@@ -86,7 +86,7 @@ export default function startReducer(state = initalState, action) {
 		case Constants.FOLLOW_TOPIC: {
 			return {
 				...state,
-				followed_topics: [...state.followed_topics, action.payload],
+				followed_topics: [...state.followed_topics, action.topic],
 			};
 		}
 
@@ -94,7 +94,7 @@ export default function startReducer(state = initalState, action) {
 			return {
 				...state,
 				followed_topics: _.filter(state.followed_topics, (topic) => {
-					return topic !== action.payload;
+					return topic !== action.topic;
 				}),
 			};
 		}
