@@ -13,6 +13,7 @@ const initalState = {
 		bio: "",
 	},
 	searchRequest: "",
+	currentPost: {},
 };
 
 export default function startReducer(state = initalState, action) {
@@ -67,6 +68,13 @@ export default function startReducer(state = initalState, action) {
 
 		case Constants.LOGOUT: {
 			return initalState;
+		}
+
+		case Constants.CHANGE_CURRENT_POST: {
+			return {
+				...state,
+				currentPost: action.object,
+			};
 		}
 
 		default:

@@ -6,6 +6,7 @@ import Navigation from "./components/Navigation";
 import EditAccountPage from "./pages/EditAccountPage";
 import AccountPage from "./pages/AccountPage";
 import PostPage from "./pages/PostPage";
+import ViewPost from "./pages/ViewPost";
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import SignIn from "./pages/signin.js";
@@ -34,6 +35,8 @@ const App = (props) => {
 				{currentPage === "Account" && <AccountPage />}
 
 				{currentPage === "Post" && <PostPage />}
+
+				{currentPage === "ViewPost" && <ViewPost />}
 
 				{/* <Route path="/signin" component={SignIn} /> */}
 				<Route path="/verification" component={VerificationInstructions} />

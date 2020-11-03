@@ -59,10 +59,10 @@ const useStyles = makeStyles((theme) => ({
 export default function SignInSide() {
 	const classes = useStyles();
 
-	// const [email, setEmail] = useState("");
-	// const [emailError, setEmailError] = useState("");
-	const [username, setUsername] = useState("");
-	const [usernameError, setUsernameError] = useState("");
+	const [email, setEmail] = useState("");
+	const [emailError, setEmailError] = useState("");
+	// const [username, setUsername] = useState("");
+	// const [usernameError, setUsernameError] = useState("");
 	const [password, setPassword] = useState("");
 	const [passwordError, setPasswordError] = useState("");
 	const dispatch = useDispatch();
@@ -73,15 +73,15 @@ export default function SignInSide() {
 
 	//const [rememberMe, setRememberMe] = useState(false);
 
-	// const onChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
-	// 	setEmail(e.currentTarget.value);
+	const onChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
+		setEmail(e.currentTarget.value);
+		validateEmail(e.currentTarget.value);
+	};
+
+	// const onChangeUsername = (e: ChangeEvent<HTMLInputElement>) => {
+	// 	setUsername(e.currentTarget.value);
 	// 	validateEmail(e.currentTarget.value);
 	// };
-
-	const onChangeUsername = (e: ChangeEvent<HTMLInputElement>) => {
-		setUsername(e.currentTarget.value);
-		validateUsername(e.currentTarget.value);
-	};
 
 	const onChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
 		setPassword(e.currentTarget.value);
@@ -129,22 +129,24 @@ export default function SignInSide() {
     }
   };*/
 
-	// const validateEmail = (value: string): string => {
-	// 	const error = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-	// 		value
-	// 	)
-	// 		? ""
-	// 		: "You must enter a valid email address";
-
-	// 	setEmailError(error);
-	// 	return error;
-	// };
-
-	const validateUsername = (value: string): string => {
-		const error = value ? "" : "You must enter a valid Username";
-		setUsernameError(error);
+	const validateEmail = (value: string): string => {
+		let error = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+			value
+		)
+			? ""
+			: "Valid Username";
+		// also check if the field is empty to determine if the username is valid
+		error =
+			value.length > 0 ? error : "You must enter a valid username or email";
+		setEmailError(error);
 		return error;
 	};
+
+	// const validateUsername = (value: string): string => {
+	// 	const error = value ? "" : "You must enter a valid Username";
+	// 	setUsernameError(error);
+	// 	return error;
+	// };
 
 	const validatePassword = (value: string): string => {
 		const error = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z$&+,:;=?@#|'<>.^*()%!-]{8,}$/.test(
@@ -159,10 +161,14 @@ export default function SignInSide() {
 	const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		// const emailValidationError = validateEmail(email);
-		const usernameValidationError = validateUsername(username);
+		const emailValidationError = validateEmail(email);
+		// const usernameValidationError = validateUsername(username);
 		const passwordValidationError = validatePassword(password);
-		if (usernameValidationError === "" && passwordValidationError === "") {
+		if (
+			(emailValidationError === "" ||
+				emailValidationError === "Valid Username") &&
+			passwordValidationError === ""
+		) {
 			const userDetails = {
 				user: {
 					// email: email,
@@ -173,13 +179,22 @@ export default function SignInSide() {
 			// console.log(userDetails);
 			//setSubmitResult(result);
 			//setSubmitted(true);
+			let params;
+			if (emailValidationError === "Valid Username") {
+				params = {
+					username: email,
+					password,
+				};
+			} else {
+				params = {
+					email,
+					password,
+				};
+			}
 			const resp = await makeNetworkCall({
 				HTTPmethod: "get",
 				path: "login",
-				params: {
-					username,
-					password,
-				},
+				params: params,
 			});
 			if (resp.error) {
 				console.log("Error Signing In");
@@ -207,7 +222,7 @@ export default function SignInSide() {
 			// 	});
 		} else {
 			alert(
-				"Sign-in not successful. Please enter valid username and password."
+				"Sign-in not successful. Please enter valid username/email and password."
 			);
 		}
 	};
@@ -248,13 +263,13 @@ export default function SignInSide() {
 								required
 								fullWidth
 								id="username"
-								label="Username"
+								label="Email or Username"
 								autoComplete="off"
 								name="username"
-								value={username}
-								onChange={onChangeUsername}
+								value={email}
+								onChange={onChangeEmail}
 							/>
-							<span className="error">{usernameError}</span>
+							<span className="error">{emailError}</span>
 						</Grid>
 						<Grid item xs={12}>
 							<TextField

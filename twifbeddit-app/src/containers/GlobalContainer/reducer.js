@@ -1,4 +1,5 @@
 import * as Constants from "./constants";
+import _ from "lodash";
 
 const initalState = {
 	posts: [],
@@ -22,6 +23,19 @@ export default function startReducer(state = initalState, action) {
 
 		case Constants.LOGOUT: {
 			return initalState;
+		}
+
+		case Constants.UPDATE_POST: {
+			console.log(action);
+			return {
+				...state,
+				posts: _.map(state.posts, (post) => {
+					if (post._id === action.object._id) {
+						return action.object;
+					}
+					return post;
+				}),
+			};
 		}
 
 		default:

@@ -53,6 +53,9 @@ async function addComments(post) {
     }
 }
 
+exports.createExternalPost = createExternalPost;
+exports.addComments = addComments;
+
 // Returns different posts depending on whether there are query parameters passed in.
 exports.GET = async (_, event) => {
 

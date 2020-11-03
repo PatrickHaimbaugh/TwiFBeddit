@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Post = mongoose.model("Post");
 const { get_user_from_header } = require("./auth");
+const { createExternalPost, addComments } = require("./posts");
 
 exports.POST = async (_, event) => {
     var data = JSON.parse(event.body);
@@ -19,6 +20,11 @@ exports.POST = async (_, event) => {
     const newPost = await post.save();
 
     const { id } = event.queryStringParameters;
-    await Post.findOneAndUpdate({_id: id},  {$addToSet: {comments: newPost._id}});
-    return {'statusCode': 200};
+    var updatedPost  = await Post.findOneAndUpdate({_id: id},  {$addToSet: {comments: newPost._id}}, {new: true});
+    updatedPost = JSON.parse(JSON.stringify(updatedPost));
+    createExternalPost(updatedPost);
+    await addComments(updatedPost);
+    return {'statusCode': 200, 'body': JSON.stringify({
+        'updatedPost': updatedPost
+    })};
 };

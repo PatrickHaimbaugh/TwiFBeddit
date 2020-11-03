@@ -60,9 +60,9 @@ interface IProps {
 export default function IndividualSignUp() {
 	const classes = useStyles();
 
-	const [email, setEmail] = useState("patTest2@test.com");
+	const [email, setEmail] = useState("");
 	const [emailError, setEmailError] = useState("");
-	const [username, setUsername] = useState("patTest2");
+	const [username, setUsername] = useState("");
 	const [usernameError, setUsernameError] = useState("");
 	const [password, setPassword] = useState("");
 	const [passwordError, setPasswordError] = useState("");
