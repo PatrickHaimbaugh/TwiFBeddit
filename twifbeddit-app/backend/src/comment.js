@@ -19,6 +19,8 @@ exports.POST = async (_, event) => {
     const newPost = await post.save();
 
     const { id } = event.queryStringParameters;
-    await Post.findOneAndUpdate({_id: id},  {$addToSet: {comments: newPost._id}});
-    return {'statusCode': 200};
+    const updatedPost  = await Post.findOneAndUpdate({_id: id},  {$addToSet: {comments: newPost._id}}, {new: true});
+    return {'statusCode': 200, 'body': JSON.stringify({
+        'updatedPost': updatedPost
+    })};
 };
