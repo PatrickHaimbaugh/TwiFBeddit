@@ -129,6 +129,7 @@ export default function SearchResults() {
 							userVote="upvote"
 							Image={post.image_url}
 							PostId={post._id}
+							Post={post}
 						></Post>
 					);
 				})}
