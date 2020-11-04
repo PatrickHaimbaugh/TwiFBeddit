@@ -79,36 +79,64 @@ const EditAccountPage = () => {
 		const emailValidationError = validateEmail(email);
 		const passwordValidationError = validatePassword(password, confirmPassword);
 		const bioValidationError = validateBio(bio);
-		if (emailValidationError != "") {
+		if (emailValidationError != "" && email.length > 0) {
 			alert(emailValidationError);
-		} else if (passwordValidationError != "") {
+		} else if (passwordValidationError != "" && password.length > 0) {
 			alert(passwordValidationError);
-		} else if (bioValidationError != "") {
+		} else if (bioValidationError != "" && bio.length > 0) {
 			alert(bioValidationError);
-		} else if (!profilePic) {
-			alert("Please Include a Profile Picture");
 		} else {
 			//data is valid, send to db
-			const uploadRsp = await uploadPicture(profilePic, "profile");
+			let uploadRsp;
+			if (profilePic) {
+				uploadRsp = await uploadPicture(profilePic, "profile");
+				console.log("uploading picture", uploadRsp);
+			}
 
-			const params = {
-				email,
-				password,
-				profile_picture: uploadRsp.imageUrlForMongoDB,
-				bio,
-			};
-			const resp = await makeNetworkCall({
-				HTTPmethod: "patch",
-				path: "users",
-				params,
-				cookie,
-			});
-			if (resp.error) {
-				console.log("Error Updating Info");
+			// let params = {
+			// 	//change this
+			// 	if (email.length > 0) {
+			// 		email,
+			// 	}
+			// 	email,
+			// 	password,
+			// 	profile_picture: uploadRsp.imageUrlForMongoDB,
+			// 	bio,
+			// };
+			let params = {};
+			let sendReq = false;
+			if (email.length > 0) {
+				params.email = email;
+				sendReq = true;
+			}
+			if (password.length > 0) {
+				params.password = password;
+				sendReq = true;
+			}
+			if (profilePic) {
+				params.profile_picture = uploadRsp.imageUrlForMongoDB;
+				sendReq = true;
+			}
+			if (bio.length > 0) {
+				params.bio = bio;
+				sendReq = true;
+			}
+			if (sendReq) {
+				const resp = await makeNetworkCall({
+					HTTPmethod: "patch",
+					path: "users",
+					params,
+					cookie,
+				});
+				if (resp.error) {
+					console.log("Error Updating Info");
+				} else {
+					console.log("success updating info", resp);
+					dispatch(accountActions.setUser(resp));
+					changeActiveScreen("Account");
+				}
 			} else {
-				console.log("sucess updating info", resp);
-				dispatch(accountActions.setUser(resp));
-				changeActiveScreen("Account");
+				alert("Please change something on your account before submitting.");
 			}
 		}
 	};
@@ -181,7 +209,7 @@ const EditAccountPage = () => {
 							<FormControl name="username" value={username} disabled={true} />
 						</FormGroup>
 						<FormGroup>
-							<MyControlLabel>Profile Picture</MyControlLabel>
+							<MyControlLabel>New Profile Picture</MyControlLabel>
 							{/* <FormControl name="profilePic" type="file" onChange={picChange} /> */}
 							<input
 								type="file"
@@ -190,7 +218,7 @@ const EditAccountPage = () => {
 							></input>
 						</FormGroup>
 						<FormGroup>
-							<MyControlLabel>Email</MyControlLabel>
+							<MyControlLabel>New Email</MyControlLabel>
 							<FormControl
 								name="email"
 								onChange={(e) => {
@@ -217,14 +245,14 @@ const EditAccountPage = () => {
 							/>
 						</FormGroup>
 						<FormGroup>
-							<MyControlLabel>Bio</MyControlLabel>
+							<MyControlLabel>New Bio</MyControlLabel>
 							<FormControl
 								rows={5}
 								name="Bio"
 								value={bio}
 								onChange={(e) => setBio(e)}
 								componentClass="textarea"
-								placeholder="Type Bio Here"
+								placeholder="New Bio Here"
 							/>
 						</FormGroup>
 						<FormGroup>
