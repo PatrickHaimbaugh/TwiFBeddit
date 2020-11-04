@@ -48,8 +48,8 @@ export default function SearchResults() {
 			};
 		}
 		makeNetworkCall({
-			HTTPmethod: "patch",
-			path: "users",
+			HTTPmethod: "post",
+			path: "topics",
 			params,
 			cookie,
 		});
