@@ -180,6 +180,9 @@ const AccountPage = () => {
 				</TabsRow>
 				{showPosts === "posts"
 					? _.map(posts, (post) => {
+							if (post.post_type === "comment") {
+								return;
+							}
 							return (
 								<Post
 									key={post._id}
@@ -209,6 +212,7 @@ const AccountPage = () => {
 									Downvotes={post.downvotes}
 									Image={post.image_url}
 									PostId={post._id}
+									Post={post}
 								></Post>
 							);
 					  })}

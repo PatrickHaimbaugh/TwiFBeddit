@@ -61,32 +61,17 @@ exports.PATCH = async (_, event) => {
         }
     }
 
-    if (event.queryStringParameters.email != undefined && event.queryStringParameters.password != undefined 
-        && event.queryStringParameters.profile_picture != undefined && event.queryStringParameters.bio != undefined) {
-
-            const username = await get_user_from_header(event.headers);
-            const email = event.queryStringParameters.email;
-            const hash = bcrypt.hashSync(event.queryStringParameters.password, 10);
-            const url = event.queryStringParameters.profile_picture;
-            const bio = event.queryStringParameters.bio;
-            
-            const updatedUser = await User.findOneAndUpdate({username: username}, {$set: {
-                email: email,
-                password: hash, 
-                profile_picture: url,
-                bio: bio }}, {new: true});
-            
-            return {
-                'statusCode': 200,
-                'body': JSON.stringify(updatedUser)
-            };
-
-        }
+    var update = event.queryStringParameters;
+    if (update.email != undefined)
+        update.email = bcrypt.hashSync(event.queryStringParameters.password, 10);
+    
+    const username = await get_user_from_header(event.headers);
+    const updatedUser = await User.findOneAndUpdate({username: username}, {$set: update}, {new: true});
 
     return {
-        'statuscode': 404
-    }
-
+        'statusCode': 200,
+        'body': JSON.stringify(updatedUser)
+    };
 };
 
 exports.GET = async(_, event) => {

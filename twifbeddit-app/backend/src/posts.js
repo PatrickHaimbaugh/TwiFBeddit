@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const User = mongoose.model("User");
 const Post = mongoose.model("Post");
+const Topic = mongoose.model("Topic");
 const { get_user_from_header } = require("./auth");
 
 exports.POST = async (_, event) => {
@@ -16,6 +17,14 @@ exports.POST = async (_, event) => {
         return {'statusCode': 400};
     const post = new Post(data);
     const newPost = await post.save();
+
+    const topic = data.topic;
+    var foundTopic = await Topic.findOne({topic_name: topic});
+    if (foundTopic == null) {
+        const newTopic = new Topic({topic_name: topic});
+        await newTopic.save();
+    }
+
     return {
         'statusCode': 200,
         'body': JSON.stringify({
@@ -24,8 +33,17 @@ exports.POST = async (_, event) => {
     }
 };
 
+function removeComments(posts) {
+    for (var i = 0; i < posts.length;) {
+        if (posts[i].post_type == "comment") {
+            posts.splice(i, 1);
+        } else {
+            i++;
+        }
+    }
+}
+
 function createExternalPost(post) {
-    post = JSON.parse(JSON.stringify(post));
     if (post.anonymous)
         post.author = null;
     post.anonymous = undefined;
@@ -37,6 +55,8 @@ async function addComments(post) {
     post.comments = [];
     for (const commentId of comments) {
         var foundPost = await Post.findById(commentId);
+        if (foundPost == null)
+            continue;
         foundPost = JSON.parse(JSON.stringify(foundPost));
         createExternalPost(foundPost);
         await addComments(foundPost);
@@ -44,14 +64,19 @@ async function addComments(post) {
     }
 }
 
+exports.createExternalPost = createExternalPost;
+exports.addComments = addComments;
+exports.removeComments = removeComments;
+
 // Returns different posts depending on whether there are query parameters passed in.
 exports.GET = async (_, event) => {
 
     if (event.queryStringParameters == null) {
         const username = await get_user_from_header(event.headers);
         const user = await User.findOne({username: username});
-        var posts = await Post.find().where('topic').in(user.followed_topics).limit(8).sort({ createdAt: -1}).exec();
+        var posts = await Post.find().where('topic').in(user.followed_topics).sort({ createdAt: -1}).exec();
         posts = JSON.parse(JSON.stringify(posts));
+        removeComments(posts);
         for (var post of posts) {
             createExternalPost(post);
             await addComments(post);
@@ -66,8 +91,9 @@ exports.GET = async (_, event) => {
     } 
     if (event.queryStringParameters.topic != undefined) {
         const topic = event.queryStringParameters.topic;
-        var posts = await Post.find().where('topic').in(topic).limit(8).sort({ createdAt: -1}).exec();
+        var posts = await Post.find().where('topic').in(topic).sort({ createdAt: -1}).exec();
         posts = JSON.parse(JSON.stringify(posts));
+        removeComments(posts);
         for (var post of posts) {
             createExternalPost(post);
             await addComments(post);
@@ -87,6 +113,7 @@ exports.GET = async (_, event) => {
         // find where author and not anonymous
         var posts = await Post.find().where('author').equals(author).where('anonymous').equals(false).sort({ createdAt: -1}).exec();
         posts = JSON.parse(JSON.stringify(posts));
+        removeComments(posts);
         for (var post of posts) {
             createExternalPost(post);
             await addComments(post);

@@ -45,3 +45,10 @@ export function logout() {
 		type: Constants.LOGOUT,
 	};
 }
+
+export function changeCurrentPost(object) {
+	return {
+		type: Constants.CHANGE_CURRENT_POST,
+		object,
+	};
+}
