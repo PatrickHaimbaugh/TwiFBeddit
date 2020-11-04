@@ -62,8 +62,8 @@ exports.PATCH = async (_, event) => {
     }
 
     var update = event.queryStringParameters;
-    if (update.email != undefined)
-        update.email = bcrypt.hashSync(event.queryStringParameters.password, 10);
+    if (update.password != undefined)
+        update.password = bcrypt.hashSync(event.queryStringParameters.password, 10);
     
     const username = await get_user_from_header(event.headers);
     const updatedUser = await User.findOneAndUpdate({username: username}, {$set: update}, {new: true});
