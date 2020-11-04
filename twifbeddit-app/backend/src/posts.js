@@ -44,7 +44,6 @@ function removeComments(posts) {
 }
 
 function createExternalPost(post) {
-    post = JSON.parse(JSON.stringify(post));
     if (post.anonymous)
         post.author = null;
     post.anonymous = undefined;
