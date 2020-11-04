@@ -73,6 +73,10 @@ const EditAccountPage = () => {
 		dispatch(navigationActions.changeCurrentPage(screen));
 	};
 
+	const updateUsernameForAccount = (username) => {
+		dispatch(navigationActions.setUsernameForAccountPage(username));
+	};
+
 	const Submit = async (e) => {
 		e.preventDefault();
 
@@ -133,6 +137,7 @@ const EditAccountPage = () => {
 				} else {
 					console.log("success updating info", resp);
 					dispatch(accountActions.setUser(resp));
+					updateUsernameForAccount(username);
 					changeActiveScreen("Account");
 				}
 			} else {
