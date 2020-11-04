@@ -6,3 +6,5 @@ export const LOGOUT = "AccountContainer/LOGOUT";
 export const SET_SAVED_POSTS = "AccountContainer/SET_SAVED_POSTS";
 export const ADD_SAVE_POST = "AccountContainer/ADD_SAVE_POST";
 export const REMOVE_SAVE_POST = "AccountContainer/REMOVE_SAVE_POST";
+export const FOLLOW_TOPIC = "AccountContainer/FOLLOW_TOPIC";
+export const UNFOLLOW_TOPIC = "AccountContainer/UNFOLLOW_TOPIC";

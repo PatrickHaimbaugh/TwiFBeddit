@@ -11,6 +11,7 @@ const initalState = {
 	savedPostIds: [],
 	bio: "",
 	savedPosts: [],
+	followed_topics: [],
 };
 
 export default function startReducer(state = initalState, action) {
@@ -25,6 +26,7 @@ export default function startReducer(state = initalState, action) {
 				profile_picture: action.object.profile_picture,
 				savedPostIds: action.object.savedPosts,
 				bio: action.object.bio,
+				followed_topics: action.object.followed_topics,
 			};
 		}
 
@@ -77,6 +79,22 @@ export default function startReducer(state = initalState, action) {
 				}),
 				savedPostIds: _.filter(state.savedPostIds, (id) => {
 					return id !== action.payload;
+				}),
+			};
+		}
+
+		case Constants.FOLLOW_TOPIC: {
+			return {
+				...state,
+				followed_topics: [...state.followed_topics, action.topic],
+			};
+		}
+
+		case Constants.UNFOLLOW_TOPIC: {
+			return {
+				...state,
+				followed_topics: _.filter(state.followed_topics, (topic) => {
+					return topic !== action.topic;
 				}),
 			};
 		}
