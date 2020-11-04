@@ -58,6 +58,7 @@ export default function LandingPage() {
 									userVote="upvote"
 									Image={post.image_url}
 									PostId={post._id}
+									Post={post}
 								></Post>
 							);
 						})}

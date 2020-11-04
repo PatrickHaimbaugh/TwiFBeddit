@@ -68,6 +68,12 @@ const Post = (props) => {
 		dispatch(navigationActions.changeCurrentPage("Account"));
 	};
 
+	const switchToTopicPage = (e) => {
+		e.stopPropagation();
+		dispatch(navigationActions.storeSearchRequest(Topic));
+		dispatch(navigationActions.changeCurrentPage("SearchResults"));
+	};
+
 	const savePost = async () => {
 		setLoading(true);
 		let params;
@@ -109,7 +115,9 @@ const Post = (props) => {
 					<UserTopicText onClick={(e) => switchToAuthorAccount(e)}>
 						u/{Username}
 					</UserTopicText>
-					<UserTopicText>r/{Topic}</UserTopicText>
+					<UserTopicText onClick={(e) => switchToTopicPage(e)}>
+						r/{Topic}
+					</UserTopicText>
 				</UserTopicRow>
 				<TitleRow>
 					<TitleText>{Title}</TitleText>
