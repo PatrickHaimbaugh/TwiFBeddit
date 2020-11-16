@@ -75,6 +75,20 @@ const AccountPage = () => {
 				}).then((resp) => {
 					dispatch(globalActions.setPosts(resp.posts));
 				});
+			}else{	//rendering account page if user is not logged in
+				makeNetworkCall({
+					HTTPmethod: "get",
+					path: "users",
+					params: {
+						username: usernameForAccountPage,
+					},
+				}).then((resp) => {
+					dispatch(navigationActions.setUserForAccountPage(resp));
+					setIsCurUser(false);
+					setIsFollowing(
+						currentAccount.following.includes(usernameForAccountPage)
+					);
+				});
 			}
 		};
 		getPosts();
