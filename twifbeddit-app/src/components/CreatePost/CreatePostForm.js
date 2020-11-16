@@ -19,6 +19,7 @@ export const Form = () => {
 	const [dropdownTopic, setDropdownTopic] = useState();
 	const [inputTopic, setInputTopic] = useState();
 	const [postText, setPostText] = useState("");
+	const [postUrl, setPostUrl] = useState();
 	const [postImage, setPostImage] = useState();
 	const [topicOptions, setTopicOptions] = useState([]);
 
@@ -86,6 +87,10 @@ export const Form = () => {
 		setPostText(input);
 	};
 
+	const handleUrlChange = (e) => {
+		setPostUrl(e.target.value);
+	};
+
 	const changeActiveScreen = (screen) => {
 		dispatch(navigationActions.changeCurrentPage(screen));
 	};
@@ -117,6 +122,7 @@ export const Form = () => {
 				topic: topic,
 				post_type: "post",
 				text: postText,
+				url: postUrl,
 				image_url: uploadRspUrl,
 			};
 
@@ -198,6 +204,15 @@ export const Form = () => {
 					value={postText}
 				></textarea>
 				<p>Characters Left: {charsLeft}</p>
+			</div>
+			<div className="form-group">
+				<label htmlFor="url">Post URL: </label>
+				<input
+					className="form-control"
+					id="url"
+					onChange={handleUrlChange}
+					value={postUrl}
+				/>
 			</div>
 			<div className="form-group">
 				<label htmlFor="attachment">Post Image: </label>
