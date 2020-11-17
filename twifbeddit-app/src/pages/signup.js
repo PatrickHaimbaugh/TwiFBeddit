@@ -12,6 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 
+import { Alert } from "rsuite";
 import { useState } from "react";
 import Copyright from "../components/copyright.component.js";
 import { useDispatch } from "react-redux";
@@ -51,11 +52,6 @@ export interface ISignUpResult {
 interface IProps {
 	onSignUp: (data: ISignUpData) => ISignUpResult;
 }
-
-/*const state = {
-  email: '',
-  password: ''
-}*/
 
 export default function IndividualSignUp() {
 	const classes = useStyles();
@@ -155,34 +151,21 @@ export default function IndividualSignUp() {
 					},
 				});
 				if (resp.error) {
-					console.log("Error Signing Up");
+					Alert.error("Erorr Signing Up.", 4000);
 				} else {
 					dispatch(globalActions.setCookie(resp.cookie));
 					dispatch(accountActions.setUser(resp));
 					changeActiveScreen("LandingPage");
+					Alert.success("Successfully Signed Up.", 4000);
 				}
-
-				// axios
-				// 	.post("http://localhost:5000/api/unverified/new", newUserDetails)
-				// 	.then((res) => {
-				// 		if (res.data.errors) {
-				// 			console.log(res.data);
-				// 			if (res.data.errors.email === "is already taken.") {
-				// 				alert("Email is already taken. Please sign-in instead!");
-				// 			}
-				// 		} else {
-				// 			alert("Confirmation email sent");
-				// 			window.location = "/verification"; //// TODO:
-				// 		}
-				// 	})
-				// 	.catch((err) => console.log("axios error: ", err));
 			} else {
-				alert(
-					"Sign-in not successful. Please enter valid email, username, and password."
+				Alert.error(
+					"Sign-in not successful. Please enter valid email, username, and password.",
+					4000
 				);
 			}
 		} else {
-			alert("You must accept terms and conditions to sign-up.");
+			Alert.error("You must accept terms and conditions to sign-up.");
 		}
 	};
 

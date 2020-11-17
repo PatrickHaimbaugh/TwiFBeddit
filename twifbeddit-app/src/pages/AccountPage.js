@@ -25,6 +25,7 @@ import makeNetworkCall from "../util/makeNetworkCall";
 import * as globalActions from "../containers/GlobalContainer/actions";
 import * as navigationActions from "../containers/NavigationContainer/actions";
 import _ from "lodash";
+import { Alert } from "rsuite";
 
 const AccountPage = () => {
 	const currentAccount = useSelector((state) => state.account),
@@ -50,6 +51,12 @@ const AccountPage = () => {
 						cookie,
 					}).then((resp) => {
 						dispatch(accountActions.setSavedPosts(resp.posts));
+						if (resp.error) {
+							Alert.error(
+								"Something went wrong getting your saved posts.",
+								4000
+							);
+						}
 					});
 				} else {
 					makeNetworkCall({
@@ -64,6 +71,12 @@ const AccountPage = () => {
 						setIsFollowing(
 							currentAccount.following.includes(usernameForAccountPage)
 						);
+						if (resp.error) {
+							Alert.error(
+								"Something went wrong loading this users information.",
+								4000
+							);
+						}
 					});
 				}
 				makeNetworkCall({
@@ -74,6 +87,9 @@ const AccountPage = () => {
 					},
 				}).then((resp) => {
 					dispatch(globalActions.setPosts(resp.posts));
+					if (resp.error) {
+						Alert.error("Something went wrong loading this users posts.", 4000);
+					}
 				});
 			}
 		};
@@ -110,6 +126,13 @@ const AccountPage = () => {
 			path: "users",
 			params,
 			cookie,
+		}).then((resp) => {
+			if (resp.error) {
+				Alert.error(
+					"Something went wrong when changing following status.",
+					4000
+				);
+			}
 		});
 	};
 

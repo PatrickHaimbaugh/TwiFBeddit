@@ -26,7 +26,6 @@ export default function startReducer(state = initalState, action) {
 		}
 
 		case Constants.UPDATE_POST: {
-			console.log(action);
 			return {
 				...state,
 				posts: _.map(state.posts, (post) => {

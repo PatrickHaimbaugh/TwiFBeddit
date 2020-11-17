@@ -6,6 +6,7 @@ import makeNetworkCall from "../util/makeNetworkCall";
 import * as accountActions from "../containers/AccountContainer/actions";
 import * as navigationActions from "../containers/NavigationContainer/actions";
 import { useDispatch, useSelector } from "react-redux";
+import { Alert } from "rsuite";
 
 export default function SearchResults() {
 	const currentAccount = useSelector((state) => state.account);
@@ -14,17 +15,17 @@ export default function SearchResults() {
 	const dispatch = useDispatch();
 
 	const [posts, setPosts] = useState([]);
-	const [isFollowing, setIsFollowing] = useState()
+	const [isFollowing, setIsFollowing] = useState();
 
 	const setInitialFollowState = () => {
-		if (currentAccount.username){
-			if (currentAccount.followed_topics.includes(searchRequest)){
+		if (currentAccount.username) {
+			if (currentAccount.followed_topics.includes(searchRequest)) {
 				setIsFollowing(true);
-			}else{
+			} else {
 				setIsFollowing(false);
 			}
 		}
-	}
+	};
 
 	const followOrUnfollowTopic = (type) => {
 		const topic = searchRequest;
@@ -53,7 +54,7 @@ export default function SearchResults() {
 			params,
 			cookie,
 		});
-	}
+	};
 
 	const getPosts = async () => {
 		setInitialFollowState();
@@ -67,7 +68,7 @@ export default function SearchResults() {
 			},
 		});
 		if (resp.error) {
-			console.log("Error receving posts");
+			Alert.error("Something went wrong loading posts.", 4000);
 		} else {
 			//Convert list of JSON post objects into array
 			var postsArray = [];
@@ -94,7 +95,7 @@ export default function SearchResults() {
 	return (
 		<Page col={12}>
 			<Content>
-					{isFollowing ? (
+				{isFollowing ? (
 					<FollowButton
 						onClick={() => {
 							followOrUnfollowTopic("Unfollow");

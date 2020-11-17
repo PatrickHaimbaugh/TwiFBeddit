@@ -20,7 +20,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import * as navigationActions from "../containers/NavigationContainer/actions";
 import * as accountActions from "../containers/AccountContainer/actions";
-
+import { Alert } from "rsuite";
 const Post = (props) => {
 	const {
 		Username,
@@ -61,6 +61,7 @@ const Post = (props) => {
 			const error = resp.error + " ";
 			if (!error.includes("409")) {
 				setCurVote(oldCurVote);
+				Alert.error("Something went wrong when voting on this post.", 4000);
 			}
 		}
 		setLoading(false);
@@ -103,6 +104,10 @@ const Post = (props) => {
 			cookie,
 			params,
 		});
+
+		if (resp.error) {
+			Alert.error("Something went wrong saving post.");
+		}
 
 		setLoading(false);
 	};

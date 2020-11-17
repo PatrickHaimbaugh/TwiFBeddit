@@ -15,6 +15,7 @@ import {
 	Button,
 	Modal,
 	Icon,
+	Alert,
 } from "rsuite";
 import { useDispatch, useSelector } from "react-redux";
 import uploadPicture from "../util/uploadPicture";
@@ -84,17 +85,16 @@ const EditAccountPage = () => {
 		const passwordValidationError = validatePassword(password, confirmPassword);
 		const bioValidationError = validateBio(bio);
 		if (emailValidationError != "" && email.length > 0) {
-			alert(emailValidationError);
+			Alert.error(emailValidationError, 4000);
 		} else if (passwordValidationError != "" && password.length > 0) {
-			alert(passwordValidationError);
+			Alert.error(passwordValidationError, 4000);
 		} else if (bioValidationError != "" && bio.length > 0) {
-			alert(bioValidationError);
+			Alert.error(bioValidationError, 4000);
 		} else {
 			//data is valid, send to db
 			let uploadRsp;
 			if (profilePic) {
 				uploadRsp = await uploadPicture(profilePic, "profile");
-				console.log("uploading picture", uploadRsp);
 			}
 
 			// let params = {
@@ -133,15 +133,21 @@ const EditAccountPage = () => {
 					cookie,
 				});
 				if (resp.error) {
-					console.log("Error Updating Info");
+					Alert.error(
+						"Something went wrong when updating Account Information.",
+						4000
+					);
 				} else {
-					console.log("success updating info", resp);
 					dispatch(accountActions.setUser(resp));
 					updateUsernameForAccount(username);
 					changeActiveScreen("Account");
+					Alert.success("Successfully updated Account Information.", 4000);
 				}
 			} else {
-				alert("Please change something on your account before submitting.");
+				Alert.info(
+					"Please change something on your account before submitting.",
+					4000
+				);
 			}
 		}
 	};
@@ -160,6 +166,12 @@ const EditAccountPage = () => {
 			HTTPmethod: "delete",
 			path: "users",
 			cookie,
+		}).then((resp) => {
+			if (resp.error) {
+				Alert.error("Something went wrong when deleting this user.", 4000);
+			} else {
+				Alert.success("Successfully deleted this user.", 4000);
+			}
 		});
 		logout();
 		changeActiveScreen("LandingPage");

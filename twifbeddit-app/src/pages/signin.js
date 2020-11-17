@@ -13,7 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import makeNetworkCall from "../util/makeNetworkCall";
-
+import { Alert } from "rsuite";
 import { useState, useEffect } from "react";
 import Copyright from "../components/copyright.component.js";
 import axios from "axios";
@@ -61,8 +61,6 @@ export default function SignInSide() {
 
 	const [email, setEmail] = useState("");
 	const [emailError, setEmailError] = useState("");
-	// const [username, setUsername] = useState("");
-	// const [usernameError, setUsernameError] = useState("");
 	const [password, setPassword] = useState("");
 	const [passwordError, setPasswordError] = useState("");
 	const dispatch = useDispatch();
@@ -71,63 +69,15 @@ export default function SignInSide() {
 		dispatch(navigationActions.changeCurrentPage(screen));
 	};
 
-	//const [rememberMe, setRememberMe] = useState(false);
-
 	const onChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
 		setEmail(e.currentTarget.value);
 		validateEmail(e.currentTarget.value);
 	};
 
-	// const onChangeUsername = (e: ChangeEvent<HTMLInputElement>) => {
-	// 	setUsername(e.currentTarget.value);
-	// 	validateEmail(e.currentTarget.value);
-	// };
-
 	const onChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
 		setPassword(e.currentTarget.value);
 		validatePassword(e.currentTarget.value);
 	};
-
-	/*const onChangeCheckbox = (e: ChangeEvent<HTMLInputElement>) => {
-    setRememberMe(e.currentTarget.value);
-    if (e.currentTarget.checked === true){
-      rememberUser();
-    }else{
-      forgetUser();
-    }
-  }
-
-  const rememberUser = () => {
-    try {
-      localStorage.setItem('TwiFBeddit-User', email);
-      localStorage.setItem('TwiFBeddit-Password', password);
-    } catch (error) {
-      console.log("Error saving data");
-    }
-  };
-
-  const forgetUser = () => {
-    try {
-      localStorage.removeItem('TwiFBeddit-User');
-      localStorage.removeItem('TwiFBeddit-Password');
-    } catch (error) {
-      console.log("Error removing");
-    }
-  };
-
-  const getRememberedUser = () => {
-    try {
-      const user = localStorage.getItem('TwiFBeddit-User');
-      const password = localStorage.getItem('TwiFBeddit-Password');
-      if (user !== null && password !== null) {
-        // We have user stored!!
-        const userDetails = [user, password];
-        return userDetails;
-      }
-    } catch (error) {
-      console.log("Error retrieving data");
-    }
-  };*/
 
 	const validateEmail = (value: string): string => {
 		let error = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
@@ -141,12 +91,6 @@ export default function SignInSide() {
 		setEmailError(error);
 		return error;
 	};
-
-	// const validateUsername = (value: string): string => {
-	// 	const error = value ? "" : "You must enter a valid Username";
-	// 	setUsernameError(error);
-	// 	return error;
-	// };
 
 	const validatePassword = (value: string): string => {
 		const error = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z$&+,:;=?@#|'<>.^*()%!-]{8,}$/.test(
@@ -176,9 +120,6 @@ export default function SignInSide() {
 					subscribed: false,
 				},
 			};
-			// console.log(userDetails);
-			//setSubmitResult(result);
-			//setSubmitted(true);
 			let params;
 			if (emailValidationError === "Valid Username") {
 				params = {
@@ -197,55 +138,19 @@ export default function SignInSide() {
 				params: params,
 			});
 			if (resp.error) {
-				console.log("Error Signing In");
+				Alert.error("Something went wrong signing in.");
 			} else {
+				Alert.success("Successfully signed in.");
 				dispatch(globalActions.setCookie(resp.cookie));
 				dispatch(accountActions.setUser(resp));
 				changeActiveScreen("LandingPage");
 			}
-			// axios
-			// 	.post("http://localhost:5000/api/users/login", userDetails)
-			// 	.then((res) => {
-			// 		if (res.status === 200) {
-			// 			//this.props.history.push('/');
-			// 			window.location = "/dashboard"; //TODO: navigate to dashboard
-			// 		} else {
-			// 			const error = new Error(res.error);
-			// 			throw error;
-			// 		}
-			// 	})
-			// 	.catch((err) => {
-			// 		console.error(err);
-			// 		alert(
-			// 			"Sign-in not successful. Please enter valid email and password."
-			// 		);
-			// 	});
 		} else {
 			alert(
 				"Sign-in not successful. Please enter valid username/email and password."
 			);
 		}
 	};
-
-	/*useEffect( () => {
-    const userDetails =  getRememberedUser();
-
-    //if (userDetails){
-      //const emailRemembered = userDetails.getEmail() || "";
-      //const passwordRemembered = userDetails.getPassword() || "";
-      //const checkboxStatus = userDetails ? true : false;
-    //}
-
-    if (userDetails){
-      const emailRemembered = userDetails[0] || "";
-      const passwordRemembered = userDetails[1] || "";
-      const checkboxStatus = userDetails ? true : false;
-
-      setEmail(emailRemembered);
-      setPassword(passwordRemembered);
-      setRememberMe(checkboxStatus);
-    }
-  })*/
 
 	return (
 		<Container component="main" maxWidth="xs">

@@ -4,7 +4,7 @@ import Post from "../components/Post";
 import makeNetworkCall from "../util/makeNetworkCall";
 import { Page } from "../styles/accountPageStyle";
 import _ from "lodash";
-import { Form, FormGroup, FormControl, Button } from "rsuite";
+import { Form, FormGroup, FormControl, Button, Alert } from "rsuite";
 import {
 	Content,
 	CommentCol,
@@ -38,6 +38,9 @@ const ViewPost = () => {
 		}).then((resp) => {
 			dispatch(globalActions.updatePost(resp.updatedPost));
 			dispatch(navigationAction.changeCurrentPost(resp.updatedPost));
+			if (resp.error) {
+				Alert.error("Something went wrong creating comment.", 4000);
+			}
 		});
 		setLoading(false);
 		setComment("");
