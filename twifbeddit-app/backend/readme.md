@@ -126,7 +126,7 @@ Set-Cookie Header, and user object like above
 ### Response
 ```json
 {
-    "posts": "[Post] (posts sorted by most recent, under topics followed by the user)" 
+    "posts": "[Post] (posts sorted by most recent, under topics followed by the user and from a user that the user follows, and does not return anonymously made posts)" 
 }
 ```
 
