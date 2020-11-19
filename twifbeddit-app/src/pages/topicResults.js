@@ -7,8 +7,9 @@ import * as accountActions from "../containers/AccountContainer/actions";
 import * as navigationActions from "../containers/NavigationContainer/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { Alert } from "rsuite";
+import * as globalActions from "../containers/GlobalContainer/actions";
 
-export default function SearchResults() {
+export default function SearchResults({ loading }) {
 	const currentAccount = useSelector((state) => state.account);
 	const searchRequest = useSelector((state) => state.navigation.searchRequest);
 	const cookie = useSelector((state) => state.global.cookie);
@@ -57,6 +58,7 @@ export default function SearchResults() {
 	};
 
 	const getPosts = async () => {
+		dispatch(globalActions.changeLoading(true));
 		setInitialFollowState();
 
 		const topic = searchRequest;
@@ -83,6 +85,7 @@ export default function SearchResults() {
 			console.log(postsArray);
 			setPosts(postsArray);
 		}
+		dispatch(globalActions.changeLoading(false));
 	};
 	//getPosts()
 	useEffect(() => {
@@ -94,7 +97,7 @@ export default function SearchResults() {
 
 	return (
 		<Page col={12}>
-			<Content>
+			<Content hidden={loading ? true : false}>
 				{isFollowing ? (
 					<FollowButton
 						onClick={() => {

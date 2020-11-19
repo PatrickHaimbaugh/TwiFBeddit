@@ -24,7 +24,7 @@ import * as navigationActions from "../containers/NavigationContainer/actions";
 import * as accountActions from "../containers/AccountContainer/actions";
 import * as globalActions from "../containers/GlobalContainer/actions";
 
-const EditAccountPage = () => {
+const EditAccountPage = ({ loading }) => {
 	const [email, setEmail] = useState(""),
 		[password, setPassword] = useState(""),
 		[confirmPassword, setConfirmPassword] = useState(""),
@@ -80,6 +80,7 @@ const EditAccountPage = () => {
 
 	const Submit = async (e) => {
 		e.preventDefault();
+		dispatch(globalActions.changeLoading(true));
 
 		const emailValidationError = validateEmail(email);
 		const passwordValidationError = validatePassword(password, confirmPassword);
@@ -138,6 +139,7 @@ const EditAccountPage = () => {
 						4000
 					);
 				} else {
+					dispatch(globalActions.changeLoading(false));
 					dispatch(accountActions.setUser(resp));
 					updateUsernameForAccount(username);
 					changeActiveScreen("Account");
@@ -149,6 +151,7 @@ const EditAccountPage = () => {
 					4000
 				);
 			}
+			dispatch(globalActions.changeLoading(false));
 		}
 	};
 
@@ -178,7 +181,7 @@ const EditAccountPage = () => {
 	};
 
 	return (
-		<Col col={12}>
+		<Col col={12} hidden={loading ? true : false}>
 			{/* Delete Account Modal */}
 			<Modal
 				backdrop="static"

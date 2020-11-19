@@ -22,7 +22,7 @@ const accountPersistConfig = {
 const globalPersistConfig = {
 	key: "global",
 	storage,
-	blacklist: ["posts"],
+	blacklist: ["posts", "loading"],
 };
 
 const rootReducer = combineReducers({

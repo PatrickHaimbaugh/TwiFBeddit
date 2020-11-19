@@ -21,10 +21,10 @@ const ViewPost = () => {
 		cookie = useSelector((state) => state.global.cookie),
 		dispatch = useDispatch(),
 		[comment, setComment] = useState(""),
-		[loading, setLoading] = useState(false);
+		[buttonLoading, setButtonLoading] = useState(false);
 
 	const post = async () => {
-		setLoading(true);
+		setButtonLoading(true);
 		await makeNetworkCall({
 			HTTPmethod: "post",
 			path: "comment",
@@ -42,7 +42,7 @@ const ViewPost = () => {
 				Alert.error("Something went wrong creating comment.", 4000);
 			}
 		});
-		setLoading(false);
+		setButtonLoading(false);
 		setComment("");
 	};
 
@@ -85,7 +85,7 @@ const ViewPost = () => {
 							value={comment}
 							type="text"
 						/>
-						<Button onClick={() => post()} disabled={loading}>
+						<Button onClick={() => post()} disabled={buttonLoading}>
 							Comment
 						</Button>
 					</FormGroup>

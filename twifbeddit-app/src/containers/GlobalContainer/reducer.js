@@ -4,6 +4,7 @@ import _ from "lodash";
 const initalState = {
 	posts: [],
 	cookie: "",
+	loading: false,
 };
 
 export default function startReducer(state = initalState, action) {
@@ -34,6 +35,13 @@ export default function startReducer(state = initalState, action) {
 					}
 					return post;
 				}),
+			};
+		}
+
+		case Constants.CHANGE_LOADING: {
+			return {
+				...state,
+				loading: action.payload,
 			};
 		}
 

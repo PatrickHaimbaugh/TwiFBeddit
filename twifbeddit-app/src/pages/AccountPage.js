@@ -27,7 +27,7 @@ import * as navigationActions from "../containers/NavigationContainer/actions";
 import _ from "lodash";
 import { Alert } from "rsuite";
 
-const AccountPage = () => {
+const AccountPage = ({ loading }) => {
 	const currentAccount = useSelector((state) => state.account),
 		{ usernameForAccountPage, userForAccountPage } = useSelector(
 			(state) => state.navigation
@@ -40,6 +40,7 @@ const AccountPage = () => {
 		[isFollowing, setIsFollowing] = useState(false);
 
 	useEffect(() => {
+		dispatch(globalActions.changeLoading(true));
 		const getPosts = async () => {
 			if (currentAccount.username) {
 				if (currentAccount.username === usernameForAccountPage) {
@@ -86,6 +87,7 @@ const AccountPage = () => {
 						author: usernameForAccountPage,
 					},
 				}).then((resp) => {
+					dispatch(globalActions.changeLoading(false));
 					dispatch(globalActions.setPosts(resp.posts));
 					if (resp.error) {
 						Alert.error("Something went wrong loading this users posts.", 4000);
@@ -147,7 +149,7 @@ const AccountPage = () => {
 
 	return (
 		<Page col={12}>
-			<Content>
+			<Content hidden={loading ? true : false}>
 				<UpperHeaderRow>
 					<ProfilePictureCol col={3}>
 						<ProfilePicture

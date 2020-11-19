@@ -4,14 +4,17 @@ import { Page, Content } from "../styles/accountPageStyle";
 import Post from "../components/Post.js";
 import makeNetworkCall from "../util/makeNetworkCall";
 import { Alert } from "rsuite";
+import * as globalActions from "../containers/GlobalContainer/actions";
 
-export default function LandingPage() {
+export default function LandingPage({ loading }) {
 	const username = useSelector((state) => state.account.username);
 	const cookie = useSelector((state) => state.global.cookie);
+	const dispatch = useDispatch();
 
 	const [posts, setPosts] = useState([]);
 
 	const getPosts = async () => {
+		dispatch(globalActions.changeLoading(true));
 		const resp = await makeNetworkCall({
 			HTTPmethod: "get",
 			path: "posts",
@@ -33,6 +36,7 @@ export default function LandingPage() {
 			console.log(postsArray);
 			setPosts(postsArray);
 		}
+		dispatch(globalActions.changeLoading(false));
 	};
 	//getPosts()
 	useEffect(() => {
@@ -47,7 +51,7 @@ export default function LandingPage() {
 	return (
 		<Page col={12}>
 			{username != "" ? (
-				<Content>
+				<Content hidden={loading ? true : false}>
 					{posts.map(function (post) {
 						return (
 							<Post

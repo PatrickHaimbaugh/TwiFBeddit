@@ -21,6 +21,7 @@ import { useDispatch } from "react-redux";
 import * as navigationActions from "../containers/NavigationContainer/actions";
 import * as accountActions from "../containers/AccountContainer/actions";
 import * as globalActions from "../containers/GlobalContainer/actions";
+import Loader from "../components/Loader";
 class UserDetails {
 	constructor(email, password) {
 		this.email = email;
@@ -56,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function SignInSide() {
+export default function SignInSide({ loading }) {
 	const classes = useStyles();
 
 	const [email, setEmail] = useState("");
@@ -104,6 +105,7 @@ export default function SignInSide() {
 
 	const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		dispatch(globalActions.changeLoading(true));
 
 		const emailValidationError = validateEmail(email);
 		// const usernameValidationError = validateUsername(username);
@@ -137,6 +139,7 @@ export default function SignInSide() {
 				path: "login",
 				params: params,
 			});
+
 			if (resp.error) {
 				Alert.error("Something went wrong signing in.");
 			} else {
@@ -150,78 +153,83 @@ export default function SignInSide() {
 				"Sign-in not successful. Please enter valid username/email and password."
 			);
 		}
+		dispatch(globalActions.changeLoading(false));
 	};
 
-	return (
-		<Container component="main" maxWidth="xs">
-			<CssBaseline />
-			<div className={classes.paper}>
-				<Avatar className={classes.avatar}>{/*<LockOutlinedIcon />*/}</Avatar>
-				<Typography component="h1" variant="h5">
-					Sign in
-				</Typography>
-				<form className={classes.form} onSubmit={onSubmit} noValidate>
-					<Grid container spacing={2}>
-						<Grid item xs={12}>
-							<TextField
-								variant="outlined"
-								required
-								fullWidth
-								id="username"
-								label="Email or Username"
-								autoComplete="off"
-								name="username"
-								value={email}
-								onChange={onChangeEmail}
-							/>
-							<span className="error">{emailError}</span>
+	if (loading) {
+		return null;
+	} else {
+		return (
+			<Container component="main" maxWidth="xs">
+				<CssBaseline />
+				<div className={classes.paper}>
+					<Avatar className={classes.avatar}>{/*<LockOutlinedIcon />*/}</Avatar>
+					<Typography component="h1" variant="h5">
+						Sign in
+					</Typography>
+					<form className={classes.form} onSubmit={onSubmit} noValidate>
+						<Grid container spacing={2}>
+							<Grid item xs={12}>
+								<TextField
+									variant="outlined"
+									required
+									fullWidth
+									id="username"
+									label="Email or Username"
+									autoComplete="off"
+									name="username"
+									value={email}
+									onChange={onChangeEmail}
+								/>
+								<span className="error">{emailError}</span>
+							</Grid>
+							<Grid item xs={12}>
+								<TextField
+									variant="outlined"
+									required
+									fullWidth
+									name="password"
+									label="Password"
+									type="password"
+									id="password"
+									autoComplete="current-password"
+									password={password}
+									onChange={onChangePassword}
+								/>
+								<span className="error">{passwordError}</span>
+							</Grid>
 						</Grid>
-						<Grid item xs={12}>
-							<TextField
-								variant="outlined"
-								required
-								fullWidth
-								name="password"
-								label="Password"
-								type="password"
-								id="password"
-								autoComplete="current-password"
-								password={password}
-								onChange={onChangePassword}
-							/>
-							<span className="error">{passwordError}</span>
+						<Button
+							type="submit"
+							fullWidth
+							variant="contained"
+							color="primary"
+							className={classes.submit}
+						>
+							Sign In
+						</Button>
+						<Grid container>
+							<Grid item xs>
+								<Link href="#" variant="body2">
+									Forgot password?
+								</Link>
+							</Grid>
+							<Grid item>
+								<Link
+									href="/"
+									onClick={() => changeActiveScreen("SignUp")}
+									variant="body2"
+								>
+									{"Don't have an account? Sign Up"}
+								</Link>
+							</Grid>
 						</Grid>
-					</Grid>
-					<Button
-						type="submit"
-						fullWidth
-						variant="contained"
-						color="primary"
-						className={classes.submit}
-					>
-						Sign In
-					</Button>
-					<Grid container>
-						<Grid item xs>
-							<Link href="#" variant="body2">
-								Forgot password?
-							</Link>
-						</Grid>
-						<Grid item>
-							<Link
-								href="/"
-								onClick={() => changeActiveScreen("SignUp")}
-								variant="body2"
-							>
-								{"Don't have an account? Sign Up"}
-							</Link>
-						</Grid>
-					</Grid>
-					<Box mt={5}>
-						<Copyright />
-					</Box>
-				</form>
-			</div>
-		</Container>
-	);
+						<Box mt={5}>
+							<Copyright />
+						</Box>
+					</form>
+				</div>
+			</Container>
+		);
+	}
 }
