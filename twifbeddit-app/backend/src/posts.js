@@ -78,6 +78,7 @@ exports.GET = async (_, event) => {
         .where('topic').in(user.followed_topics)
         .where('author').in(user.following)
         .where('anonymous').equals(false)
+        .where('username').nin(user.blocked == undefined ? [] : user.blocked)
         .sort({ createdAt: -1}).exec();
         
         posts = JSON.parse(JSON.stringify(posts));
@@ -96,7 +97,10 @@ exports.GET = async (_, event) => {
     } 
     if (event.queryStringParameters.topic != undefined) {
         const topic = event.queryStringParameters.topic;
-        var posts = await Post.find().where('topic').in(topic).sort({ createdAt: -1}).exec();
+        var posts = await Post.find()
+        .where('topic').in(topic)
+        .where('username').nin(user.blocked == undefined ? [] : user.blocked)
+        .sort({ createdAt: -1}).exec();
         posts = JSON.parse(JSON.stringify(posts));
         removeComments(posts);
         for (var post of posts) {
