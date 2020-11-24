@@ -76,6 +76,37 @@ exports.PATCH = async (_, event) => {
         };
     }
 
+    if (event.queryStringParameters.usernameToBlock != undefined) {
+        const username = await get_user_from_header(event.headers);
+        const usernameToBlock = event.queryStringParameters.usernameToBlock;
+        const user = await User.findOneAndUpdate(
+            {username: username},
+            {$push: {blocked: usernameToBlock}},
+            {new: true}
+        );
+        return {
+            'statusCode': 200,
+            'body': JSON.stringify({
+                "blocked": user.blocked
+            })
+        };
+    }
+    if (event.queryStringParameters.usernameToUnBlock != undefined) {
+        const username = await get_user_from_header(event.headers);
+        const usernameToUnBlock = event.queryStringParameters.usernameToUnBlock;
+        const user = await User.findOneAndUpdate(
+            {username: username},
+            {$pull: {blocked: usernameToUnBlock}},
+            {new: true}
+        );
+        return {
+            'statusCode': 200,
+            'body': JSON.stringify({
+                "blocked": user.blocked
+            })
+        };
+    }
+
     var update = event.queryStringParameters;
     if (update.password != undefined)
         update.password = bcrypt.hashSync(event.queryStringParameters.password, 10);

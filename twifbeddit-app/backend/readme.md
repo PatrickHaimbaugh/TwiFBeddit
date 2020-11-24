@@ -81,6 +81,22 @@ This will return information on a user. Currently this will succeed for all user
     "allowDmFromNotFollowed": "Bool"
 }
 ```
+### Parameters
+`usernameToBlock=string`
+### Response
+```json
+{
+    "blocked": "[String (username)]"
+}
+```
+### Parameters
+`usernameToUnBlock=string`
+### Response
+```json
+{
+    "blocked": "[String (username)]"
+}
+```
 
 ## DELETE
 Delete deletes ther user associated with the current user session cookie, all their comments and decreases the following count for all of their followers.
