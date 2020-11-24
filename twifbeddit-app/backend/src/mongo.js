@@ -46,6 +46,7 @@ var PostSchema = new mongoose.Schema({
     post_type: {type: String, default: "text"},
     text: {type: String, required: [true, "cannot be empty."]},
     image_url: {type: String, default: null},
+    url: {type: String, default: null},
     comments: {type: [mongoose.ObjectId], default: []},
 }, {timestamps: true});
 
