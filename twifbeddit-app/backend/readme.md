@@ -73,6 +73,14 @@ This will return information on a user. Currently this will succeed for all user
     "following": "[String (usernames)]",
 }
 ```
+### Parameters
+`allowDmFromNotFollowed=bool`
+### Response
+```json
+{
+    "allowDmFromNotFollowed": "Bool"
+}
+```
 
 ## DELETE
 Delete deletes ther user associated with the current user session cookie, all their comments and decreases the following count for all of their followers.

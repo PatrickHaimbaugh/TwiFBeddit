@@ -61,6 +61,21 @@ exports.PATCH = async (_, event) => {
         }
     }
 
+    if (event.queryStringParameters.allowDmFromNotFollowed != undefined) {
+        const username = await get_user_from_header(event.headers);
+        const user = await User.findOneAndUpdate(
+            {username: username},
+            {allowDmFromNotFollowed: allowDmFromNotFollowed == "true"},
+            {new: true}
+        );
+        return {
+            'statusCode': 200,
+            'body': JSON.stringify({
+                "allowDmFromNotFollowed": user.allowDmFromNotFollowed
+            })
+        };
+    }
+
     var update = event.queryStringParameters;
     if (update.password != undefined)
         update.password = bcrypt.hashSync(event.queryStringParameters.password, 10);

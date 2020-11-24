@@ -19,6 +19,7 @@ var UserSchema = new mongoose.Schema({
     following: { type: [String], default: [] },
     followers: { type: Number, default: 0 },
     blocked: {type: [String], default: []},
+    allowDmFromNotFollowed: {type: Boolean, default: true},
     savedPosts: { type: [String], default: [] },
     // Post _id to [up|down]
     postVotes: { type: Map, of: String, default: {}},
