@@ -239,3 +239,48 @@ Blocking a user will make their posts not show up on a users feed unless they sp
 ## POST
 ### Parameters
 `toBlock=string (username)`
+
+# /dm
+## POST
+### Accepts
+```json
+{
+    "to": "String (username)",
+    "message": "String"
+}
+```
+### Response
+None
+## GET
+### Response
+Object mapping username to the conversation between that user.
+An example. If the user alex has messaged james "hello" and james responds "hi" the GET from alex's account will look like:
+```json
+{
+    "james": [
+        {
+            "from": "alex",
+            "message": "hello"
+        },
+        {
+            "from": "james",
+            "message": "hi"
+        }
+    ]
+}
+```
+From James' account it will look exactly the same except it is from alex
+```json
+{
+    "alex": [
+        {
+            "from": "alex",
+            "message": "hello"
+        },
+        {
+            "from": "james",
+            "message": "hi"
+        }
+    ]
+}
+```

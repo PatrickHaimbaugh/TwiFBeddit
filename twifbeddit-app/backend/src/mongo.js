@@ -1,3 +1,4 @@
+const { mongo } = require("mongoose");
 let mongoose = require("mongoose");
 
 var UserSchema = new mongoose.Schema({
@@ -55,6 +56,23 @@ var TopicSchema = new mongoose.Schema({
 });
 
 exports.Topic = mongoose.model("Topic", TopicSchema);
+
+
+var MessageSchema = new mongoose.Schema({
+    from: {type: String},
+    message: {type: String}
+});
+
+const Message = mongoose.model("Message", MessageSchema);
+exports.Message = Message;
+
+var ConversationSchema = new mongoose.Schema({
+    // [user1, user2].sort().join()
+    con_id: {type: String},
+    conversation: { type: [MessageSchema], default: {}},
+});
+
+exports.Conversation = mongoose.model("Conversation", ConversationSchema);
 
 mongoose.set('useFindAndModify', false);
 
