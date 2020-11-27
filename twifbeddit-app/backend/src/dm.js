@@ -13,7 +13,7 @@ exports.GET = async (_, event) => {
         console.log(dm);
         const from = dm.con_id.split(',').filter(v => v != username)[0];
         conversations[from] = dm.conversation;
-        //conversations.push({user: from, conversation: dm.conversation});
+        conversations.push({user: from, conversation: dm.conversation});
     });
     return {'statusCode': 200, 'body': JSON.stringify({
         conversations: conversations
