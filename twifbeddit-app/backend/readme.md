@@ -104,6 +104,22 @@ Delete deletes ther user associated with the current user session cookie, all th
 ### Response
 This should always succeed with statusCode 200.
 
+# /verify
+
+## GET
+Set's the user's "verified" boolean to true. It is made as a get request to enable users to click on a link to this endpoint in order to verify their account.
+### Parameters
+`uuid=string`
+### Response
+
+```json
+{
+    "email": "String, email being verified",
+    "username": "String, user being verified",
+    "verified": "Boolean, user's verification status"
+}
+```
+
 # /login
 
 ## GET

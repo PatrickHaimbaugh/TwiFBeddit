@@ -23,6 +23,7 @@ var UserSchema = new mongoose.Schema({
     savedPosts: { type: [String], default: [] },
     // Post _id to [up|down]
     postVotes: { type: Map, of: String, default: {}},
+    verified: {type: Boolean, default: false},
 });
 
 exports.User = mongoose.model("User", UserSchema);
@@ -75,6 +76,14 @@ var ConversationSchema = new mongoose.Schema({
 });
 
 exports.Conversation = mongoose.model("Conversation", ConversationSchema);
+
+var VerifySchema = new mongoose.Schema({
+    email: {type: String},
+    username: {type: String},
+    verification_uuid: {type: String},
+});
+
+exports.Verify = mongoose.model("Verify", VerifySchema);
 
 mongoose.set('useFindAndModify', false);
 

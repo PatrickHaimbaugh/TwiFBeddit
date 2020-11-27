@@ -1,9 +1,11 @@
 const mongoose = require("mongoose");
 const User = mongoose.model("User");
 const Post = mongoose.model("Post");
+const Verify = mongoose.model("Verify");
 const UserSession = mongoose.model("UserSession");
 const bcrypt = require("bcryptjs");
 const { get_cookie_header, get_user_from_header } = require("./auth");
+const { v4: uuidv4 } = require('uuid');
 
 
 exports.create_external_user = (mongo_user) => {
@@ -22,8 +24,13 @@ exports.POST = async (_, event) => {
     const newUser = new User(data);
     var createdUser = await newUser.save();
     var externalUser = exports.create_external_user(createdUser);
+
     const cookieHeader = await get_cookie_header(newUser.username);
     externalUser.cookie = cookieHeader["Set-Cookie"];
+
+    const verifyUUID = new Verify({email: newUser.email, username: newUser.username, verification_uuid: uuidv4()});
+    await verifyUUID.save();
+
     return {
         'statusCode': 200,
         'headers': cookieHeader,
