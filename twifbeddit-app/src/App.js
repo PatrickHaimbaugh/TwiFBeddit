@@ -14,40 +14,43 @@ import VerificationInstructions from "./components/verificationInstructions.comp
 import Verify from "./components/verify.component";
 
 import SignUp from "./pages/signup.js";
+import Loader from "./components/Loader";
 
 import TopicResults from "./pages/topicResults.js";
 
 const App = (props) => {
-	const currentPage = useSelector((state) => state.navigation.currentPage);
+	const currentPage = useSelector((state) => state.navigation.currentPage),
+		loading = useSelector((state) => state.global.loading);
 
 	return (
 		<Router>
 			<div className="container">
 				<Navigation />
-				{currentPage === "LandingPage" && <LandingPage />}
 
-				{currentPage === "SignIn" && <SignIn />}
+				{loading && <Loader loading={loading} />}
 
-				{currentPage === "SignUp" && <SignUp />}
+				{currentPage === "LandingPage" && <LandingPage loading={loading} />}
 
-				{currentPage === "EditAccountPage" && <EditAccountPage />}
+				{currentPage === "SignIn" && <SignIn loading={loading} />}
 
-				{currentPage === "Account" && <AccountPage />}
+				{currentPage === "SignUp" && <SignUp loading={loading} />}
 
-				{currentPage === "Post" && <PostPage />}
+				{currentPage === "EditAccountPage" && (
+					<EditAccountPage loading={loading} />
+				)}
 
-				{currentPage === "ViewPost" && <ViewPost />}
+				{currentPage === "Account" && <AccountPage loading={loading} />}
 
-				{/* <Route path="/signin" component={SignIn} /> */}
+				{currentPage === "Post" && <PostPage loading={loading} />}
+
+				{currentPage === "ViewPost" && <ViewPost loading={loading} />}
+
 				<Route path="/verification" component={VerificationInstructions} />
 				<Route path="/verify/:id" component={Verify} />
 
-				{/* <Route path="/signup" component={SignUp} /> */}
-
 				{/*<Route path="/topic/:topic" component={TopicResults} />*/}
 
-				{/*currentPage === "SearchResults" && <TopicResults />*/}
-				{currentPage === "SearchResults" && <TopicResults />}
+				{currentPage === "SearchResults" && <TopicResults loading={loading} />}
 			</div>
 		</Router>
 	);

@@ -12,6 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 
+import { Alert } from "rsuite";
 import { useState } from "react";
 import Copyright from "../components/copyright.component.js";
 import { useDispatch } from "react-redux";
@@ -52,12 +53,7 @@ interface IProps {
 	onSignUp: (data: ISignUpData) => ISignUpResult;
 }
 
-/*const state = {
-  email: '',
-  password: ''
-}*/
-
-export default function IndividualSignUp() {
+export default function IndividualSignUp({ loading }) {
 	const classes = useStyles();
 
 	const [email, setEmail] = useState("");
@@ -127,6 +123,7 @@ export default function IndividualSignUp() {
 
 	const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		dispatch(globalActions.changeLoading(true));
 
 		const emailValidationError = validateEmail(email);
 		const usernameValidationError = validateUsername(username);
@@ -155,129 +152,121 @@ export default function IndividualSignUp() {
 					},
 				});
 				if (resp.error) {
-					console.log("Error Signing Up");
+					Alert.error("Erorr Signing Up.", 4000);
 				} else {
+					dispatch(globalActions.changeLoading(false));
 					dispatch(globalActions.setCookie(resp.cookie));
 					dispatch(accountActions.setUser(resp));
 					changeActiveScreen("LandingPage");
+					Alert.success("Successfully Signed Up.", 4000);
 				}
-
-				// axios
-				// 	.post("http://localhost:5000/api/unverified/new", newUserDetails)
-				// 	.then((res) => {
-				// 		if (res.data.errors) {
-				// 			console.log(res.data);
-				// 			if (res.data.errors.email === "is already taken.") {
-				// 				alert("Email is already taken. Please sign-in instead!");
-				// 			}
-				// 		} else {
-				// 			alert("Confirmation email sent");
-				// 			window.location = "/verification"; //// TODO:
-				// 		}
-				// 	})
-				// 	.catch((err) => console.log("axios error: ", err));
 			} else {
-				alert(
-					"Sign-in not successful. Please enter valid email, username, and password."
+				Alert.error(
+					"Sign-in not successful. Please enter valid email, username, and password.",
+					4000
 				);
 			}
 		} else {
-			alert("You must accept terms and conditions to sign-up.");
+			Alert.error("You must accept terms and conditions to sign-up.");
 		}
+		dispatch(globalActions.changeLoading(false));
 	};
-
-	return (
-		<Container component="main" maxWidth="xs">
-			<CssBaseline />
-			<div className={classes.paper}>
-				<Avatar className={classes.avatar}>{/*<LockOutlinedIcon />*/}</Avatar>
-				<Typography component="h1" variant="h5">
-					Sign up
-				</Typography>
-				<form className={classes.form} onSubmit={onSubmit} noValidate>
-					<Grid container spacing={2}>
-						<Grid item xs={12}>
-							<TextField
-								variant="outlined"
-								required
-								fullWidth
-								id="email"
-								label="Email Address"
-								name="email"
-								autoComplete="email"
-								value={email}
-								onChange={onChangeEmail}
-							/>
-							<span className={classes.error}>{emailError}</span>
+	if (loading) {
+		return null;
+	} else {
+		return (
+			<Container component="main" maxWidth="xs">
+				<CssBaseline />
+				<div className={classes.paper}>
+					<Avatar className={classes.avatar}>{/*<LockOutlinedIcon />*/}</Avatar>
+					<Typography component="h1" variant="h5">
+						Sign up
+					</Typography>
+					<form className={classes.form} onSubmit={onSubmit} noValidate>
+						<Grid container spacing={2}>
+							<Grid item xs={12}>
+								<TextField
+									variant="outlined"
+									required
+									fullWidth
+									id="email"
+									label="Email Address"
+									name="email"
+									autoComplete="email"
+									value={email}
+									onChange={onChangeEmail}
+								/>
+								<span className={classes.error}>{emailError}</span>
+							</Grid>
+							<Grid item xs={12}>
+								<TextField
+									variant="outlined"
+									required
+									fullWidth
+									id="username"
+									label="Username"
+									autoComplete="off"
+									name="username"
+									value={username}
+									onChange={onChangeUsername}
+								/>
+								<span className={classes.error}>{usernameError}</span>
+							</Grid>
+							<Grid item xs={12}>
+								<TextField
+									variant="outlined"
+									required
+									fullWidth
+									name="password"
+									label="Password"
+									type="password"
+									id="password"
+									autoComplete="current-password"
+									password={password}
+									onChange={onChangePassword}
+								/>
+								<span className={classes.error}>{passwordError}</span>
+							</Grid>
+							<Grid item xs={12}>
+								<FormControlLabel
+									control={
+										<Checkbox
+											onChange={onChangeConditionsCheckbox}
+											value="allowExtraEmails"
+											color="primary"
+										/>
+									}
+									label="I have read and agreed to the terms and conditions."
+								/>
+							</Grid>
 						</Grid>
-						<Grid item xs={12}>
-							<TextField
-								variant="outlined"
-								required
-								fullWidth
-								id="username"
-								label="Username"
-								autoComplete="off"
-								name="username"
-								value={username}
-								onChange={onChangeUsername}
-							/>
-							<span className={classes.error}>{usernameError}</span>
+						<Button
+							type="submit"
+							fullWidth
+							variant="contained"
+							color="primary"
+							className={classes.submit}
+						>
+							Sign Up
+						</Button>
+						<Grid container justify="flex-end">
+							<Grid item>
+								<Link
+									href="/"
+									onClick={() => changeActiveScreen("SignIn")}
+									className="nav-link"
+									variant="body2"
+								>
+									Already have an account? Sign in
+								</Link>
+							</Grid>
 						</Grid>
-						<Grid item xs={12}>
-							<TextField
-								variant="outlined"
-								required
-								fullWidth
-								name="password"
-								label="Password"
-								type="password"
-								id="password"
-								autoComplete="current-password"
-								password={password}
-								onChange={onChangePassword}
-							/>
-							<span className={classes.error}>{passwordError}</span>
-						</Grid>
-						<Grid item xs={12}>
-							<FormControlLabel
-								control={
-									<Checkbox
-										onChange={onChangeConditionsCheckbox}
-										value="allowExtraEmails"
-										color="primary"
-									/>
-								}
-								label="I have read and agreed to the terms and conditions."
-							/>
-						</Grid>
-					</Grid>
-					<Button
-						type="submit"
-						fullWidth
-						variant="contained"
-						color="primary"
-						className={classes.submit}
-					>
-						Sign Up
-					</Button>
-					<Grid container justify="flex-end">
-						<Grid item>
-							<Link
-								href="/"
-								onClick={() => changeActiveScreen("SignIn")}
-								className="nav-link"
-								variant="body2"
-							>
-								Already have an account? Sign in
-							</Link>
-						</Grid>
-					</Grid>
-				</form>
-			</div>
-			<Box mt={5}>
-				<Copyright />
-			</Box>
-		</Container>
-	);
+					</form>
+				</div>
+				<Box mt={5}>
+					<Copyright />
+				</Box>
+			</Container>
+		);
+	}
 }

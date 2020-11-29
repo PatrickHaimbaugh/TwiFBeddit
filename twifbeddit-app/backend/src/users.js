@@ -1,9 +1,11 @@
 const mongoose = require("mongoose");
 const User = mongoose.model("User");
 const Post = mongoose.model("Post");
+const Verify = mongoose.model("Verify");
 const UserSession = mongoose.model("UserSession");
 const bcrypt = require("bcryptjs");
 const { get_cookie_header, get_user_from_header } = require("./auth");
+const { v4: uuidv4 } = require('uuid');
 
 
 exports.create_external_user = (mongo_user) => {
@@ -22,8 +24,13 @@ exports.POST = async (_, event) => {
     const newUser = new User(data);
     var createdUser = await newUser.save();
     var externalUser = exports.create_external_user(createdUser);
+
     const cookieHeader = await get_cookie_header(newUser.username);
     externalUser.cookie = cookieHeader["Set-Cookie"];
+
+    const verifyUUID = new Verify({email: newUser.email, username: newUser.username, verification_uuid: uuidv4()});
+    await verifyUUID.save();
+
     return {
         'statusCode': 200,
         'headers': cookieHeader,
@@ -61,9 +68,55 @@ exports.PATCH = async (_, event) => {
         }
     }
 
+    if (event.queryStringParameters.allowDmFromNotFollowed != undefined) {
+        const username = await get_user_from_header(event.headers);
+        const user = await User.findOneAndUpdate(
+            {username: username},
+            {allowDmFromNotFollowed: allowDmFromNotFollowed == "true"},
+            {new: true}
+        );
+        return {
+            'statusCode': 200,
+            'body': JSON.stringify({
+                "allowDmFromNotFollowed": user.allowDmFromNotFollowed
+            })
+        };
+    }
+
+    if (event.queryStringParameters.usernameToBlock != undefined) {
+        const username = await get_user_from_header(event.headers);
+        const usernameToBlock = event.queryStringParameters.usernameToBlock;
+        const user = await User.findOneAndUpdate(
+            {username: username},
+            {$push: {blocked: usernameToBlock}},
+            {new: true}
+        );
+        return {
+            'statusCode': 200,
+            'body': JSON.stringify({
+                "blocked": user.blocked
+            })
+        };
+    }
+    if (event.queryStringParameters.usernameToUnBlock != undefined) {
+        const username = await get_user_from_header(event.headers);
+        const usernameToUnBlock = event.queryStringParameters.usernameToUnBlock;
+        const user = await User.findOneAndUpdate(
+            {username: username},
+            {$pull: {blocked: usernameToUnBlock}},
+            {new: true}
+        );
+        return {
+            'statusCode': 200,
+            'body': JSON.stringify({
+                "blocked": user.blocked
+            })
+        };
+    }
+
     var update = event.queryStringParameters;
-    if (update.email != undefined)
-        update.email = bcrypt.hashSync(event.queryStringParameters.password, 10);
+    if (update.password != undefined)
+        update.password = bcrypt.hashSync(event.queryStringParameters.password, 10);
     
     const username = await get_user_from_header(event.headers);
     const updatedUser = await User.findOneAndUpdate({username: username}, {$set: update}, {new: true});

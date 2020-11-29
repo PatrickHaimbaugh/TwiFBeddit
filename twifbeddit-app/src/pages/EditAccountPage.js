@@ -15,6 +15,7 @@ import {
 	Button,
 	Modal,
 	Icon,
+	Alert,
 } from "rsuite";
 import { useDispatch, useSelector } from "react-redux";
 import uploadPicture from "../util/uploadPicture";
@@ -23,7 +24,7 @@ import * as navigationActions from "../containers/NavigationContainer/actions";
 import * as accountActions from "../containers/AccountContainer/actions";
 import * as globalActions from "../containers/GlobalContainer/actions";
 
-const EditAccountPage = () => {
+const EditAccountPage = ({ loading }) => {
 	const [email, setEmail] = useState(""),
 		[password, setPassword] = useState(""),
 		[confirmPassword, setConfirmPassword] = useState(""),
@@ -73,43 +74,84 @@ const EditAccountPage = () => {
 		dispatch(navigationActions.changeCurrentPage(screen));
 	};
 
+	const updateUsernameForAccount = (username) => {
+		dispatch(navigationActions.setUsernameForAccountPage(username));
+	};
+
 	const Submit = async (e) => {
 		e.preventDefault();
+		dispatch(globalActions.changeLoading(true));
 
 		const emailValidationError = validateEmail(email);
 		const passwordValidationError = validatePassword(password, confirmPassword);
 		const bioValidationError = validateBio(bio);
-		if (emailValidationError != "") {
-			alert(emailValidationError);
-		} else if (passwordValidationError != "") {
-			alert(passwordValidationError);
-		} else if (bioValidationError != "") {
-			alert(bioValidationError);
-		} else if (!profilePic) {
-			alert("Please Include a Profile Picture");
+		if (emailValidationError != "" && email.length > 0) {
+			Alert.error(emailValidationError, 4000);
+		} else if (passwordValidationError != "" && password.length > 0) {
+			Alert.error(passwordValidationError, 4000);
+		} else if (bioValidationError != "" && bio.length > 0) {
+			Alert.error(bioValidationError, 4000);
 		} else {
 			//data is valid, send to db
-			const uploadRsp = await uploadPicture(profilePic, "profile");
-
-			const params = {
-				email,
-				password,
-				profile_picture: uploadRsp.imageUrlForMongoDB,
-				bio,
-			};
-			const resp = await makeNetworkCall({
-				HTTPmethod: "patch",
-				path: "users",
-				params,
-				cookie,
-			});
-			if (resp.error) {
-				console.log("Error Updating Info");
-			} else {
-				console.log("sucess updating info", resp);
-				dispatch(accountActions.setUser(resp));
-				changeActiveScreen("Account");
+			let uploadRsp;
+			if (profilePic) {
+				uploadRsp = await uploadPicture(profilePic, "profile");
 			}
+
+			// let params = {
+			// 	//change this
+			// 	if (email.length > 0) {
+			// 		email,
+			// 	}
+			// 	email,
+			// 	password,
+			// 	profile_picture: uploadRsp.imageUrlForMongoDB,
+			// 	bio,
+			// };
+			let params = {};
+			let sendReq = false;
+			if (email.length > 0) {
+				params.email = email;
+				sendReq = true;
+			}
+			if (password.length > 0) {
+				params.password = password;
+				sendReq = true;
+			}
+			if (profilePic) {
+				params.profile_picture = uploadRsp.imageUrlForMongoDB;
+				sendReq = true;
+			}
+			if (bio.length > 0) {
+				params.bio = bio;
+				sendReq = true;
+			}
+			if (sendReq) {
+				const resp = await makeNetworkCall({
+					HTTPmethod: "patch",
+					path: "users",
+					params,
+					cookie,
+				});
+				if (resp.error) {
+					Alert.error(
+						"Something went wrong when updating Account Information.",
+						4000
+					);
+				} else {
+					dispatch(globalActions.changeLoading(false));
+					dispatch(accountActions.setUser(resp));
+					updateUsernameForAccount(username);
+					changeActiveScreen("Account");
+					Alert.success("Successfully updated Account Information.", 4000);
+				}
+			} else {
+				Alert.info(
+					"Please change something on your account before submitting.",
+					4000
+				);
+			}
+			dispatch(globalActions.changeLoading(false));
 		}
 	};
 
@@ -127,13 +169,19 @@ const EditAccountPage = () => {
 			HTTPmethod: "delete",
 			path: "users",
 			cookie,
+		}).then((resp) => {
+			if (resp.error) {
+				Alert.error("Something went wrong when deleting this user.", 4000);
+			} else {
+				Alert.success("Successfully deleted this user.", 4000);
+			}
 		});
 		logout();
 		changeActiveScreen("LandingPage");
 	};
 
 	return (
-		<Col col={12}>
+		<Col col={12} hidden={loading ? true : false}>
 			{/* Delete Account Modal */}
 			<Modal
 				backdrop="static"
@@ -181,7 +229,7 @@ const EditAccountPage = () => {
 							<FormControl name="username" value={username} disabled={true} />
 						</FormGroup>
 						<FormGroup>
-							<MyControlLabel>Profile Picture</MyControlLabel>
+							<MyControlLabel>New Profile Picture</MyControlLabel>
 							{/* <FormControl name="profilePic" type="file" onChange={picChange} /> */}
 							<input
 								type="file"
@@ -190,7 +238,7 @@ const EditAccountPage = () => {
 							></input>
 						</FormGroup>
 						<FormGroup>
-							<MyControlLabel>Email</MyControlLabel>
+							<MyControlLabel>New Email</MyControlLabel>
 							<FormControl
 								name="email"
 								onChange={(e) => {
@@ -217,14 +265,14 @@ const EditAccountPage = () => {
 							/>
 						</FormGroup>
 						<FormGroup>
-							<MyControlLabel>Bio</MyControlLabel>
+							<MyControlLabel>New Bio</MyControlLabel>
 							<FormControl
 								rows={5}
 								name="Bio"
 								value={bio}
 								onChange={(e) => setBio(e)}
 								componentClass="textarea"
-								placeholder="Type Bio Here"
+								placeholder="New Bio Here"
 							/>
 						</FormGroup>
 						<FormGroup>

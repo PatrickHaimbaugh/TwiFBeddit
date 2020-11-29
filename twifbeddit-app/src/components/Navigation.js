@@ -23,7 +23,6 @@ import {
 	faCog,
 	faPlus,
 } from "@fortawesome/free-solid-svg-icons";
-
 import "../pages/createPostDisplayStyle.css";
 
 const Navigation = (props) => {

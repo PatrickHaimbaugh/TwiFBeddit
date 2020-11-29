@@ -13,7 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import makeNetworkCall from "../util/makeNetworkCall";
-
+import { Alert } from "rsuite";
 import { useState, useEffect } from "react";
 import Copyright from "../components/copyright.component.js";
 import axios from "axios";
@@ -21,6 +21,7 @@ import { useDispatch } from "react-redux";
 import * as navigationActions from "../containers/NavigationContainer/actions";
 import * as accountActions from "../containers/AccountContainer/actions";
 import * as globalActions from "../containers/GlobalContainer/actions";
+import Loader from "../components/Loader";
 class UserDetails {
 	constructor(email, password) {
 		this.email = email;
@@ -56,13 +57,11 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function SignInSide() {
+export default function SignInSide({ loading }) {
 	const classes = useStyles();
 
 	const [email, setEmail] = useState("");
 	const [emailError, setEmailError] = useState("");
-	// const [username, setUsername] = useState("");
-	// const [usernameError, setUsernameError] = useState("");
 	const [password, setPassword] = useState("");
 	const [passwordError, setPasswordError] = useState("");
 	const dispatch = useDispatch();
@@ -71,63 +70,15 @@ export default function SignInSide() {
 		dispatch(navigationActions.changeCurrentPage(screen));
 	};
 
-	//const [rememberMe, setRememberMe] = useState(false);
-
 	const onChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
 		setEmail(e.currentTarget.value);
 		validateEmail(e.currentTarget.value);
 	};
 
-	// const onChangeUsername = (e: ChangeEvent<HTMLInputElement>) => {
-	// 	setUsername(e.currentTarget.value);
-	// 	validateEmail(e.currentTarget.value);
-	// };
-
 	const onChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
 		setPassword(e.currentTarget.value);
 		validatePassword(e.currentTarget.value);
 	};
-
-	/*const onChangeCheckbox = (e: ChangeEvent<HTMLInputElement>) => {
-    setRememberMe(e.currentTarget.value);
-    if (e.currentTarget.checked === true){
-      rememberUser();
-    }else{
-      forgetUser();
-    }
-  }
-
-  const rememberUser = () => {
-    try {
-      localStorage.setItem('TwiFBeddit-User', email);
-      localStorage.setItem('TwiFBeddit-Password', password);
-    } catch (error) {
-      console.log("Error saving data");
-    }
-  };
-
-  const forgetUser = () => {
-    try {
-      localStorage.removeItem('TwiFBeddit-User');
-      localStorage.removeItem('TwiFBeddit-Password');
-    } catch (error) {
-      console.log("Error removing");
-    }
-  };
-
-  const getRememberedUser = () => {
-    try {
-      const user = localStorage.getItem('TwiFBeddit-User');
-      const password = localStorage.getItem('TwiFBeddit-Password');
-      if (user !== null && password !== null) {
-        // We have user stored!!
-        const userDetails = [user, password];
-        return userDetails;
-      }
-    } catch (error) {
-      console.log("Error retrieving data");
-    }
-  };*/
 
 	const validateEmail = (value: string): string => {
 		let error = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
@@ -142,12 +93,6 @@ export default function SignInSide() {
 		return error;
 	};
 
-	// const validateUsername = (value: string): string => {
-	// 	const error = value ? "" : "You must enter a valid Username";
-	// 	setUsernameError(error);
-	// 	return error;
-	// };
-
 	const validatePassword = (value: string): string => {
 		const error = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z$&+,:;=?@#|'<>.^*()%!-]{8,}$/.test(
 			value
@@ -160,6 +105,7 @@ export default function SignInSide() {
 
 	const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		dispatch(globalActions.changeLoading(true));
 
 		const emailValidationError = validateEmail(email);
 		// const usernameValidationError = validateUsername(username);
@@ -176,9 +122,6 @@ export default function SignInSide() {
 					subscribed: false,
 				},
 			};
-			// console.log(userDetails);
-			//setSubmitResult(result);
-			//setSubmitted(true);
 			let params;
 			if (emailValidationError === "Valid Username") {
 				params = {
@@ -196,127 +139,97 @@ export default function SignInSide() {
 				path: "login",
 				params: params,
 			});
+
 			if (resp.error) {
-				console.log("Error Signing In");
+				Alert.error("Something went wrong signing in.");
 			} else {
+				Alert.success("Successfully signed in.");
 				dispatch(globalActions.setCookie(resp.cookie));
 				dispatch(accountActions.setUser(resp));
 				changeActiveScreen("LandingPage");
 			}
-			// axios
-			// 	.post("http://localhost:5000/api/users/login", userDetails)
-			// 	.then((res) => {
-			// 		if (res.status === 200) {
-			// 			//this.props.history.push('/');
-			// 			window.location = "/dashboard"; //TODO: navigate to dashboard
-			// 		} else {
-			// 			const error = new Error(res.error);
-			// 			throw error;
-			// 		}
-			// 	})
-			// 	.catch((err) => {
-			// 		console.error(err);
-			// 		alert(
-			// 			"Sign-in not successful. Please enter valid email and password."
-			// 		);
-			// 	});
 		} else {
 			alert(
 				"Sign-in not successful. Please enter valid username/email and password."
 			);
 		}
+		dispatch(globalActions.changeLoading(false));
 	};
 
-	/*useEffect( () => {
-    const userDetails =  getRememberedUser();
-
-    //if (userDetails){
-      //const emailRemembered = userDetails.getEmail() || "";
-      //const passwordRemembered = userDetails.getPassword() || "";
-      //const checkboxStatus = userDetails ? true : false;
-    //}
-
-    if (userDetails){
-      const emailRemembered = userDetails[0] || "";
-      const passwordRemembered = userDetails[1] || "";
-      const checkboxStatus = userDetails ? true : false;
-
-      setEmail(emailRemembered);
-      setPassword(passwordRemembered);
-      setRememberMe(checkboxStatus);
-    }
-  })*/
-
-	return (
-		<Container component="main" maxWidth="xs">
-			<CssBaseline />
-			<div className={classes.paper}>
-				<Avatar className={classes.avatar}>{/*<LockOutlinedIcon />*/}</Avatar>
-				<Typography component="h1" variant="h5">
-					Sign in
-				</Typography>
-				<form className={classes.form} onSubmit={onSubmit} noValidate>
-					<Grid container spacing={2}>
-						<Grid item xs={12}>
-							<TextField
-								variant="outlined"
-								required
-								fullWidth
-								id="username"
-								label="Email or Username"
-								autoComplete="off"
-								name="username"
-								value={email}
-								onChange={onChangeEmail}
-							/>
-							<span className="error">{emailError}</span>
+	if (loading) {
+		return null;
+	} else {
+		return (
+			<Container component="main" maxWidth="xs">
+				<CssBaseline />
+				<div className={classes.paper}>
+					<Avatar className={classes.avatar}>{/*<LockOutlinedIcon />*/}</Avatar>
+					<Typography component="h1" variant="h5">
+						Sign in
+					</Typography>
+					<form className={classes.form} onSubmit={onSubmit} noValidate>
+						<Grid container spacing={2}>
+							<Grid item xs={12}>
+								<TextField
+									variant="outlined"
+									required
+									fullWidth
+									id="username"
+									label="Email or Username"
+									autoComplete="off"
+									name="username"
+									value={email}
+									onChange={onChangeEmail}
+								/>
+								<span className="error">{emailError}</span>
+							</Grid>
+							<Grid item xs={12}>
+								<TextField
+									variant="outlined"
+									required
+									fullWidth
+									name="password"
+									label="Password"
+									type="password"
+									id="password"
+									autoComplete="current-password"
+									password={password}
+									onChange={onChangePassword}
+								/>
+								<span className="error">{passwordError}</span>
+							</Grid>
 						</Grid>
-						<Grid item xs={12}>
-							<TextField
-								variant="outlined"
-								required
-								fullWidth
-								name="password"
-								label="Password"
-								type="password"
-								id="password"
-								autoComplete="current-password"
-								password={password}
-								onChange={onChangePassword}
-							/>
-							<span className="error">{passwordError}</span>
+						<Button
+							type="submit"
+							fullWidth
+							variant="contained"
+							color="primary"
+							className={classes.submit}
+						>
+							Sign In
+						</Button>
+						<Grid container>
+							<Grid item xs>
+								<Link href="#" variant="body2">
+									Forgot password?
+								</Link>
+							</Grid>
+							<Grid item>
+								<Link
+									href="/"
+									onClick={() => changeActiveScreen("SignUp")}
+									variant="body2"
+								>
+									{"Don't have an account? Sign Up"}
+								</Link>
+							</Grid>
 						</Grid>
-					</Grid>
-					<Button
-						type="submit"
-						fullWidth
-						variant="contained"
-						color="primary"
-						className={classes.submit}
-					>
-						Sign In
-					</Button>
-					<Grid container>
-						<Grid item xs>
-							<Link href="#" variant="body2">
-								Forgot password?
-							</Link>
-						</Grid>
-						<Grid item>
-							<Link
-								href="/"
-								onClick={() => changeActiveScreen("SignUp")}
-								variant="body2"
-							>
-								{"Don't have an account? Sign Up"}
-							</Link>
-						</Grid>
-					</Grid>
-					<Box mt={5}>
-						<Copyright />
-					</Box>
-				</form>
-			</div>
-		</Container>
-	);
+						<Box mt={5}>
+							<Copyright />
+						</Box>
+					</form>
+				</div>
+			</Container>
+		);
+	}
 }

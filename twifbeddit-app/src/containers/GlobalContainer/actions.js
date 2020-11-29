@@ -26,3 +26,10 @@ export function updatePost(object) {
 		object,
 	};
 }
+
+export function changeLoading(payload) {
+	return {
+		type: Constants.CHANGE_LOADING,
+		payload,
+	};
+}
