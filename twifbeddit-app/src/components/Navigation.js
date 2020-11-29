@@ -122,7 +122,10 @@ const Navigation = (props) => {
 							>
 								<NavigationIcon icon={faPlus} />
 							</NavTextContent>
-							<NavTextContent>
+							<NavTextContent
+								onClick={() => changeActiveScreen("Messaging")}
+								currentPage={activeScreen == "Messaging"}
+							>
 								<NavigationIcon icon={faCommentAlt} />
 							</NavTextContent>
 							<NavTextContent

@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import Navigation from "./components/Navigation";
 import EditAccountPage from "./pages/EditAccountPage";
 import AccountPage from "./pages/AccountPage";
+import MessagingPage from "./pages/Messaging";
 import PostPage from "./pages/PostPage";
 import ViewPost from "./pages/ViewPost";
 
@@ -42,6 +43,8 @@ const App = (props) => {
 				{currentPage === "Account" && <AccountPage loading={loading} />}
 
 				{currentPage === "Post" && <PostPage loading={loading} />}
+
+				{currentPage === "Messaging" && <MessagingPage loading={loading} />}
 
 				{currentPage === "ViewPost" && <ViewPost loading={loading} />}
 
