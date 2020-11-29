@@ -16,8 +16,11 @@ export default function MessageList(props) {
     getMessages();
   },[])
 
-  
+
   const getMessages = () => {
+    //// TODO: get messages to display in a user's chat
+      //create OTHER_USER_ID to be the name of the other user
+      //populate an array with all message history as in tempMessages
      var tempMessages = [
         {
           id: 1,
@@ -104,7 +107,7 @@ export default function MessageList(props) {
         let previousMoment = moment(previous.timestamp);
         let previousDuration = moment.duration(currentMoment.diff(previousMoment));
         prevBySameAuthor = previous.author === current.author;
-        
+
         if (prevBySameAuthor && previousDuration.as('hours') < 1) {
           startsSequence = false;
         }
