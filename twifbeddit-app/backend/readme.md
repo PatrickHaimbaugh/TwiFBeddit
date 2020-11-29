@@ -274,10 +274,12 @@ Comments are the same internally as posts, comment ids can be used in many of th
 }
 ```
 ## GET
+### Parameters
+`author=string`
 ### Response
 ```json
 {
-    "comments": "[Post] (returns all posts that have the post_type of comment and author with the username associated with the cookie, sorted by most recent)" 
+    "comments": "[Post] (returns all posts that have the post_type of comment and author with the username passed in, sorted by most recent)" 
 }
 ```
 

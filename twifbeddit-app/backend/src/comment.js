@@ -32,13 +32,12 @@ exports.POST = async (_, event) => {
 
 exports.GET = async (_, event) => {
 
-    const username = await get_user_from_header(event.headers);
-    if (username == null) {
-        console.error("Couldn't get user from cookie");
+    if (event.queryStringParameters.author == undefined) {
+        console.error("Please include the parameter with an author");
         return {'statusCode': 403}
     }
 
-    var comments = await Post.find().where('author').equals(username).where('post_type').equals('comment').sort({ createdAt: -1}).exec();
+    var comments = await Post.find().where('author').equals(event.queryStringParameters.author).where('post_type').equals('comment').sort({ createdAt: -1}).exec();
     return {'statusCode': 200, 'body': JSON.stringify({
         'comments': comments
     })};
