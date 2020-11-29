@@ -17,6 +17,7 @@ import SignUp from "./pages/signup.js";
 import Loader from "./components/Loader";
 
 import TopicResults from "./pages/topicResults.js";
+import FollowingList from "./pages/FollowingList";
 
 const App = (props) => {
 	const currentPage = useSelector((state) => state.navigation.currentPage),
@@ -44,6 +45,8 @@ const App = (props) => {
 				{currentPage === "Post" && <PostPage loading={loading} />}
 
 				{currentPage === "ViewPost" && <ViewPost loading={loading} />}
+
+				{currentPage === "FollowingList" && <FollowingList />}
 
 				<Route path="/verification" component={VerificationInstructions} />
 				<Route path="/verify/:id" component={Verify} />
