@@ -10,7 +10,7 @@ import global from "../containers/GlobalContainer/reducer";
 const navigationPersistConfig = {
 	key: "navigation",
 	storage,
-	blacklist: ["currentPage"],
+	blacklist: [],
 };
 
 const accountPersistConfig = {
@@ -22,7 +22,7 @@ const accountPersistConfig = {
 const globalPersistConfig = {
 	key: "global",
 	storage,
-	blacklist: ["posts"],
+	blacklist: ["posts", "loading"],
 };
 
 const rootReducer = combineReducers({

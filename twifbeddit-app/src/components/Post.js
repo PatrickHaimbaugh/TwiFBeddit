@@ -20,7 +20,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import * as navigationActions from "../containers/NavigationContainer/actions";
 import * as accountActions from "../containers/AccountContainer/actions";
-
+import { Alert } from "rsuite";
 const Post = (props) => {
 	const {
 		Username,
@@ -42,7 +42,8 @@ const Post = (props) => {
 		dispatch = useDispatch(),
 		savedPostIds = useSelector((state) => state.account.savedPostIds);
 
-	const vote = async (command) => {
+	const vote = async (command, e) => {
+		e.stopPropagation();
 		const voteType = curVote === command ? "un" + command : command;
 		const oldCurVote = curVote;
 		setCurVote(voteType);
@@ -57,15 +58,21 @@ const Post = (props) => {
 			cookie,
 		});
 		if (resp.error) {
-			setCurVote(oldCurVote);
+			const error = resp.error + " ";
+			if (!error.includes("409")) {
+				setCurVote(oldCurVote);
+				Alert.error("Something went wrong when voting on this post.", 4000);
+			}
 		}
 		setLoading(false);
 	};
 
 	const switchToAuthorAccount = (e) => {
 		e.stopPropagation();
-		dispatch(navigationActions.setUsernameForAccountPage(Username));
-		dispatch(navigationActions.changeCurrentPage("Account"));
+		if (Username) {
+			dispatch(navigationActions.setUsernameForAccountPage(Username));
+			dispatch(navigationActions.changeCurrentPage("Account"));
+		}
 	};
 
 	const switchToTopicPage = (e) => {
@@ -74,7 +81,8 @@ const Post = (props) => {
 		dispatch(navigationActions.changeCurrentPage("SearchResults"));
 	};
 
-	const savePost = async () => {
+	const savePost = async (e) => {
+		e.stopPropagation();
 		setLoading(true);
 		let params;
 		let saved = savedPostIds.includes(PostId);
@@ -97,6 +105,10 @@ const Post = (props) => {
 			params,
 		});
 
+		if (resp.error) {
+			Alert.error("Something went wrong saving post.");
+		}
+
 		setLoading(false);
 	};
 
@@ -113,7 +125,7 @@ const Post = (props) => {
 			<ContentCol col={12} onClick={() => viewPost()}>
 				<UserTopicRow>
 					<UserTopicText onClick={(e) => switchToAuthorAccount(e)}>
-						u/{Username}
+						u/{Username ? Username : "Anonymous"}
 					</UserTopicText>
 					<UserTopicText onClick={(e) => switchToTopicPage(e)}>
 						r/{Topic}
@@ -129,13 +141,13 @@ const Post = (props) => {
 					<BodyText>{Body}</BodyText>
 				</BodyRow>
 				<VotesRow>
-					<UpvoteButton disabled={loading} onClick={() => vote("up")}>
+					<UpvoteButton disabled={loading} onClick={(e) => vote("up", e)}>
 						{curVote === "up" ? "undo UpVote" : "Upvote"}
 					</UpvoteButton>
-					<DownvoteButton disabled={loading} onClick={() => vote("down")}>
+					<DownvoteButton disabled={loading} onClick={(e) => vote("down", e)}>
 						{curVote === "down" ? "undo Downvote" : "Downvote"}
 					</DownvoteButton>
-					<SaveButton disabled={loading} onClick={() => savePost()}>
+					<SaveButton disabled={loading} onClick={(e) => savePost(e)}>
 						{savedPostIds.includes(PostId) ? "Unsave Post" : "Save Post"}
 					</SaveButton>
 				</VotesRow>

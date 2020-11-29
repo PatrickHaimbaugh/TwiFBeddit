@@ -5,6 +5,7 @@ import uploadPicture from "../../util/uploadPicture";
 import makeNetworkCall from "../../util/makeNetworkCall";
 import { setPosts } from "../../containers/GlobalContainer/actions.js";
 import * as navigationActions from "../../containers/NavigationContainer/actions";
+import { Alert } from "rsuite";
 
 export const Form = () => {
 	const dispatch = useDispatch();
@@ -23,25 +24,25 @@ export const Form = () => {
 	const [postImage, setPostImage] = useState();
 	const [topicOptions, setTopicOptions] = useState([]);
 
-	const populateDropdownTopics = async() => {
+	const populateDropdownTopics = async () => {
 		const resp = await makeNetworkCall({
 			HTTPmethod: "get",
 			path: "topics",
 		});
 		if (resp.error) {
-			console.log("Error receving posts");
+			Alert.error("Something went wrong in loading posts.", 4000);
 		} else {
 			//Convert list of JSON post objects into array
 			var topicsArray = [];
 			for (var i = 0; i < resp.topics.length; i++) {
 				var obj = resp.topics[i];
-				const topicOption = { value: obj.topic_name, label: obj.topic_name};
+				const topicOption = { value: obj.topic_name, label: obj.topic_name };
 				topicsArray.push(topicOption);
 			}
 			console.log(topicsArray);
 			setTopicOptions(topicsArray);
 		}
-	}
+	};
 
 	const uploadedImage = React.useRef(null);
 	const handleImageUpload = (e) => {
@@ -133,9 +134,9 @@ export const Form = () => {
 				cookie: cookie,
 			});
 			if (resp.error) {
-				console.log("Error creating post");
+				Alert.error("Something went wrong creating post.", 4000);
 			} else {
-				console.log("sucess creating info", resp);
+				Alert.success("Sucessfully created post.", 4000);
 				dispatch(setPosts(resp));
 				changeActiveScreen("LandingPage");
 			}

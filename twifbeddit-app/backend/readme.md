@@ -73,12 +73,52 @@ This will return information on a user. Currently this will succeed for all user
     "following": "[String (usernames)]",
 }
 ```
+### Parameters
+`allowDmFromNotFollowed=bool`
+### Response
+```json
+{
+    "allowDmFromNotFollowed": "Bool"
+}
+```
+### Parameters
+`usernameToBlock=string`
+### Response
+```json
+{
+    "blocked": "[String (username)]"
+}
+```
+### Parameters
+`usernameToUnBlock=string`
+### Response
+```json
+{
+    "blocked": "[String (username)]"
+}
+```
 
 ## DELETE
 Delete deletes ther user associated with the current user session cookie, all their comments and decreases the following count for all of their followers.
 
 ### Response
 This should always succeed with statusCode 200.
+
+# /verify
+
+## GET
+Set's the user's "verified" boolean to true. It is made as a get request to enable users to click on a link to this endpoint in order to verify their account.
+### Parameters
+`uuid=string`
+### Response
+
+```json
+{
+    "email": "String, email being verified",
+    "username": "String, user being verified",
+    "verified": "Boolean, user's verification status"
+}
+```
 
 # /login
 
@@ -126,7 +166,7 @@ Set-Cookie Header, and user object like above
 ### Response
 ```json
 {
-    "posts": "[Post] (posts sorted by most recent, under topics followed by the user)" 
+    "posts": "[Post] (posts sorted by most recent, under topics followed by the user and from a user that the user follows, and does not return anonymously made posts)" 
 }
 ```
 
@@ -231,5 +271,56 @@ Comments are the same internally as posts, comment ids can be used in many of th
 {
     "text": "String",
     "anonymous": "Boolean (optional, defaults false)",
+}
+```
+
+# /block
+Blocking a user will make their posts not show up on a users feed unless they specifically look at that users posts. It will also not allow the blocked user to DM them.
+## POST
+### Parameters
+`toBlock=string (username)`
+
+# /dm
+## POST
+### Accepts
+```json
+{
+    "to": "String (username)",
+    "message": "String"
+}
+```
+### Response
+None
+## GET
+### Response
+Object mapping username to the conversation between that user.
+An example. If the user alex has messaged james "hello" and james responds "hi" the GET from alex's account will look like:
+```json
+{
+    "james": [
+        {
+            "from": "alex",
+            "message": "hello"
+        },
+        {
+            "from": "james",
+            "message": "hi"
+        }
+    ]
+}
+```
+From James' account it will look exactly the same except it is from alex
+```json
+{
+    "alex": [
+        {
+            "from": "alex",
+            "message": "hello"
+        },
+        {
+            "from": "james",
+            "message": "hi"
+        }
+    ]
 }
 ```

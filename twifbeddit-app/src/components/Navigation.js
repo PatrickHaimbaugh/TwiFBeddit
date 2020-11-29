@@ -21,8 +21,8 @@ import {
 	faCommentAlt,
 	faUserCircle,
 	faCog,
+	faPlus,
 } from "@fortawesome/free-solid-svg-icons";
-
 import "../pages/createPostDisplayStyle.css";
 
 const Navigation = (props) => {
@@ -46,10 +46,31 @@ const Navigation = (props) => {
 	};
 
 	const handleSearchButtonClick = () => {
-		changeActiveScreen("SearchResults");
-		//store searchText in navbar store
-		dispatch(navigationActions.storeSearchRequest(searchText));
+		//if searching for user:
+		if (searchText.charAt(0) === "@"){
+			dispatch(navigationActions.setUsernameForAccountPage(searchText.substring(1, searchText.length)));
+			changeActiveScreen("Account");
+		}
+
+		//if searching for topic:
+		else if (searchText.charAt(0) === "#"){
+			dispatch(navigationActions.storeSearchRequest(searchText.substring(1, searchText.length)));
+			changeActiveScreen("SearchResults");
+		}
+
+		else{
+			alert("invalid search string. Please search for a user using \"@\" and a topic using \"#\". ")
+		}
 	};
+
+	const handleSearchButtonClickNonLoggedIn = () => {
+		if (searchText.charAt(0) === "@"){
+			dispatch(navigationActions.setUsernameForAccountPage(searchText.substring(1, searchText.length)));
+			changeActiveScreen("Account");
+		}else{
+			alert("You may only look up existing users. Please search for a user using \"@\". ")
+		}
+	}
 
 	return (
 		<Content col={12}>
@@ -78,8 +99,15 @@ const Navigation = (props) => {
 						</MyInputGroup>
 					) : (
 						<MyInputGroup>
-							<MyInput />
-							<MyInputGroup.Button>
+							<input
+								className="form-control"
+								id="title"
+								onChange={handleSearchChange}
+							/>
+							<MyInputGroup.Button
+								onClick={handleSearchButtonClickNonLoggedIn}
+								currentPage={activeScreen == "SearchResults"}
+							>
 								<Icon icon="search" />
 							</MyInputGroup.Button>
 						</MyInputGroup>
@@ -89,14 +117,14 @@ const Navigation = (props) => {
 					<Col col={4}>
 						<IconContainer>
 							<NavTextContent
-								onClick={() => changeActiveScreen("Home")}
-								currentPage={activeScreen == "Home"}
-							>
-								<NavigationIcon icon={faHome} />
-							</NavTextContent>
-							<NavTextContent
 								onClick={() => changeActiveScreen("Post")}
 								currentPage={activeScreen == "Post"}
+							>
+								<NavigationIcon icon={faPlus} />
+							</NavTextContent>
+							<NavTextContent
+								onClick={() => changeActiveScreen("Messaging")}
+								currentPage={activeScreen == "Messaging"}
 							>
 								<NavigationIcon icon={faCommentAlt} />
 							</NavTextContent>

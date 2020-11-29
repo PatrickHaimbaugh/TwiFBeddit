@@ -15,6 +15,6 @@ export default async function makeNetworkCall(props) {
 		return responseData;
 	} catch (error) {
 		console.log("there was an error ", error);
-		return { error: true };
+		return { error };
 	}
 }

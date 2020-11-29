@@ -6,25 +6,27 @@ import makeNetworkCall from "../util/makeNetworkCall";
 import * as accountActions from "../containers/AccountContainer/actions";
 import * as navigationActions from "../containers/NavigationContainer/actions";
 import { useDispatch, useSelector } from "react-redux";
+import { Alert } from "rsuite";
+import * as globalActions from "../containers/GlobalContainer/actions";
 
-export default function SearchResults() {
+export default function SearchResults({ loading }) {
 	const currentAccount = useSelector((state) => state.account);
 	const searchRequest = useSelector((state) => state.navigation.searchRequest);
 	const cookie = useSelector((state) => state.global.cookie);
 	const dispatch = useDispatch();
 
 	const [posts, setPosts] = useState([]);
-	const [isFollowing, setIsFollowing] = useState()
+	const [isFollowing, setIsFollowing] = useState();
 
 	const setInitialFollowState = () => {
-		if (currentAccount.username){
-			if (currentAccount.followed_topics.includes(searchRequest)){
+		if (currentAccount.username) {
+			if (currentAccount.followed_topics.includes(searchRequest)) {
 				setIsFollowing(true);
-			}else{
+			} else {
 				setIsFollowing(false);
 			}
 		}
-	}
+	};
 
 	const followOrUnfollowTopic = (type) => {
 		const topic = searchRequest;
@@ -53,9 +55,10 @@ export default function SearchResults() {
 			params,
 			cookie,
 		});
-	}
+	};
 
 	const getPosts = async () => {
+		dispatch(globalActions.changeLoading(true));
 		setInitialFollowState();
 
 		const topic = searchRequest;
@@ -67,7 +70,7 @@ export default function SearchResults() {
 			},
 		});
 		if (resp.error) {
-			console.log("Error receving posts");
+			Alert.error("Something went wrong loading posts.", 4000);
 		} else {
 			//Convert list of JSON post objects into array
 			var postsArray = [];
@@ -82,6 +85,7 @@ export default function SearchResults() {
 			console.log(postsArray);
 			setPosts(postsArray);
 		}
+		dispatch(globalActions.changeLoading(false));
 	};
 	//getPosts()
 	useEffect(() => {
@@ -93,8 +97,8 @@ export default function SearchResults() {
 
 	return (
 		<Page col={12}>
-			<Content>
-					{isFollowing ? (
+			<Content hidden={loading ? true : false}>
+				{isFollowing ? (
 					<FollowButton
 						onClick={() => {
 							followOrUnfollowTopic("Unfollow");
@@ -114,6 +118,7 @@ export default function SearchResults() {
 				{posts.map(function (post) {
 					return (
 						<Post
+							key={post._id}
 							Username={post.author}
 							Title={post.title}
 							Topic={post.topic}
