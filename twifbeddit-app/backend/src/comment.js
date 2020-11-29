@@ -28,3 +28,19 @@ exports.POST = async (_, event) => {
         'updatedPost': updatedPost
     })};
 };
+
+
+exports.GET = async (_, event) => {
+
+    const username = await get_user_from_header(event.headers);
+    if (username == null) {
+        console.error("Couldn't get user from cookie");
+        return {'statusCode': 403}
+    }
+
+    var comments = await Post.find().where('author').equals(username).where('post_type').equals('comment').sort({ createdAt: -1}).exec();
+    return {'statusCode': 200, 'body': JSON.stringify({
+        'comments': comments
+    })};
+
+};

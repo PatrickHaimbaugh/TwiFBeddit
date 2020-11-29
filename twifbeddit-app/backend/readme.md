@@ -273,6 +273,13 @@ Comments are the same internally as posts, comment ids can be used in many of th
     "anonymous": "Boolean (optional, defaults false)",
 }
 ```
+## GET
+### Response
+```json
+{
+    "comments": "[Post] (returns all posts that have the post_type of comment and author with the username associated with the cookie, sorted by most recent)" 
+}
+```
 
 # /block
 Blocking a user will make their posts not show up on a users feed unless they specifically look at that users posts. It will also not allow the blocked user to DM them.
