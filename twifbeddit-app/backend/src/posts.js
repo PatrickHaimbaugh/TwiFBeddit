@@ -96,6 +96,8 @@ exports.GET = async (_, event) => {
         }
     } 
     if (event.queryStringParameters.topic != undefined) {
+        const username = await get_user_from_header(event.headers);
+        const user = await User.findOne({username: username});
         const topic = event.queryStringParameters.topic;
         var posts = await Post.find()
         .where('topic').in(topic)
@@ -110,7 +112,7 @@ exports.GET = async (_, event) => {
     
         return {
             'statusCode': 200,
-            'body': JSON.stringify({
+            'body': JSON.stringify({    
                 posts: posts
             })
         }

@@ -68,6 +68,7 @@ export default function SearchResults({ loading }) {
 			params: {
 				topic: topic,
 			},
+			cookie,
 		});
 		if (resp.error) {
 			Alert.error("Something went wrong loading posts.", 4000);
