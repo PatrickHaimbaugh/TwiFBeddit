@@ -5,10 +5,9 @@ import { useSelector } from "react-redux";
 import Navigation from "./components/Navigation";
 import EditAccountPage from "./pages/EditAccountPage";
 import AccountPage from "./pages/AccountPage";
-import MessagingPage from "./pages/Messaging";
+import MessagingPage from "./messaging/components/App/index.js";
 import PostPage from "./pages/PostPage";
 import ViewPost from "./pages/ViewPost";
-
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import SignIn from "./pages/signin.js";
 import VerificationInstructions from "./components/verificationInstructions.component";
