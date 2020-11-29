@@ -110,7 +110,7 @@ const AccountPage = ({ loading }) => {
 			}
 		};
 		getPosts();
-	}, [currentAccount.username]);
+	}, [usernameForAccountPage]);
 
 	const changeActiveScreen = (screen) => {
 		dispatch(navigationActions.changeCurrentPage(screen));
@@ -192,7 +192,11 @@ const AccountPage = ({ loading }) => {
 							</FollowButton>
 						)}
 					</FollowCol>
-					<FollowCol col={4}>
+					<FollowCol
+						col={4}
+						onClick={() => changeActiveScreen("FollowingList")}
+						following={true}
+					>
 						<FollowText>Following</FollowText>
 						<FollowNum> {userForAccountPage.following.length} </FollowNum>
 					</FollowCol>

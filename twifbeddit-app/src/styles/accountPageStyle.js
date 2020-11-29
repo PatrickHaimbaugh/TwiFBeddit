@@ -33,6 +33,7 @@ export const FollowCol = styled(Col)`
 	flex-direction: column;
 	align-items: center;
 	justify-content: flex-start;
+	cursor: ${(props) => (props.following ? "pointer" : "inherit")};
 `;
 export const FollowText = styled.p`
 	font-family: "Montserrat", sans-serif;
