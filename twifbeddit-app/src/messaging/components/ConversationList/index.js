@@ -42,6 +42,7 @@ export default function ConversationList(props) {
           text: lastMessageOfConversation,
         }
       });
+      conversationsArray.reverse();
       dispatch(navigationActions.setDmResponse(resp));
       setConversations([...conversations, ...conversationsArray]);
 		}
