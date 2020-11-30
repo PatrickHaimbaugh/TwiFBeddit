@@ -27,6 +27,9 @@ import * as navigationActions from "../containers/NavigationContainer/actions";
 import _ from "lodash";
 import { Alert } from "rsuite";
 
+import { MessageUserContainer } from '../messaging/MessageUser/MessageUserContainer';
+import './createPostDisplayStyle.css';
+
 const AccountPage = ({ loading }) => {
 	const currentAccount = useSelector((state) => state.account),
 		{ usernameForAccountPage, userForAccountPage } = useSelector(
@@ -38,6 +41,8 @@ const AccountPage = ({ loading }) => {
 		posts = useSelector((state) => state.global.posts),
 		[isCurUser, setIsCurUser] = useState(true),
 		[isFollowing, setIsFollowing] = useState(false);
+
+	const triggerText = 'Message User';
 
 	useEffect(() => {
 		dispatch(globalActions.changeLoading(true));
@@ -152,6 +157,10 @@ const AccountPage = ({ loading }) => {
 		});
 	};
 
+	const handleMessageUser = () => {
+
+	}
+
 	const logout = () => {
 		// reset account info
 		dispatch(accountActions.logout());
@@ -190,6 +199,9 @@ const AccountPage = ({ loading }) => {
 							>
 								Follow
 							</FollowButton>
+						)}
+						{isCurUser ? null : (
+							<MessageUserContainer triggerText={triggerText} />
 						)}
 					</FollowCol>
 					<FollowCol
