@@ -107,6 +107,7 @@ const AccountPage = ({ loading }) => {
 					},
 				}).then((resp) => {
 					dispatch(navigationActions.setUserForAccountPage(resp));
+					dispatch(globalActions.changeLoading(false));
 					setIsCurUser(false);
 					setIsFollowing(
 						currentAccount.following.includes(usernameForAccountPage)
