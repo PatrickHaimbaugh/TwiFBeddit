@@ -180,8 +180,12 @@ const AccountPage = ({ loading }) => {
 					</FollowCol>
 					<FollowCol
 						col={4}
-						onClick={() => changeActiveScreen("FollowingList")}
-						following={true}
+						onClick={() => {
+							if (currentAccount.username === usernameForAccountPage) {
+								changeActiveScreen("FollowingList");
+							}
+						}}
+						following={currentAccount.username === usernameForAccountPage}
 					>
 						<FollowText>Following</FollowText>
 						<FollowNum> {userForAccountPage.following.length} </FollowNum>
