@@ -28,3 +28,19 @@ exports.POST = async (_, event) => {
         'updatedPost': updatedPost
     })};
 };
+
+
+exports.GET = async (_, event) => {
+
+    if (event.queryStringParameters.author == undefined) {
+        console.error("Please include the parameter with an author");
+        return {'statusCode': 403}
+    }
+
+    const author = event.queryStringParameters.author;
+    var comments = await Post.find().where('author').equals(author).where('post_type').equals('comment').sort({ createdAt: -1}).exec();
+    return {'statusCode': 200, 'body': JSON.stringify({
+        'comments': comments
+    })};
+
+};

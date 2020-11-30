@@ -7,7 +7,7 @@ const { get_user_from_header } = require("./auth");
 exports.GET = async (_, event) => {
     const username = await get_user_from_header(event.headers);
     const dms = await Conversation.find({con_id: {$regex: `.*${username}.*`}});
-    var conversations = {};
+    var conversations = [];
     dms.forEach((dm) => {
         dm = JSON.parse(JSON.stringify(dm));
         console.log(dm);
