@@ -5,88 +5,58 @@ import ToolbarButton from '../ToolbarButton';
 import Message from '../Message';
 import moment from 'moment';
 
+import { useDispatch, useSelector } from "react-redux";
+import * as navigationActions from "../../../containers/NavigationContainer/actions";
+import makeNetworkCall from "../../../util/makeNetworkCall";
+
 import './MessageList.css';
 
-const MY_USER_ID = 'apple';
-
 export default function MessageList(props) {
-  const [messages, setMessages] = useState([])
+  //const [messages, setMessages] = useState([])
+  const MY_USER_ID = 'apple';
+  const OTHER_USER_ID = useSelector((state) => state.navigation.selectedConversation);
+  var response = useSelector((state) => state.navigation.dmResponse);;
+  const cookie = useSelector((state) => state.global.cookie);
 
   useEffect(() => {
-    getMessages();
-  },[])
 
+	}, []);
 
-  const getMessages = () => {
-    //// TODO: get messages to display in a user's chat
-      //create OTHER_USER_ID to be the name of the other user
-      //populate an array with all message history as in tempMessages
-     var tempMessages = [
-        {
-          id: 1,
-          author: 'apple',
-          message: 'Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.',
-          timestamp: new Date().getTime()
-        },
-        {
-          id: 2,
-          author: 'orange',
-          message: 'It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!',
-          timestamp: new Date().getTime()
-        },
-        {
-          id: 3,
-          author: 'orange',
-          message: 'Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.',
-          timestamp: new Date().getTime()
-        },
-        {
-          id: 4,
-          author: 'apple',
-          message: 'It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!',
-          timestamp: new Date().getTime()
-        },
-        {
-          id: 5,
-          author: 'apple',
-          message: 'Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.',
-          timestamp: new Date().getTime()
-        },
-        {
-          id: 6,
-          author: 'apple',
-          message: 'It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!',
-          timestamp: new Date().getTime()
-        },
-        {
-          id: 7,
-          author: 'orange',
-          message: 'Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.',
-          timestamp: new Date().getTime()
-        },
-        {
-          id: 8,
-          author: 'orange',
-          message: 'It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!',
-          timestamp: new Date().getTime()
-        },
-        {
-          id: 9,
-          author: 'apple',
-          message: 'Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.',
-          timestamp: new Date().getTime()
-        },
-        {
-          id: 10,
-          author: 'orange',
-          message: 'It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!',
-          timestamp: new Date().getTime()
-        },
-      ]
-      setMessages([...messages, ...tempMessages])
-  }
+  const renderMessages = (username) => {
+    console.log(username);
 
-  const renderMessages = () => {
+    var messages = [];
+    if (response && response.conversations){
+      for (var j = 0; j < response.conversations.length; j++){
+        console.log("index " + j + ": " + response.conversations[j].user);
+        if (response.conversations[j].user === username){
+
+          var indexOfConversation = j;
+          break;
+        }
+      }
+      var selectedConversation = response.conversations[indexOfConversation];
+
+      //get messages of conversation
+      //var messages = [];
+      if (selectedConversation && selectedConversation.conversation){
+        for (var j = 1; j < selectedConversation.conversation.length; j++){
+          var author = null;
+          if (selectedConversation.conversation[j].from === username){
+            author = OTHER_USER_ID;
+          }else{
+            author = MY_USER_ID;
+          }
+          messages.push({
+            id: j,
+            author: author,
+            message: `${selectedConversation.conversation[j].message}`,
+            timestamp: new Date().getTime(),
+          })
+        }
+      }
+    }
+
     let i = 0;
     let messageCount = messages.length;
     let tempMessages = [];
@@ -148,7 +118,7 @@ export default function MessageList(props) {
     return(
       <div className="message-list">
         <Toolbar
-          title="Conversation Title"
+          title={OTHER_USER_ID}
           rightItems={[
             <ToolbarButton key="info" icon="ion-ios-information-circle-outline" />,
             <ToolbarButton key="video" icon="ion-ios-videocam" />,
@@ -156,16 +126,9 @@ export default function MessageList(props) {
           ]}
         />
 
-        <div className="message-list-container">{renderMessages()}</div>
+        <div className="message-list-container">{renderMessages(OTHER_USER_ID)}</div>
 
-        <Compose rightItems={[
-          <ToolbarButton key="photo" icon="ion-ios-camera" />,
-          <ToolbarButton key="image" icon="ion-ios-image" />,
-          <ToolbarButton key="audio" icon="ion-ios-mic" />,
-          <ToolbarButton key="money" icon="ion-ios-card" />,
-          <ToolbarButton key="games" icon="ion-logo-game-controller-b" />,
-          <ToolbarButton key="emoji" icon="ion-ios-happy" />
-        ]}/>
+        <Compose />
       </div>
     );
 }

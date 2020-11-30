@@ -10,3 +10,5 @@ export const UNFOLLOW_USER_ON_ACCOUNT_PAGE =
 export const SEARCH_REQUEST = "NavigationContainer/SEARCH_REQUEST";
 export const LOGOUT = "NavigationContainer/LOGOUT";
 export const CHANGE_CURRENT_POST = "NavigationContainer/CHANGE_CURRENT_POST";
+export const DM_RESPONSE = "NavigationContainer/DM_RESPONSE";
+export const SELECTED_CONVERSATION = "NavigationContainer/SELECTED_CONVERSATION";
