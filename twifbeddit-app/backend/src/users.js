@@ -6,7 +6,6 @@ const UserSession = mongoose.model("UserSession");
 const bcrypt = require("bcryptjs");
 const { get_cookie_header, get_user_from_header } = require("./auth");
 const { v4: uuidv4 } = require('uuid');
-const { send_email } = require("./email");
 
 
 exports.create_external_user = (mongo_user) => {
@@ -29,10 +28,7 @@ exports.POST = async (_, event) => {
     const cookieHeader = await get_cookie_header(newUser.username);
     externalUser.cookie = cookieHeader["Set-Cookie"];
 
-    const uuid = uuidv4();
-    const verificationLink = "https://yfe9h86dc9.execute-api.us-east-2.amazonaws.com/Prod/verify?uuid=" + uuid;
-    await send_email(newUser.email, "Please verify your TwiFBeddit account", "Please click this link to verify your account: " + verificationLink);
-    const verifyUUID = new Verify({email: newUser.email, username: newUser.username, verification_uuid: uuid});
+    const verifyUUID = new Verify({email: newUser.email, username: newUser.username, verification_uuid: uuidv4()});
     await verifyUUID.save();
 
     return {
@@ -83,7 +79,7 @@ exports.PATCH = async (_, event) => {
         return {
             'statusCode': 200,
             'body': JSON.stringify({
-                "allowDmFromNotFollowed": user.allowDmFromNotFollowed
+                "user": user
             })
         };
     }
