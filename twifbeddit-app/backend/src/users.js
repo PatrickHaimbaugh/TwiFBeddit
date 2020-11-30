@@ -69,6 +69,7 @@ exports.PATCH = async (_, event) => {
     }
 
     if (event.queryStringParameters.allowDmFromNotFollowed != undefined) {
+        const allowDmFromNotFollowed = event.queryStringParameters.allowDmFromNotFollowed;
         const username = await get_user_from_header(event.headers);
         const user = await User.findOneAndUpdate(
             {username: username},
