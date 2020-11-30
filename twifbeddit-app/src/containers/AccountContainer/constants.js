@@ -8,3 +8,5 @@ export const ADD_SAVE_POST = "AccountContainer/ADD_SAVE_POST";
 export const REMOVE_SAVE_POST = "AccountContainer/REMOVE_SAVE_POST";
 export const FOLLOW_TOPIC = "AccountContainer/FOLLOW_TOPIC";
 export const UNFOLLOW_TOPIC = "AccountContainer/UNFOLLOW_TOPIC";
+export const BLOCK_USER = "AccountContainer/BLOCK_USER";
+export const UNBLOCK_USER = "AccountContainer/UNBLOCK_USER";

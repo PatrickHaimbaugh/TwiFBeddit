@@ -3,6 +3,7 @@ import _ from "lodash";
 
 const initalState = {
 	posts: [],
+	comments: [],
 	cookie: "",
 	loading: false,
 };
@@ -19,6 +20,12 @@ export default function startReducer(state = initalState, action) {
 			return {
 				...state,
 				cookie: action.payload,
+			};
+		}
+		case Constants.SET_COMMENTS: {
+			return {
+				...state,
+				comments: action.object,
 			};
 		}
 

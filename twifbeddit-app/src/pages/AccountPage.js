@@ -26,6 +26,7 @@ import * as globalActions from "../containers/GlobalContainer/actions";
 import * as navigationActions from "../containers/NavigationContainer/actions";
 import _ from "lodash";
 import { Alert } from "rsuite";
+import { CommentRow, CommentText } from "../styles/viewPostStyle";
 
 const AccountPage = ({ loading }) => {
 	const currentAccount = useSelector((state) => state.account),
@@ -36,8 +37,10 @@ const AccountPage = ({ loading }) => {
 		cookie = useSelector((state) => state.global.cookie),
 		dispatch = useDispatch(),
 		posts = useSelector((state) => state.global.posts),
+		comments = useSelector((state) => state.global.comments),
 		[isCurUser, setIsCurUser] = useState(true),
-		[isFollowing, setIsFollowing] = useState(false);
+		[isFollowing, setIsFollowing] = useState(false),
+		blocked_users = useSelector((state) => state.account.blocked_users);
 
 	useEffect(() => {
 		dispatch(globalActions.changeLoading(true));
@@ -87,10 +90,27 @@ const AccountPage = ({ loading }) => {
 						author: usernameForAccountPage,
 					},
 				}).then((resp) => {
-					dispatch(globalActions.changeLoading(false));
+					//dispatch(globalActions.changeLoading(false));
 					dispatch(globalActions.setPosts(resp.posts));
 					if (resp.error) {
 						Alert.error("Something went wrong loading this users posts.", 4000);
+					}
+				});
+				makeNetworkCall({
+					HTTPmethod: "get",
+					path: "comment",
+					params: {
+						author: usernameForAccountPage,
+					},
+				}).then((resp) => {
+					dispatch(globalActions.changeLoading(false));
+					dispatch(globalActions.setComments(resp.comments));
+					console.log(resp);
+					if (resp.error) {
+						Alert.error(
+							"Something went wrong loading this users comments.",
+							4000
+						);
 					}
 				});
 			}
@@ -147,6 +167,43 @@ const AccountPage = ({ loading }) => {
 		dispatch(navigationActions.logout());
 	};
 
+	const blockUser = (username) => {
+		console.log(blocked_users);
+		if (blocked_users.includes(username)) {
+			//unblock the user
+			dispatch(accountActions.unblockUser(username));
+			makeNetworkCall({
+				HTTPmethod: "patch",
+				path: "users",
+				params: {
+					usernameToUnBlock: userForAccountPage.username,
+				},
+				cookie,
+			}).then((resp) => {
+				console.log(resp);
+				if (resp.error) {
+					Alert.error("Something went wrong when unblocking this user.", 4000);
+				}
+			});
+		} else {
+			//block the user
+			dispatch(accountActions.blockUser(username));
+			makeNetworkCall({
+				HTTPmethod: "patch",
+				path: "users",
+				params: {
+					usernameToBlock: userForAccountPage.username,
+				},
+				cookie,
+			}).then((resp) => {
+				console.log(resp);
+				if (resp.error) {
+					Alert.error("Something went wrong when blocking this user.", 4000);
+				}
+			});
+		}
+	};
+
 	return (
 		<Page col={12}>
 			<Content hidden={loading ? true : false}>
@@ -197,7 +254,23 @@ const AccountPage = ({ loading }) => {
 					<LogoutRow>
 						<LogoutButton onClick={() => logout()}>Logout</LogoutButton>
 					</LogoutRow>
-				) : null}
+				) : (
+					<LogoutRow>
+						{blocked_users.includes(userForAccountPage.username) ? (
+							<LogoutButton
+								onClick={() => blockUser(userForAccountPage.username)}
+							>
+								Unblock {userForAccountPage.username}
+							</LogoutButton>
+						) : (
+							<LogoutButton
+								onClick={() => blockUser(userForAccountPage.username)}
+							>
+								Block {userForAccountPage.username}
+							</LogoutButton>
+						)}
+					</LogoutRow>
+				)}
 				<TabsRow>
 					<Tab onClick={() => setShowPosts("posts")}>Posts</Tab>
 					<Tab onClick={() => setShowPosts("comments")}>
@@ -207,7 +280,7 @@ const AccountPage = ({ loading }) => {
 						<Tab onClick={() => setShowPosts("saved")}>Saved Posts</Tab>
 					) : null}
 				</TabsRow>
-				{showPosts === "posts"
+				{showPosts === "posts" && cookie
 					? _.map(posts, (post) => {
 							if (post.post_type === "comment") {
 								return;
@@ -227,8 +300,20 @@ const AccountPage = ({ loading }) => {
 								></Post>
 							);
 					  })
-					: showPosts === "comments"
-					? null //show all posts where they interacted
+					: showPosts === "comments" && cookie
+					? _.map(comments, (comment) => {
+							return (
+								<div key={comment._id}>
+									<UsernameRow>
+										<UsernameText>u/{comment.author}</UsernameText>
+									</UsernameRow>
+									<CommentRow>
+										<CommentText>{comment.text}</CommentText>
+									</CommentRow>
+									<hr></hr>
+								</div>
+							);
+					  }) //show all posts where they interacted
 					: _.map(currentAccount.savedPosts, (post) => {
 							return (
 								<Post

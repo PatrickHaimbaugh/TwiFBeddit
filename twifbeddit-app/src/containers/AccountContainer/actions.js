@@ -61,3 +61,17 @@ export function unfollowTopic(topic) {
 		topic,
 	};
 }
+
+export function blockUser(payload) {
+	return {
+		type: Constants.BLOCK_USER,
+		payload,
+	};
+}
+
+export function unblockUser(payload) {
+	return {
+		type: Constants.UNBLOCK_USER,
+		payload,
+	};
+}

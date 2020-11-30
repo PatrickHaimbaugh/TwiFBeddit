@@ -7,6 +7,13 @@ export function setPosts(object) {
 	};
 }
 
+export function setComments(object) {
+	return {
+		type: Constants.SET_COMMENTS,
+		object,
+	};
+}
+
 export function setCookie(payload) {
 	return {
 		type: Constants.SET_COOKIE,
