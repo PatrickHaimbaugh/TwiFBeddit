@@ -10,10 +10,6 @@
   grid-row-gap: 1px;
 }
 
-.container {
-  padding: 10px;
-}
-
 .scrollable {
   position: relative;
   overflow-y: scroll;

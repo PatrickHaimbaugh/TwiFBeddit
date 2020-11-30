@@ -33,8 +33,11 @@ export default function Compose(props) {
         cookie,
   		});
   		if (resp.error) {
-  			alert("Something went wrong in loading conversations.");
-        alert(resp.error);
+  			//alert("Something went wrong in loading conversations.");
+        if (resp.error.toString().indexOf("status code 401") !== -1){
+          alert("This user only accepts DMs from people they follow.");
+        }
+        //alert(resp.error);
   		} else {
 
         //make messaging panel rerender

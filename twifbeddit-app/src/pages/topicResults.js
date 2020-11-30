@@ -130,6 +130,7 @@ export default function SearchResults({ loading }) {
 							Image={post.image_url}
 							PostId={post._id}
 							Post={post}
+							Url={post.url}
 						></Post>
 					);
 				})}
