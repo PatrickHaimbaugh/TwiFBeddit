@@ -3,6 +3,7 @@ const User = mongoose.model("User");
 const Verify = mongoose.model("Verify");
 
 
+
 exports.GET = async (_, event) => {
 
     if (event.queryStringParameters.uuid != undefined) {
