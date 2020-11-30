@@ -18,8 +18,3 @@ exports.send_email = async (to, subject, body) => {
 
     return ses.sendEmail(params).promise()
 };
-
-exports.GET = async (_, event) => {
-    await exports.send_email("abrachet@purdue.edu", "Test Email", "This is a test");
-    return {'statusCode': 200};
-};
