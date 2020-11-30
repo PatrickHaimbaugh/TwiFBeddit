@@ -37,7 +37,8 @@ exports.GET = async (_, event) => {
         return {'statusCode': 403}
     }
 
-    var comments = await Post.find().where('author').equals(event.queryStringParameters.author).where('post_type').equals('comment').sort({ createdAt: -1}).exec();
+    const author = event.queryStringParameters.author;
+    var comments = await Post.find().where('author').equals(author).where('post_type').equals('comment').sort({ createdAt: -1}).exec();
     return {'statusCode': 200, 'body': JSON.stringify({
         'comments': comments
     })};
