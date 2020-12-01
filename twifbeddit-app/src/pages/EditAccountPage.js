@@ -16,6 +16,8 @@ import {
 	Modal,
 	Icon,
 	Alert,
+	Radio,
+	RadioGroup,
 } from "rsuite";
 import { useDispatch, useSelector } from "react-redux";
 import uploadPicture from "../util/uploadPicture";
@@ -34,7 +36,9 @@ const EditAccountPage = ({ loading }) => {
 		cookie = useSelector((state) => state.global.cookie),
 		dispatch = useDispatch(),
 		[showModal, setShowModal] = useState(false),
-		[profilePic, setProfilePic] = useState("");
+		[profilePic, setProfilePic] = useState(""),
+		initialDMPref = useSelector((state) => state.account.allow_all_dms),
+		[DMPref, setDMPref] = useState(initialDMPref);
 
 	const validateEmail = (value) => {
 		const error = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
@@ -126,6 +130,10 @@ const EditAccountPage = ({ loading }) => {
 				params.bio = bio;
 				sendReq = true;
 			}
+			if (DMPref != "") {
+				params.allowDmFromNotFollowed = DMPref;
+				sendReq = true;
+			}
 			if (sendReq) {
 				const resp = await makeNetworkCall({
 					HTTPmethod: "patch",
@@ -140,7 +148,7 @@ const EditAccountPage = ({ loading }) => {
 					);
 				} else {
 					dispatch(globalActions.changeLoading(false));
-					dispatch(accountActions.setUser(resp));
+					dispatch(accountActions.setUser(resp.user));
 					updateUsernameForAccount(username);
 					changeActiveScreen("Account");
 					Alert.success("Successfully updated Account Information.", 4000);
@@ -274,6 +282,19 @@ const EditAccountPage = ({ loading }) => {
 								componentClass="textarea"
 								placeholder="New Bio Here"
 							/>
+						</FormGroup>
+						<FormGroup>
+							<MyControlLabel>DM Preference</MyControlLabel>
+							<RadioGroup
+								defaultValue={initialDMPref.toString()}
+								inline
+								onChange={(e) => setDMPref(e)}
+							>
+								<Radio value="true">Accept DMs from anyone</Radio>
+								<Radio value="false">
+									Accept DMs from ONLY people you follow
+								</Radio>
+							</RadioGroup>
 						</FormGroup>
 						<FormGroup>
 							<MyButtonToolbar>

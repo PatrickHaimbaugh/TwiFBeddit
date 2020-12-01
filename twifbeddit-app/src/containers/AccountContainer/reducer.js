@@ -12,6 +12,8 @@ const initalState = {
 	bio: "",
 	savedPosts: [],
 	followed_topics: [],
+	blocked_users: [],
+	allow_all_dms: false,
 };
 
 export default function startReducer(state = initalState, action) {
@@ -27,6 +29,8 @@ export default function startReducer(state = initalState, action) {
 				savedPostIds: action.object.savedPosts,
 				bio: action.object.bio,
 				followed_topics: action.object.followed_topics,
+				blocked_users: action.object.blocked,
+				allow_all_dms: action.object.allowDmFromNotFollowed,
 			};
 		}
 
@@ -95,6 +99,22 @@ export default function startReducer(state = initalState, action) {
 				...state,
 				followed_topics: _.filter(state.followed_topics, (topic) => {
 					return topic !== action.topic;
+				}),
+			};
+		}
+
+		case Constants.BLOCK_USER: {
+			return {
+				...state,
+				blocked_users: [...state.blocked_users, action.payload],
+			};
+		}
+
+		case Constants.UNBLOCK_USER: {
+			return {
+				...state,
+				blocked_users: _.filter(state.blocked_users, (username) => {
+					return username !== action.payload;
 				}),
 			};
 		}
