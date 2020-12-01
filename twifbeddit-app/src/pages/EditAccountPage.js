@@ -141,7 +141,6 @@ const EditAccountPage = ({ loading }) => {
 					params,
 					cookie,
 				});
-				console.log(resp);
 				if (resp.error) {
 					Alert.error(
 						"Something went wrong when updating Account Information.",

@@ -110,7 +110,6 @@ const AccountPage = ({ loading }) => {
 				}).then((resp) => {
 					dispatch(globalActions.changeLoading(false));
 					dispatch(globalActions.setComments(resp.comments));
-					console.log(resp);
 					if (resp.error) {
 						Alert.error(
 							"Something went wrong loading this users comments.",
@@ -203,7 +202,6 @@ const AccountPage = ({ loading }) => {
 				},
 				cookie,
 			}).then((resp) => {
-				console.log(resp);
 				if (resp.error) {
 					Alert.error("Something went wrong when unblocking this user.", 4000);
 				}
@@ -219,7 +217,6 @@ const AccountPage = ({ loading }) => {
 				},
 				cookie,
 			}).then((resp) => {
-				console.log(resp);
 				if (resp.error) {
 					Alert.error("Something went wrong when blocking this user.", 4000);
 				}
