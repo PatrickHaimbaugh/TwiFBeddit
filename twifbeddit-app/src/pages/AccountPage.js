@@ -28,6 +28,9 @@ import _ from "lodash";
 import { Alert } from "rsuite";
 import { CommentRow, CommentText } from "../styles/viewPostStyle";
 
+import { MessageUserContainer } from "../messaging/MessageUser/MessageUserContainer";
+import "./createPostDisplayStyle.css";
+
 const AccountPage = ({ loading }) => {
 	const currentAccount = useSelector((state) => state.account),
 		{ usernameForAccountPage, userForAccountPage } = useSelector(
@@ -41,6 +44,8 @@ const AccountPage = ({ loading }) => {
 		[isCurUser, setIsCurUser] = useState(true),
 		[isFollowing, setIsFollowing] = useState(false),
 		blocked_users = useSelector((state) => state.account.blocked_users);
+
+	const triggerText = "Message User";
 
 	useEffect(() => {
 		dispatch(globalActions.changeLoading(true));
@@ -113,6 +118,22 @@ const AccountPage = ({ loading }) => {
 						);
 					}
 				});
+			} else {
+				//rendering account page if user is not logged in
+				makeNetworkCall({
+					HTTPmethod: "get",
+					path: "users",
+					params: {
+						username: usernameForAccountPage,
+					},
+				}).then((resp) => {
+					dispatch(navigationActions.setUserForAccountPage(resp));
+					dispatch(globalActions.changeLoading(false));
+					setIsCurUser(false);
+					setIsFollowing(
+						currentAccount.following.includes(usernameForAccountPage)
+					);
+				});
 			}
 		};
 		getPosts();
@@ -157,6 +178,8 @@ const AccountPage = ({ loading }) => {
 			}
 		});
 	};
+
+	const handleMessageUser = () => {};
 
 	const logout = () => {
 		// reset account info
@@ -234,11 +257,18 @@ const AccountPage = ({ loading }) => {
 								Follow
 							</FollowButton>
 						)}
+						{isCurUser ? null : (
+							<MessageUserContainer triggerText={triggerText} />
+						)}
 					</FollowCol>
 					<FollowCol
 						col={4}
-						onClick={() => changeActiveScreen("FollowingList")}
-						following={true}
+						onClick={() => {
+							if (currentAccount.username === usernameForAccountPage) {
+								changeActiveScreen("FollowingList");
+							}
+						}}
+						following={currentAccount.username === usernameForAccountPage}
 					>
 						<FollowText>Following</FollowText>
 						<FollowNum> {userForAccountPage.following.length} </FollowNum>
@@ -299,6 +329,7 @@ const AccountPage = ({ loading }) => {
 									Image={post.image_url}
 									PostId={post._id}
 									Post={post}
+									Url={post.url}
 								></Post>
 							);
 					  })
@@ -332,6 +363,7 @@ const AccountPage = ({ loading }) => {
 									Image={post.image_url}
 									PostId={post._id}
 									Post={post}
+									Url={post.url}
 								></Post>
 							);
 					  })

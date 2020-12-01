@@ -13,6 +13,8 @@ const initalState = {
 		bio: "",
 	},
 	searchRequest: "",
+	dmResponse: "",
+	selectedConversation: "",
 	currentPost: {},
 };
 
@@ -74,6 +76,20 @@ export default function startReducer(state = initalState, action) {
 			return {
 				...state,
 				currentPost: action.object,
+			};
+		}
+
+		case Constants.DM_RESPONSE: {
+			return {
+				...state,
+				dmResponse: action.response,
+			}
+		}
+
+		case Constants.SELECTED_CONVERSATION: {
+			return {
+				...state,
+				selectedConversation: action.username,
 			};
 		}
 

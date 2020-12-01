@@ -5,9 +5,9 @@ import { useSelector } from "react-redux";
 import Navigation from "./components/Navigation";
 import EditAccountPage from "./pages/EditAccountPage";
 import AccountPage from "./pages/AccountPage";
+import MessagingPage from "./messaging/components/App/index.js";
 import PostPage from "./pages/PostPage";
 import ViewPost from "./pages/ViewPost";
-
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import SignIn from "./pages/signin.js";
 import VerificationInstructions from "./components/verificationInstructions.component";
@@ -43,6 +43,8 @@ const App = (props) => {
 				{currentPage === "Account" && <AccountPage loading={loading} />}
 
 				{currentPage === "Post" && <PostPage loading={loading} />}
+
+				{currentPage === "Messaging" && <MessagingPage loading={loading} />}
 
 				{currentPage === "ViewPost" && <ViewPost loading={loading} />}
 

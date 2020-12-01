@@ -68,6 +68,7 @@ export default function SearchResults({ loading }) {
 			params: {
 				topic: topic,
 			},
+			cookie,
 		});
 		if (resp.error) {
 			Alert.error("Something went wrong loading posts.", 4000);
@@ -129,6 +130,7 @@ export default function SearchResults({ loading }) {
 							Image={post.image_url}
 							PostId={post._id}
 							Post={post}
+							Url={post.url}
 						></Post>
 					);
 				})}

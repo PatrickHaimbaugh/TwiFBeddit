@@ -52,3 +52,17 @@ export function changeCurrentPost(object) {
 		object,
 	};
 }
+
+export function setDmResponse(response) {
+	return {
+		type: Constants.DM_RESPONSE,
+		response,
+	}
+}
+
+export function setSelectedConversation(username) {
+	return {
+		type: Constants.SELECTED_CONVERSATION,
+		username,
+	};
+}

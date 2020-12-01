@@ -33,6 +33,7 @@ const Post = (props) => {
 		userVote,
 		PostId,
 		Post,
+		Url,
 		currentPost,
 	} = props;
 
@@ -140,6 +141,12 @@ const Post = (props) => {
 				<BodyRow>
 					<BodyText>{Body}</BodyText>
 				</BodyRow>
+				<BodyRow>
+					<BodyText></BodyText>
+				</BodyRow>
+				{Url ? (
+					<a href={Url}>{Url}</a>
+				) : null}
 				<VotesRow>
 					<UpvoteButton disabled={loading} onClick={(e) => vote("up", e)}>
 						{curVote === "up" ? "undo UpVote" : "Upvote"}
