@@ -82,6 +82,10 @@ const Post = (props) => {
 		dispatch(navigationActions.changeCurrentPage("SearchResults"));
 	};
 
+	const handleUrlClick = (e) => {
+		e.stopPropagation();
+	}
+
 	const savePost = async (e) => {
 		e.stopPropagation();
 		setLoading(true);
@@ -145,7 +149,7 @@ const Post = (props) => {
 					<BodyText></BodyText>
 				</BodyRow>
 				{Url ? (
-					<a href={Url}>{Url}</a>
+					<a href={Url} onClick={(e) => handleUrlClick(e)}>{Url}</a>
 				) : null}
 				<VotesRow>
 					<UpvoteButton disabled={loading} onClick={(e) => vote("up", e)}>

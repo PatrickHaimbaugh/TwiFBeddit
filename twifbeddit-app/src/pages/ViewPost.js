@@ -60,6 +60,7 @@ const ViewPost = () => {
 					Image={currentPost.image_url}
 					PostId={currentPost._id}
 					Post={currentPost}
+					Url={currentPost.url}
 					currentPost={true}
 				></Post>
 				<CommentCol>
