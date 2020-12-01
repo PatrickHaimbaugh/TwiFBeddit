@@ -78,8 +78,8 @@ exports.GET = async (_, event) => {
         var posts = await Post.find()
         .or([
             {topic: {$in: user.followed_topics}},
-            {author: {$in: user.following}}
-        ]).where('anonymous').equals(false).where('author').nin(user.blocked == undefined ? [] : user.blocked).sort({ createdAt: -1}).exec();
+            {author: {$in: user.following}, anonymous: false}
+        ]).where('author').nin(user.blocked == undefined ? [] : user.blocked).sort({ createdAt: -1}).exec();
         
         posts = JSON.parse(JSON.stringify(posts));
         removeComments(posts);
