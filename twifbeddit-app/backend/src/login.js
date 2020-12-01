@@ -17,6 +17,11 @@ exports.GET = async (_, event) => {
         return {'statusCode': 401};
 
     var externalUser = create_external_user(user);
+    if (externalUser.verified != undefined && !externalUser.verified)
+        return {
+            'statusCode': 401,
+            'bdoy': JSON.stringify({'message': 'account not verified'})
+        };
     const cookieHeader = await get_cookie_header(user.username);
     externalUser.cookie = cookieHeader["Set-Cookie"];
     return {

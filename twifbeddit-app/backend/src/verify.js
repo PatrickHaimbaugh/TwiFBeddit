@@ -5,25 +5,16 @@ const Verify = mongoose.model("Verify");
 
 
 exports.GET = async (_, event) => {
+    if (event.queryStringParameters.uuid == undefined)
+        return {'statusCode': 404};
 
-    if (event.queryStringParameters.uuid != undefined) {
-
-        const v = await Verify.findOne({verification_uuid: event.queryStringParameters.uuid});
-        const userToVerify = await User.findOneAndUpdate({username: v.username}, {$set: {verified: true}}, {new: true});
-        
-        return {
-            'statusCode': 200,
-            'body': JSON.stringify({
-                "email": userToVerify.email,
-                "username": userToVerify.username,
-                "verified": userToVerify.verified
-            })
+    const v = await Verify.findOne({verification_uuid: event.queryStringParameters.uuid});
+    await User.findOneAndUpdate({username: v.username}, {$set: {verified: true}});
+    
+    return {
+        statusCode: 301,
+        headers: {
+            Location: 'http://twifbeddit-prod.s3-website.us-east-2.amazonaws.com/',
         }
     }
-
-    return {
-        'statusCode': 404
-    }
-
 };
-

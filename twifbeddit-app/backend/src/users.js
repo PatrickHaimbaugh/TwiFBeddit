@@ -21,18 +21,25 @@ exports.POST = async (_, event) => {
     var data = JSON.parse(event.body);
     var hash = bcrypt.hashSync(data.password, 10);
     data.password = hash;
-    const newUser = new User(data);
-    var createdUser = await newUser.save();
-    var externalUser = exports.create_external_user(createdUser);
-
-    const cookieHeader = await get_cookie_header(newUser.username);
-    externalUser.cookie = cookieHeader["Set-Cookie"];
+    var newUser = new User(data);
 
     const uuid = uuidv4();
     const verificationLink = "https://yfe9h86dc9.execute-api.us-east-2.amazonaws.com/Prod/verify?uuid=" + uuid;
-    await send_email(newUser.email, "Please verify your TwiFBeddit account", "Please click this link to verify your account: " + verificationLink);
-    const verifyUUID = new Verify({email: newUser.email, username: newUser.username, verification_uuid: uuid});
-    await verifyUUID.save();
+    try {
+        await send_email(newUser.email,
+                "Please verify your TwiFBeddit account", "Please click this link to verify your account: " + verificationLink
+            );
+        const verifyUUID = new Verify({email: newUser.email, username: newUser.username, verification_uuid: uuid});
+        await verifyUUID.save();
+    } catch (err) {
+        console.log(`${newUser.email} not verified to send emails to`);
+        newUser.verified = true;
+    }
+
+    const createdUser = await newUser.save();
+    const cookieHeader = await get_cookie_header(newUser.username);
+    var externalUser = exports.create_external_user(createdUser);
+    externalUser.cookie = cookieHeader["Set-Cookie"];
 
     return {
         'statusCode': 200,
