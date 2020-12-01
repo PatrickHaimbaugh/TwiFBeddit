@@ -37,7 +37,8 @@ const EditAccountPage = ({ loading }) => {
 		dispatch = useDispatch(),
 		[showModal, setShowModal] = useState(false),
 		[profilePic, setProfilePic] = useState(""),
-		[DMPref, setDMPref] = useState("");
+		initialDMPref = useSelector((state) => state.account.allow_all_dms),
+		[DMPref, setDMPref] = useState(initialDMPref);
 
 	const validateEmail = (value) => {
 		const error = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
@@ -285,7 +286,11 @@ const EditAccountPage = ({ loading }) => {
 						</FormGroup>
 						<FormGroup>
 							<MyControlLabel>DM Preference</MyControlLabel>
-							<RadioGroup inline onChange={(e) => setDMPref(e)}>
+							<RadioGroup
+								defaultValue={initialDMPref.toString()}
+								inline
+								onChange={(e) => setDMPref(e)}
+							>
 								<Radio value="true">Accept DMs from anyone</Radio>
 								<Radio value="false">
 									Accept DMs from ONLY people you follow

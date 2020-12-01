@@ -13,6 +13,7 @@ const initalState = {
 	savedPosts: [],
 	followed_topics: [],
 	blocked_users: [],
+	allow_all_dms: false,
 };
 
 export default function startReducer(state = initalState, action) {
@@ -29,6 +30,7 @@ export default function startReducer(state = initalState, action) {
 				bio: action.object.bio,
 				followed_topics: action.object.followed_topics,
 				blocked_users: action.object.blocked,
+				allow_all_dms: action.object.allowDmFromNotFollowed,
 			};
 		}
 

@@ -280,7 +280,9 @@ const AccountPage = ({ loading }) => {
 						<Tab onClick={() => setShowPosts("saved")}>Saved Posts</Tab>
 					) : null}
 				</TabsRow>
-				{showPosts === "posts" && cookie
+				{showPosts === "posts" &&
+				cookie &&
+				!currentAccount.blocked_users.includes(usernameForAccountPage)
 					? _.map(posts, (post) => {
 							if (post.post_type === "comment") {
 								return;
@@ -300,7 +302,9 @@ const AccountPage = ({ loading }) => {
 								></Post>
 							);
 					  })
-					: showPosts === "comments" && cookie
+					: showPosts === "comments" &&
+					  cookie &&
+					  !currentAccount.blocked_users.includes(usernameForAccountPage)
 					? _.map(comments, (comment) => {
 							return (
 								<div key={comment._id}>
@@ -314,7 +318,8 @@ const AccountPage = ({ loading }) => {
 								</div>
 							);
 					  }) //show all posts where they interacted
-					: _.map(currentAccount.savedPosts, (post) => {
+					: showPosts === "saved"
+					? _.map(currentAccount.savedPosts, (post) => {
 							return (
 								<Post
 									key={post._id}
@@ -329,7 +334,8 @@ const AccountPage = ({ loading }) => {
 									Post={post}
 								></Post>
 							);
-					  })}
+					  })
+					: null}
 				{}
 			</Content>
 		</Page>
