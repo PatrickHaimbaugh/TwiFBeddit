@@ -96,9 +96,9 @@ const AccountPage = ({ loading }) => {
 				makeNetworkCall({
 					HTTPmethod: "get",
 					path: "posts",
+					cookie,
 					params: {
 						author: usernameForAccountPage,
-						cookie,
 					},
 				}).then((resp) => {
 					//dispatch(globalActions.changeLoading(false));
