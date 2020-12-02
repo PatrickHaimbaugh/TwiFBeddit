@@ -142,11 +142,11 @@ const Post = (props) => {
 					<BodyText>{Body}</BodyText>
 				</BodyRow>
 				<BodyRow>
-					<BodyText></BodyText>
+					<BodyText onClick={(e) => e.stopPropagation()}>
+						{Url ? <a href={Url}>{Url}</a> : null}
+					</BodyText>
 				</BodyRow>
-				{Url ? (
-					<a href={Url}>{Url}</a>
-				) : null}
+
 				<VotesRow>
 					<UpvoteButton disabled={loading} onClick={(e) => vote("up", e)}>
 						{curVote === "up" ? "undo UpVote" : "Upvote"}

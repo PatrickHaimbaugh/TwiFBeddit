@@ -61,6 +61,7 @@ const ViewPost = () => {
 					PostId={currentPost._id}
 					Post={currentPost}
 					currentPost={true}
+					Url={currentPost.url}
 				></Post>
 				<CommentCol>
 					{_.map(currentPost.comments, (comment) => {
