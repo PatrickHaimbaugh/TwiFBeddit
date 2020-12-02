@@ -29,7 +29,7 @@ exports.GET = async (_, event) => {
     removeComments(posts);
     for (var post of posts) {
         createExternalPost(post);
-        await addComments(post);
+        await addComments(post, []);
     }
 
     return {

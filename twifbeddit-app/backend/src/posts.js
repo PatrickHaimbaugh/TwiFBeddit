@@ -50,12 +50,12 @@ function createExternalPost(post) {
     post.__v = undefined;
 }
 
-async function addComments(post) {
+async function addComments(post, blocked) {
     const comments = post.comments;
     post.comments = [];
     for (const commentId of comments) {
         var foundPost = await Post.findById(commentId);
-        if (foundPost == null)
+        if (foundPost == null || blocked.includes(foundPost.author))
             continue;
         foundPost = JSON.parse(JSON.stringify(foundPost));
         createExternalPost(foundPost);
@@ -70,22 +70,22 @@ exports.removeComments = removeComments;
 
 // Returns different posts depending on whether there are query parameters passed in.
 exports.GET = async (_, event) => {
+    const username = await get_user_from_header(event.headers);
+    const user = await User.findOne({username: username});
+    const blocked = user.blocked == undefined ? [] : user.blocked;
 
     if (event.queryStringParameters == null) {
-        const username = await get_user_from_header(event.headers);
-        const user = await User.findOne({username: username});
-        
         var posts = await Post.find()
         .or([
             {topic: {$in: user.followed_topics}},
             {author: {$in: user.following}, anonymous: false}
-        ]).where('author').nin(user.blocked == undefined ? [] : user.blocked).sort({ createdAt: -1}).exec();
+        ]).where('author').nin(blocked).sort({ createdAt: -1}).exec();
         
         posts = JSON.parse(JSON.stringify(posts));
         removeComments(posts);
         for (var post of posts) {
             createExternalPost(post);
-            await addComments(post);
+            await addComments(post, blocked);
         }
 
         return {
@@ -96,15 +96,13 @@ exports.GET = async (_, event) => {
         }
     } 
     if (event.queryStringParameters.topic != undefined) {
-        const username = await get_user_from_header(event.headers);
-        const user = await User.findOne({username: username});
         const topic = event.queryStringParameters.topic;
         var posts = await Post.find().where('topic').in(topic).where('author').nin(user.blocked == undefined ? [] : user.blocked).sort({ createdAt: -1}).exec();
         posts = JSON.parse(JSON.stringify(posts));
         removeComments(posts);
         for (var post of posts) {
             createExternalPost(post);
-            await addComments(post);
+            await addComments(post, blocked);
         }
     
         return {
@@ -124,7 +122,7 @@ exports.GET = async (_, event) => {
         removeComments(posts);
         for (var post of posts) {
             createExternalPost(post);
-            await addComments(post);
+            await addComments(post, blocked);
         }
     
         return {
@@ -133,7 +131,6 @@ exports.GET = async (_, event) => {
                 posts: posts
             })
         }
-
     }
 
     return {

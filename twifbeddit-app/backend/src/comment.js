@@ -23,7 +23,7 @@ exports.POST = async (_, event) => {
     var updatedPost  = await Post.findOneAndUpdate({_id: id},  {$addToSet: {comments: newPost._id}}, {new: true});
     updatedPost = JSON.parse(JSON.stringify(updatedPost));
     createExternalPost(updatedPost);
-    await addComments(updatedPost);
+    await addComments(updatedPost, []);
     return {'statusCode': 200, 'body': JSON.stringify({
         'updatedPost': updatedPost
     })};
