@@ -11,6 +11,7 @@ const initalState = {
 		profile_picture: "",
 		savedPosts: [],
 		bio: "",
+		followed_topics: [],
 	},
 	searchRequest: "",
 	dmResponse: "",
@@ -83,7 +84,7 @@ export default function startReducer(state = initalState, action) {
 			return {
 				...state,
 				dmResponse: action.response,
-			}
+			};
 		}
 
 		case Constants.SELECTED_CONVERSATION: {

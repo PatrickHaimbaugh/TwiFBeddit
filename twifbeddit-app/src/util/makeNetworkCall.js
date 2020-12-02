@@ -11,6 +11,7 @@ export default async function makeNetworkCall(props) {
 			params: params,
 			data: JSON.stringify(data),
 		});
+		console.log(resp);
 		const responseData = resp.data;
 		return responseData;
 	} catch (error) {

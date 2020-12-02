@@ -59,13 +59,15 @@ const AccountPage = ({ loading }) => {
 						path: "save",
 						cookie,
 					}).then((resp) => {
-						dispatch(accountActions.setSavedPosts(resp.posts));
 						if (resp.error) {
 							Alert.error(
 								"Something went wrong getting your saved posts.",
 								4000
 							);
+						} else {
+							dispatch(accountActions.setSavedPosts(resp.posts));
 						}
+						dispatch(globalActions.changeLoading(false));
 					});
 				} else {
 					makeNetworkCall({
@@ -75,17 +77,20 @@ const AccountPage = ({ loading }) => {
 							username: usernameForAccountPage,
 						},
 					}).then((resp) => {
-						dispatch(navigationActions.setUserForAccountPage(resp));
-						setIsCurUser(false);
-						setIsFollowing(
-							currentAccount.following.includes(usernameForAccountPage)
-						);
 						if (resp.error) {
 							Alert.error(
 								"Something went wrong loading this users information.",
 								4000
 							);
+							dispatch(navigationActions.setUserForAccountPage(currentAccount));
+						} else {
+							dispatch(navigationActions.setUserForAccountPage(resp));
+							setIsCurUser(false);
+							setIsFollowing(
+								currentAccount.following.includes(usernameForAccountPage)
+							);
 						}
+						dispatch(globalActions.changeLoading(false));
 					});
 				}
 				makeNetworkCall({
@@ -93,6 +98,7 @@ const AccountPage = ({ loading }) => {
 					path: "posts",
 					params: {
 						author: usernameForAccountPage,
+						cookie,
 					},
 				}).then((resp) => {
 					//dispatch(globalActions.changeLoading(false));
@@ -108,7 +114,6 @@ const AccountPage = ({ loading }) => {
 						author: usernameForAccountPage,
 					},
 				}).then((resp) => {
-					dispatch(globalActions.changeLoading(false));
 					dispatch(globalActions.setComments(resp.comments));
 					if (resp.error) {
 						Alert.error(
@@ -268,7 +273,11 @@ const AccountPage = ({ loading }) => {
 						following={currentAccount.username === usernameForAccountPage}
 					>
 						<FollowText>Following</FollowText>
-						<FollowNum> {userForAccountPage.following.length} </FollowNum>
+						<FollowNum>
+							{" "}
+							{userForAccountPage.following.length +
+								userForAccountPage.followed_topics.length}{" "}
+						</FollowNum>
 					</FollowCol>
 				</UpperHeaderRow>
 				<UsernameRow>

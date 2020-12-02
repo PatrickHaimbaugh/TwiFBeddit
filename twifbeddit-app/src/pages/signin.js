@@ -149,8 +149,9 @@ export default function SignInSide({ loading }) {
 				changeActiveScreen("LandingPage");
 			}
 		} else {
-			alert(
-				"Sign-in not successful. Please enter valid username/email and password."
+			Alert.error(
+				"Sign-in not successful. Please enter valid username/email and password.",
+				4000
 			);
 		}
 		dispatch(globalActions.changeLoading(false));

@@ -155,10 +155,11 @@ export default function IndividualSignUp({ loading }) {
 					Alert.error("Erorr Signing Up.", 4000);
 				} else {
 					dispatch(globalActions.changeLoading(false));
-					dispatch(globalActions.setCookie(resp.cookie));
-					dispatch(accountActions.setUser(resp));
-					changeActiveScreen("LandingPage");
-					Alert.success("Successfully Signed Up.", 4000);
+					changeActiveScreen("SignIn");
+					Alert.success(
+						"Successfully Signed Up, Verify your account to sign in.",
+						4000
+					);
 				}
 			} else {
 				Alert.error(

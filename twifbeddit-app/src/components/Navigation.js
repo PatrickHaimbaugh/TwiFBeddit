@@ -13,7 +13,7 @@ import {
 	IconContainer,
 	NavigationIcon,
 } from "../styles/navigationStyle";
-import { Icon } from "rsuite";
+import { Alert, Icon } from "rsuite";
 import { Col } from "styled-bootstrap-grid";
 import "rsuite/dist/styles/rsuite-default.css";
 import {
@@ -47,30 +47,46 @@ const Navigation = (props) => {
 
 	const handleSearchButtonClick = () => {
 		//if searching for user:
-		if (searchText.charAt(0) === "@"){
-			dispatch(navigationActions.setUsernameForAccountPage(searchText.substring(1, searchText.length)));
+		if (searchText.charAt(0) === "@") {
+			dispatch(
+				navigationActions.setUsernameForAccountPage(
+					searchText.substring(1, searchText.length)
+				)
+			);
 			changeActiveScreen("Account");
 		}
 
 		//if searching for topic:
-		else if (searchText.charAt(0) === "#"){
-			dispatch(navigationActions.storeSearchRequest(searchText.substring(1, searchText.length)));
+		else if (searchText.charAt(0) === "#") {
+			dispatch(
+				navigationActions.storeSearchRequest(
+					searchText.substring(1, searchText.length)
+				)
+			);
 			changeActiveScreen("SearchResults");
-		}
-
-		else{
-			alert("invalid search string. Please search for a user using \"@\" and a topic using \"#\". ")
+		} else {
+			Alert.error(
+				'invalid search string. Please search for a user using "@" and a topic using "#". ',
+				4000
+			);
 		}
 	};
 
 	const handleSearchButtonClickNonLoggedIn = () => {
-		if (searchText.charAt(0) === "@"){
-			dispatch(navigationActions.setUsernameForAccountPage(searchText.substring(1, searchText.length)));
+		if (searchText.charAt(0) === "@") {
+			dispatch(
+				navigationActions.setUsernameForAccountPage(
+					searchText.substring(1, searchText.length)
+				)
+			);
 			changeActiveScreen("Account");
-		}else{
-			alert("You may only look up existing users. Please search for a user using \"@\". ")
+		} else {
+			Alert.error(
+				'You may only look up existing users. Please search for a user using "@".',
+				4000
+			);
 		}
-	}
+	};
 
 	return (
 		<Content col={12}>

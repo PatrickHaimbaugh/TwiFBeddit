@@ -11,7 +11,7 @@ export const Form = () => {
 	const [charsLeft, setCharsLeft] = useState(500);
 	const { usernameForAccountPage, userForAccountPage } = useSelector(
 		(state) => state.navigation
-	)
+	);
 
 	const handleMessageChange = (event) => {
 		var input = event.target.value;
@@ -29,37 +29,34 @@ export const Form = () => {
 		if (message != null) {
 			console.log(message);
 
-      //make message object
-      const messageObject = {
-        to: usernameForAccountPage,
-        message: message,
-      }
-      console.log(messageObject);
-      console.log(cookie);
+			//make message object
+			const messageObject = {
+				to: usernameForAccountPage,
+				message: message,
+			};
+			console.log(messageObject);
+			console.log(cookie);
 
-      //send message
+			//send message
 			const resp = await makeNetworkCall({
-  			HTTPmethod: "post",
-  			path: "dm",
-        data: messageObject,
-        cookie,
-  		});
-  		if (resp.error) {
-  			alert("Something went wrong in loading conversations.");
-        alert(resp.error);
-  		} else {
+				HTTPmethod: "post",
+				path: "dm",
+				data: messageObject,
+				cookie,
+			});
+			if (resp.error) {
+				Alert.error("Something went wrong in loading conversations.", 4000);
+				Alert.error(resp.error, 4000);
+			} else {
 				setMessage("");
 			}
 		}
 	};
 
-	useEffect(() => {
-
-	}, []);
+	useEffect(() => {}, []);
 
 	return (
 		<form onSubmit={onSubmit}>
-
 			<div className="form-group">
 				<label htmlFor="postText">Message: </label>
 				<textarea
